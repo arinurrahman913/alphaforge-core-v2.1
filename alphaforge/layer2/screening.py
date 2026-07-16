@@ -1,0 +1,185 @@
+"""03_LAYER2_SPECS/01_SCREENING.md — hard exclude + soft flag.
+
+Batching & delay antar request mengikuti 04_DATA_SOURCES/05_RATE_LIMIT_CACHING_STRATEGY.md
+(env var YF_BATCH_SIZE / YF_BATCH_DELAY_SECONDS, pola yang sama dipakai v1).
+"""
+from __future__ import annotations
+
+import os
+import time
+from datetime import datetime, timezone
+
+import pandas as pd
+import yfinance as yf
+
+from ..cache import get as cache_get, set as cache_set
+from .contracts import ScreeningCandidate, ScreeningResult
+from .sources.listing import cheap_filter, fetch_universe
+
+BATCH_SIZE = int(os.environ.get("YF_BATCH_SIZE", "50"))
+BATCH_DELAY_SECONDS = float(os.environ.get("YF_BATCH_DELAY_SECONDS", "2.0"))
+
+PRICE_CACHE_TTL_SECONDS = 6 * 3600
+INFO_CACHE_TTL_SECONDS = 24 * 3600
+
+MIN_MARKET_CAP = 30_000_000
+MIN_AVG_DOLLAR_VOLUME = 300_000
+MIN_PRICE = 0.50
+MIN_PRICE_HISTORY_DAYS = 20
+
+MICRO_CAP_MAX = 300_000_000
+SMALL_CAP_MAX = 2_000_000_000
+RECENT_IPO_MAX_DAYS = 252
+LOW_LIQUIDITY_MAX = 1_000_000
+
+
+def _chunks(seq: list, size: int):
+    for i in range(0, len(seq), size):
+        yield seq[i:i + size]
+
+
+def fetch_price_history_batch(tickers: list[str]) -> dict[str, pd.DataFrame]:
+    """Unduh histori harga banyak ticker sekaligus, per batch + jeda + cache."""
+    result: dict[str, pd.DataFrame] = {}
+    to_fetch = []
+    for t in tickers:
+        cached = cache_get("price_history", t, PRICE_CACHE_TTL_SECONDS)
+        if cached is not None:
+            df = pd.DataFrame(cached)
+            if not df.empty:
+                df.index = pd.to_datetime(df.pop("__date__"))
+            result[t] = df
+        else:
+            to_fetch.append(t)
+
+    for i, batch in enumerate(_chunks(to_fetch, BATCH_SIZE)):
+        if i > 0:
+            time.sleep(BATCH_DELAY_SECONDS)
+        try:
+            data = yf.download(batch, period="1y", group_by="ticker", threads=True,
+                                progress=False, auto_adjust=False)
+        except Exception:
+            continue
+        for t in batch:
+            try:
+                df = data[t] if len(batch) > 1 else data
+                df = df.dropna(how="all")
+            except Exception:
+                df = pd.DataFrame()
+            result[t] = df
+            to_cache = df.reset_index()
+            to_cache = to_cache.rename(columns={to_cache.columns[0]: "__date__"})
+            to_cache["__date__"] = to_cache["__date__"].astype(str)
+            cache_set("price_history", t, to_cache.to_dict(orient="records"))
+
+    return result
+
+
+def fetch_fast_info(ticker: str) -> dict | None:
+    cached = cache_get("fast_info", ticker, INFO_CACHE_TTL_SECONDS)
+    if cached is not None:
+        return cached
+    try:
+        fi = yf.Ticker(ticker).fast_info
+        data = {"market_cap": fi.get("marketCap"), "quote_type": fi.get("quoteType")}
+    except Exception:
+        return None
+    cache_set("fast_info", ticker, data)
+    return data
+
+
+def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | None) -> ScreeningCandidate:
+    ticker = row.symbol
+    exchange = row.exchange
+
+    if price_df is None or price_df.empty:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="no_price_data")
+
+    history_days = len(price_df)
+    if history_days < MIN_PRICE_HISTORY_DAYS:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="insufficient_price_history",
+                                   price_history_days=history_days)
+
+    last_price = float(price_df["Close"].iloc[-1])
+    if last_price < MIN_PRICE:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="price_below_minimum",
+                                   last_price=last_price, price_history_days=history_days)
+
+    window = price_df.iloc[-20:] if history_days >= 20 else price_df
+    avg_dollar_volume = float((window["Close"] * window["Volume"]).mean())
+    if avg_dollar_volume < MIN_AVG_DOLLAR_VOLUME:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="avg_dollar_volume_below_minimum",
+                                   last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
+                                   price_history_days=history_days)
+
+    market_cap = (fast_info or {}).get("market_cap")
+    if market_cap is not None and market_cap < MIN_MARKET_CAP:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="market_cap_below_minimum",
+                                   last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
+                                   market_cap=market_cap, price_history_days=history_days)
+
+    soft_flags = []
+    if market_cap is not None:
+        if market_cap < MICRO_CAP_MAX:
+            soft_flags.append("micro_cap")
+        elif market_cap < SMALL_CAP_MAX:
+            soft_flags.append("small_cap")
+    if history_days < RECENT_IPO_MAX_DAYS:
+        soft_flags.append("recent_ipo")
+    if avg_dollar_volume < LOW_LIQUIDITY_MAX:
+        soft_flags.append("low_liquidity")
+    if market_cap is None:
+        soft_flags.append("market_cap_unavailable")
+
+    return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=True,
+                               soft_flags=soft_flags, market_cap=market_cap,
+                               avg_dollar_volume_20d=avg_dollar_volume, last_price=last_price,
+                               price_history_days=history_days)
+
+
+def run_screening(limit: int | None = None) -> tuple[ScreeningResult, dict[str, pd.DataFrame]]:
+    universe = fetch_universe()
+    universe_raw = len(universe)
+    survivors_cheap = cheap_filter(universe)
+
+    scan_list = survivors_cheap[:limit] if limit else survivors_cheap
+    tickers = [r.symbol for r in scan_list]
+
+    price_data = fetch_price_history_batch(tickers)
+
+    passed: list[ScreeningCandidate] = []
+    hard_excluded: list[ScreeningCandidate] = []
+    price_cache: dict[str, pd.DataFrame] = {}
+
+    for row in scan_list:
+        df = price_data.get(row.symbol)
+        fast_info = None
+        if df is not None and not df.empty and len(df) >= MIN_PRICE_HISTORY_DAYS:
+            last_price_check = float(df["Close"].iloc[-1]) if not df.empty else 0
+            window = df.iloc[-20:] if len(df) >= 20 else df
+            avg_dv_check = float((window["Close"] * window["Volume"]).mean()) if not window.empty else 0
+            if last_price_check >= MIN_PRICE and avg_dv_check >= MIN_AVG_DOLLAR_VOLUME:
+                fast_info = fetch_fast_info(row.symbol)
+
+        candidate = evaluate_candidate(row, df, fast_info)
+        if candidate.passed:
+            passed.append(candidate)
+            if df is not None and not df.empty:
+                price_cache[row.symbol] = df
+        else:
+            hard_excluded.append(candidate)
+
+    result = ScreeningResult(
+        universe_raw=universe_raw,
+        universe_after_cheap_filter=len(survivors_cheap),
+        universe_scanned=len(scan_list),
+        passed=passed,
+        hard_excluded=hard_excluded,
+        generated_at=datetime.now(timezone.utc).isoformat(),
+    )
+    return result, price_cache

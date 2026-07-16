@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlphaForge v2 — Dashboard Lokal (mockup)</title>
+<style>
+:root{
+  --ink:#0F151B; --panel:#161F29; --panel2:#1B2632; --rule:#293745;
+  --text:#C7D2DB; --dim:#8194A3; --faint:#5C6E7C;
+  --direct:#5FB3C9;      /* terukur */
+  --derived:#D4A24C;     /* dikonstruksi */
+  --missing:#A8628A;     /* tidak ada */
+  --flag:#C4574F;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Roboto Mono", Menlo, monospace;
+  --serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- topbar ---------- */
+.top{border-bottom:1px solid var(--rule);position:sticky;top:0;background:rgba(15,21,27,.94);backdrop-filter:blur(8px);z-index:10}
+.top-in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
+.brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.brand b{color:var(--text);font-weight:600}
+.tabs{display:flex;gap:2px;margin-left:auto}
+.tab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border:1px solid var(--rule);background:transparent;color:var(--faint);cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);background:var(--text);border-color:var(--text)}
+.tab:focus-visible{outline:2px solid var(--direct);outline-offset:2px}
+
+/* ---------- section chrome ---------- */
+.sec{margin-top:44px}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:22px}
+.sec-n{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.1em}
+.sec-t{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--text)}
+.sec-note{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--dim)}
+
+/* ---------- meta bar ---------- */
+.meta{display:flex;gap:26px;flex-wrap:wrap;padding:16px 0 0;font-family:var(--mono);font-size:11px}
+.meta div span{display:block;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-size:10px;margin-bottom:3px}
+.meta div b{font-weight:500;color:var(--text)}
+.warn b{color:var(--derived)}
+
+/* ---------- kartu komponen ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);display:flex;flex-direction:column}
+.card-top{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 0}
+.card-name{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);flex:1}
+/* badge kind — sengaja keras & tak bisa dilewatkan (spec §3, Prinsip #5) */
+.kind{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;padding:3px 6px;border:1px solid}
+.kind.d{color:var(--direct);border-color:var(--direct)}
+.kind.v{color:var(--derived);border-color:var(--derived);background:rgba(212,162,76,.08)}
+.val{font-family:var(--mono);font-size:26px;font-weight:500;padding:6px 14px 2px;letter-spacing:-.02em}
+.val small{font-size:12px;color:var(--dim);font-weight:400}
+.narr{font-family:var(--serif);font-size:13.5px;line-height:1.5;color:var(--text);padding:6px 14px 12px;opacity:.92}
+/* rakitan: hanya ada di kartu DERIVED — anatomi kartu sendiri yang membedakan */
+.built{margin:0 14px 12px;padding:8px 10px;border-left:2px solid var(--derived);background:rgba(212,162,76,.05);font-family:var(--mono);font-size:10px;color:var(--dim);line-height:1.7}
+.built em{color:var(--derived);font-style:normal;letter-spacing:.08em}
+/* strip provenance — signature: selalu ada, tak pernah dilipat */
+.prov{margin-top:auto;border-top:1px solid var(--rule);padding:8px 14px;font-family:var(--mono);font-size:9.5px;color:var(--faint);display:flex;gap:10px;flex-wrap:wrap;letter-spacing:.04em}
+.prov b{color:var(--dim);font-weight:400}
+.card.deg{border-color:rgba(212,162,76,.5)}
+.card.mis{border-color:rgba(168,98,138,.5);background:repeating-linear-gradient(135deg,var(--panel),var(--panel) 9px,rgba(168,98,138,.05) 9px,rgba(168,98,138,.05) 18px)}
+.card.mis .val{color:var(--missing);font-size:15px;padding-top:12px}
+.stat{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:3px 6px}
+.stat.deg{color:var(--derived);background:rgba(212,162,76,.14)}
+.stat.mis{color:var(--missing);background:rgba(168,98,138,.14)}
+
+/* ---------- DAG: sentiment dipisah ---------- */
+.dag{margin-top:12px;border:1px solid var(--rule);border-top:2px solid var(--derived);background:var(--panel);display:grid;grid-template-columns:200px 1fr;gap:0}
+.dag-left{border-right:1px solid var(--rule);padding:14px;background:var(--panel2)}
+.dag-lab{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-bottom:10px}
+.feed{font-family:var(--mono);font-size:10.5px;color:var(--dim);padding:5px 0;border-bottom:1px dotted var(--rule);display:flex;justify-content:space-between;gap:8px}
+.feed:last-child{border:0}
+.feed b{font-weight:400}
+.feed .ok{color:var(--direct)}
+.feed .no{color:var(--missing)}
+
+/* ---------- kesimpulan ---------- */
+.sum{border:1px solid var(--rule);border-left:3px solid var(--derived);background:var(--panel);padding:18px 20px}
+.sum-narr{font-family:var(--serif);font-size:16px;line-height:1.62;max-width:74ch}
+.sum-narr mark{background:rgba(212,162,76,.16);color:var(--derived);padding:0 2px}
+.limit{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:10.5px;color:var(--dim);display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.pill{border:1px solid var(--rule);padding:2px 7px;font-size:9.5px;letter-spacing:.06em}
+.pill.w{color:var(--derived);border-color:rgba(212,162,76,.4)}
+
+/* ---------- layer 2: snapshot ---------- */
+.kn{border:1px solid var(--rule);background:var(--panel)}
+.kn-sec{border-bottom:1px solid var(--rule)}
+.kn-sec:last-child{border:0}
+.kn-h{display:flex;gap:10px;align-items:baseline;padding:9px 14px;background:var(--panel2);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.kn-h i{color:var(--faint);font-style:normal}
+.rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+.row{padding:9px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.row k{color:var(--faint);font-weight:400}
+.row v{color:var(--text)}
+.row.m v{color:var(--missing);font-size:10px;letter-spacing:.04em}
+.row.m{background:rgba(168,98,138,.045)}
+.row.nm v{color:var(--faint);font-size:10px}
+.peer{margin-top:12px;border:1px dashed var(--rule);background:transparent;padding:14px}
+.peer-h{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.peer-note{font-family:var(--serif);font-size:12.5px;color:var(--dim);margin-bottom:12px}
+
+/* ---------- flag ---------- */
+.flags{border:1px solid var(--flag);border-left-width:3px;background:rgba(196,87,79,.06);padding:12px 14px;margin-bottom:12px}
+.flag{display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:11px;padding:4px 0}
+.flag .sev{font-size:9px;letter-spacing:.1em;padding:2px 6px;border:1px solid}
+.sev.t{color:var(--flag);border-color:var(--flag)}
+.sev.u{color:var(--missing);border-color:var(--missing)}
+.flag span{color:var(--dim)}
+
+/* ---------- 3 kolom modul ---------- */
+.mods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mod{border:1px solid var(--rule);background:var(--panel);display:flex;flex-direction:column}
+.mod-h{padding:12px 14px;border-bottom:1px solid var(--rule);background:var(--panel2)}
+.mod-n{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.stance{font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.01em;margin-top:6px}
+.stance{color:var(--text)}  /* D-09/§4b: stance TIDAK diwarnai menurut "bagusnya" — kosakata 3 modul tak sebanding */
+.mod-b{padding:12px 14px;font-family:var(--serif);font-size:13px;line-height:1.55;border-bottom:1px solid var(--rule)}
+.blk{padding:10px 14px;border-bottom:1px solid var(--rule)}
+.blk:last-child{border:0;margin-top:auto}
+.blk-l{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.conf{font-family:var(--mono);font-size:11px;display:flex;align-items:baseline;gap:8px}
+.conf b{font-size:16px;font-weight:600}
+.bar{height:3px;background:var(--rule);margin-top:7px}
+.bar i{display:block;height:100%;background:var(--dim)}  /* §4b: confidence SELALU netral, tak pernah semantik */
+.item{font-family:var(--mono);font-size:10.5px;color:var(--dim);padding:3px 0;line-height:1.5}
+.item:before{content:"— ";color:var(--faint)}
+.cite{color:var(--direct);text-decoration:none;border-bottom:1px dotted rgba(95,179,201,.4);cursor:pointer}
+.cite:hover{background:rgba(95,179,201,.1)}
+.fr{padding:5px 0;border-bottom:1px dotted var(--rule);font-family:var(--mono);font-size:10px}
+.fr:last-child{border:0}
+.fr b{color:var(--flag);font-weight:400}
+.fr i{font-style:normal;color:var(--dim);display:block;margin-top:2px;line-height:1.5}
+
+/* ---------- synthesis: DI BAWAH (S1) ---------- */
+.syn{margin-top:12px;border:1px solid var(--rule);border-top:2px solid var(--rule);background:var(--panel2)}
+.syn-h{display:flex;gap:12px;align-items:baseline;padding:11px 18px;border-bottom:1px solid var(--rule)}
+.syn-t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.syn-r{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.syn-b{padding:18px}
+.syn-narr{font-family:var(--serif);font-size:15.5px;line-height:1.65;max-width:78ch}
+.dv{margin-top:16px;border-top:1px solid var(--rule);padding-top:14px}
+.dv-row{display:grid;grid-template-columns:88px 1fr;gap:14px;padding:8px 0;border-bottom:1px dotted var(--rule);align-items:start}
+.dv-row:last-child{border:0}
+.dv-k{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--faint);text-transform:uppercase;padding-top:2px}
+.dv-v{font-family:var(--mono);font-size:10.5px;color:var(--dim);line-height:1.6}
+.rc{color:var(--derived)}
+.syn-f{padding:11px 18px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:10px;color:var(--faint);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.lrow{display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:11px;padding:5px 0;border-bottom:1px dotted var(--rule)}
+.lrow b{font-weight:600;width:46px}
+.lrow span{color:var(--dim);flex:1;font-size:10px}
+.lrow i{font-style:normal;color:var(--faint);font-size:9.5px}
+.lrow.sel{background:rgba(95,179,201,.08);box-shadow:-8px 0 0 rgba(95,179,201,.08),8px 0 0 rgba(95,179,201,.08)}
+.note{margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--faint);line-height:1.7}
+[hidden]{display:none!important}
+@media(max-width:820px){.mods{grid-template-columns:1fr}.dag{grid-template-columns:1fr}.dag-left{border-right:0;border-bottom:1px solid var(--rule)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="top-in">
+  <div class="brand">AlphaForge <b>v2</b> — Dashboard Lokal</div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-p="l1">Layer 1 — Market Context</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="ls">Daftar — masuk lewat lensa</button>
+    <button class="tab" role="tab" aria-selected="false" data-p="l2">Saham — AAPL</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<!-- ============ LAYER 1 ============ -->
+<div id="l1">
+  <div class="meta">
+    <div><span>Session</span><b>2026-07-16T09:14Z</b></div>
+    <div><span>Komponen</span><b>12</b></div>
+    <div class="warn"><span>Degraded</span><b>1</b></div>
+    <div class="warn"><span>Missing</span><b>1</b></div>
+    <div><span>Dihitung</span><b>sekali per sesi</b></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-n">§1</div><div class="sec-t">Bukti Terkini &amp; Analisa</div>
+      <div class="sec-note">urut mengikuti DAG — 11 leaf, lalu composite</div>
+    </div>
+
+    <div class="grid">
+      <!-- DIRECT -->
+      <div class="card">
+        <div class="card-top"><div class="card-name">Yield Curve</div><div class="kind d">DIRECT</div></div>
+        <div class="val">−0.42<small> % · 10Y–2Y</small></div>
+        <div class="narr">Inverted selama 14 bulan berturut. Spread melebar 6bp dari sesi lalu.</div>
+        <div class="prov"><b>FRED</b> · T10Y2Y · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Volatility Index</div><div class="kind d">DIRECT</div></div>
+        <div class="val">18.4</div>
+        <div class="narr">Di bawah rata-rata 20 tahun (19.5). Tidak ada lonjakan dalam 30 hari.</div>
+        <div class="prov"><b>Yahoo</b> · ^VIX · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Currency / DXY</div><div class="kind d">DIRECT</div></div>
+        <div class="val">103.21</div>
+        <div class="narr">Menguat 1.8% dalam 30 hari. Tekanan pada emiten berpendapatan luar negeri.</div>
+        <div class="prov"><b>Yahoo</b> · DX-Y.NYB · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Commodity Signals</div><div class="kind d">DIRECT</div></div>
+        <div class="val">71.30<small> · WTI</small></div>
+        <div class="narr">Emas 2,340 (+0.4%). Energi datar tiga sesi.</div>
+        <div class="prov"><b>Yahoo</b> · CL=F, GC=F · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Market Regime</div><div class="kind d">DIRECT</div></div>
+        <div class="val">BULL</div>
+        <div class="narr">S&amp;P di atas MA200 selama 92 sesi. Jarak ke MA200: +7.1%.</div>
+        <div class="prov"><b>Yahoo</b> · ^GSPC · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Sector Rotation</div><div class="kind d">DIRECT</div></div>
+        <div class="val">XLK<small> · memimpin</small></div>
+        <div class="narr">Teknologi unggul 30 hari (+4.2%). Utilities tertinggal (−2.1%).</div>
+        <div class="prov"><b>Yahoo</b> · 11 sector ETF · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Liquidity Conditions</div><div class="kind d">DIRECT</div></div>
+        <div class="val">+2.1<small> % · M2 YoY</small></div>
+        <div class="narr">Neraca Fed turun $14M dari bulan lalu. Pengetatan berlanjut, laju melambat.</div>
+        <div class="prov"><b>FRED</b> · M2SL, WALCL · <b>09:14Z</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Macro Calendar</div><div class="kind d">DIRECT</div></div>
+        <div class="val">3<small> hari · CPI</small></div>
+        <div class="narr">CPI rilis 19 Jul. FOMC 31 Jul. Dua peristiwa dalam 15 hari.</div>
+        <div class="prov"><b>FRED</b> · release calendar · <b>09:14Z</b></div>
+      </div>
+
+      <!-- DERIVED -->
+      <div class="card">
+        <div class="card-top"><div class="card-name">Business Cycle Stage</div><div class="kind v">DERIVED</div></div>
+        <div class="val">MID<small>-cycle</small></div>
+        <div class="narr">PMI 52.1 ekspansif, unemployment datar 4.1%, GDP QoQ +2.0%. Tidak ada indikator yang menunjuk late-cycle.</div>
+        <div class="built"><em>DIKONSTRUKSI DARI</em><br>GDP QoQ · PMI · unemployment trend<br>→ klasifikasi 4 tahap</div>
+        <div class="prov"><b>FRED</b> · GDPC1, NAPM, UNRATE · <b>09:14Z</b> · <b>method 1.0.0</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-top"><div class="card-name">Money Flow</div><div class="kind v">DERIVED</div></div>
+        <div class="val">XLK<small> · inflow</small></div>
+        <div class="narr">Volume XLK +18% di atas rata-rata 20 hari dengan harga naik. XLU keluar.</div>
+        <div class="built"><em>DIKONSTRUKSI DARI</em><br>volume + price action 11 sector ETF<br>→ arah aliran relatif</div>
+        <div class="prov"><b>Yahoo</b> · 11 sector ETF · <b>09:14Z</b> · <b>method 1.0.0</b></div>
+      </div>
+
+      <div class="card mis">
+        <div class="card-top"><div class="card-name">Market Breadth</div><div class="kind v">DERIVED</div><div class="stat mis">MISSING</div></div>
+        <div class="val">TIDAK DIHITUNG</div>
+        <div class="narr" style="color:var(--missing);opacity:.85">Cache harga universe Screening belum terisi. Komponen tidak menarik ribuan call sendiri — ia menunggu cache.</div>
+        <div class="built" style="border-color:var(--missing);background:rgba(168,98,138,.05)"><em style="color:var(--missing)">SEHARUSNYA DARI</em><br>universe hasil Screening (D-05)<br>advance/decline · % di atas MA200</div>
+        <div class="prov"><b>—</b> · menunggu cache Screening · <b>method 1.0.0</b></div>
+      </div>
+    </div>
+
+    <!-- composite dipisah: layout mengajarkan DAG -->
+    <div class="dag">
+      <div class="dag-left">
+        <div class="dag-lab">Input dari Layer 1</div>
+        <div class="feed"><b>Volatility Index</b><span class="ok">18.4 ✓</span></div>
+        <div class="feed"><b>Market Breadth</b><span class="no">missing ✗</span></div>
+        <div class="dag-lab" style="margin-top:14px">Input luar</div>
+        <div class="feed"><b>AAII survey</b><span class="ok">✓</span></div>
+        <div class="feed"><b>Put/call ratio</b><span class="ok">✓</span></div>
+      </div>
+      <div class="card" style="border:0">
+        <div class="card-top">
+          <div class="card-name">Market Sentiment — satu-satunya composite</div>
+          <div class="kind v">DERIVED</div><div class="stat deg">DEGRADED</div>
+        </div>
+        <div class="val">GREED<small> · condong</small></div>
+        <div class="narr">AAII bullish 41% (di atas rata-rata historis 37.5%), put/call 0.82. Dihitung tanpa Market Breadth — pembacaan ini <strong style="color:var(--derived)">lebih lemah dari biasanya</strong>, karena breadth justru komponen yang paling sering menyanggah sentimen permukaan saat rally menyempit.</div>
+        <div class="built"><em>DIKONSTRUKSI DARI 3 dari 4 INPUT</em><br>AAII survey · put/call · VIX · <s style="color:var(--missing)">market breadth</s></div>
+        <div class="prov"><b>AAII</b> · <b>CBOE</b> · <b>Yahoo</b> · <b>09:14Z</b> · <b>method 1.0.0</b> · status: degraded</div>
+      </div>
+    </div>
+    <div class="note">↑ Market Sentiment sengaja dipisah dari 11 kartu di atas: ia satu-satunya komponen yang butuh komponen lain, jadi ia dihitung terakhir. Tata letak ini bukan hiasan — ia yang mengajarkan strukturnya.</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-n">§2</div><div class="sec-t">Kesimpulan Konteks</div>
+      <div class="sec-note">context_summary · dihasilkan Layer 1, bukan dashboard (D-06)</div>
+    </div>
+    <div class="sum">
+      <div class="sum-narr">
+        Sinyal makro <mark>bertentangan arah</mark>. Yield curve inverted 14 bulan dan likuiditas masih mengetat — dua penanda late-cycle. Tapi Business Cycle Stage membaca mid-cycle dari PMI, unemployment, dan GDP, dan Market Regime bull 92 sesi. Sentimen condong greed dengan pijakan lemah.
+        <br><br>
+        Dua komponen tidak utuh. Market Breadth tidak dihitung, dan itu <mark>menjatuhkan Market Sentiment ke degraded</mark> — persis komponen yang biasanya menyanggah sentimen permukaan justru yang hilang. Ketegangan makro di atas tidak bisa diselesaikan sesi ini.
+      </div>
+      <div class="limit">
+        <span class="pill w">CONFIDENCE: LOW</span>
+        <span>dibatasi oleh:</span>
+        <span class="pill">market_breadth — missing</span>
+        <span class="pill">market_sentiment — degraded</span>
+        <span style="margin-left:auto;color:var(--faint)">10 dari 12 komponen utuh · method 1.0.0</span>
+      </div>
+    </div>
+    <div class="note">Tidak ada skor market. "Skor 6.5/10" akan jadi satu-satunya yang dibaca dari 12 komponen, dan 11 kartu di atas berubah jadi hiasan — larangannya sejajar dengan larangan verdict di Aggregator.</div>
+  </div>
+</div>
+
+
+<!-- ============ DAFTAR (D-08) ============ -->
+<div id="ls" hidden>
+  <div class="meta">
+    <div><span>Kandidat lolos Screening</span><b>2.147</b></div>
+    <div><span>Daftar</span><b>3 lensa + 1 divergensi</b></div>
+    <div><span>Digabung?</span><b style="color:var(--direct)">tidak pernah (L1)</b></div>
+    <div class="warn"><span>Konteks sesi</span><b>low confidence</b></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><div class="sec-n">§0</div><div class="sec-t">Pilih Pertanyaanmu Dulu</div>
+      <div class="sec-note">bukan sahamnya</div></div>
+    <div class="note" style="margin:0 0 20px;font-size:11.5px">
+      Tidak ada satu daftar berperingkat. Prinsip #3 melarang <strong>menggabung</strong> lensa — bukan <strong>mengurutkan di dalam</strong> satu lensa. Tiap daftar memakai kosakatanya sendiri (D-09), jadi lintas daftar tidak ada operasi banding. Perhatikan: <strong>tidak ada kolom lensa lain</strong> di manapun (L2).
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px">
+
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Multibagger</div>
+          <div style="font-family:var(--serif);font-size:13px;color:var(--dim);margin-top:5px">Ada ruang untuk kelipatan besar?</div></div>
+        <div class="blk"><div class="blk-l">Urut menurut kosakata sendiri · 2.147</div>
+          <div class="lrow"><b>PLTR</b><span>ruang_terbuka</span><i>c74</i></div>
+          <div class="lrow"><b>IONQ</b><span>ruang_terbuka</span><i>c58</i></div>
+          <div class="lrow"><b>RKLB</b><span>ruang_terbuka</span><i>c51</i></div>
+          <div class="lrow"><b>SOFI</b><span>ruang_sempit</span><i>c69</i></div>
+          <div class="lrow sel"><b>AAPL</b><span>ruang_sempit</span><i>c54</i></div>
+          <div class="lrow" style="color:var(--faint)">… 2.142 lagi</div>
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Quality / Compound</div>
+          <div style="font-family:var(--serif);font-size:13px;color:var(--dim);margin-top:5px">Ini mesin compounding?</div></div>
+        <div class="blk"><div class="blk-l">Urut menurut kosakata sendiri · 2.147</div>
+          <div class="lrow"><b>MSFT</b><span>compounding_kuat</span><i>c81</i></div>
+          <div class="lrow sel"><b>AAPL</b><span>compounding_kuat</span><i>c66</i></div>
+          <div class="lrow"><b>COST</b><span>compounding_kuat</span><i>c64</i></div>
+          <div class="lrow"><b>NKE</b><span>compounding_rapuh</span><i>c58</i></div>
+          <div class="lrow"><b>INTC</b><span>bukan_compounder</span><i>c72</i></div>
+          <div class="lrow" style="color:var(--faint)">… 2.142 lagi</div>
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Speculative</div>
+          <div style="font-family:var(--serif);font-size:13px;color:var(--dim);margin-top:5px">Ada asimetri berkatalis?</div></div>
+        <div class="blk"><div class="blk-l">Urut menurut kosakata sendiri · 2.147</div>
+          <div class="lrow"><b>MRNA</b><span>asimetri_berkatalis</span><i>c62</i></div>
+          <div class="lrow"><b>LUNR</b><span>asimetri_berkatalis</span><i>c44</i></div>
+          <div class="lrow"><b>PLTR</b><span>asimetri_tanpa_katalis</span><i>c57</i></div>
+          <div class="lrow sel"><b>AAPL</b><span>asimetri_tanpa_katalis</span><i>c61</i></div>
+          <div class="lrow"><b>KO</b><span>tanpa_asimetri</span><i>c77</i></div>
+          <div class="lrow" style="color:var(--faint)">… 2.142 lagi</div>
+        </div>
+      </div>
+
+      <div class="mod" style="border-color:var(--derived)">
+        <div class="mod-h" style="border-bottom-color:var(--derived)"><div class="mod-n" style="color:var(--derived)">Divergensi</div>
+          <div style="font-family:var(--serif);font-size:13px;color:var(--dim);margin-top:5px">Di mana ketiga lensa paling berselisih?</div></div>
+        <div class="blk"><div class="blk-l">Urut menurut selisih — <strong>bukan stance</strong> (L5)</div>
+          <div class="lrow"><b>INTC</b><span style="color:var(--derived)">3 divergensi</span><i>dalam</i></div>
+          <div class="lrow"><b>PLTR</b><span style="color:var(--derived)">3 divergensi</span><i>dalam</i></div>
+          <div class="lrow sel"><b>AAPL</b><span style="color:var(--derived)">2 divergensi</span><i>sedang</i></div>
+          <div class="lrow"><b>NKE</b><span style="color:var(--derived)">2 divergensi</span><i>sedang</i></div>
+          <div class="lrow" style="color:var(--faint)">… 2.143 lagi</div>
+        </div>
+        <div class="blk"><div class="blk-l">Kenapa daftar ini ada</div>
+          <div style="font-family:var(--serif);font-size:12.5px;color:var(--dim);line-height:1.55">Bukan peringkat kualitas — peringkat <strong>seberapa banyak yang bisa dipelajari</strong>. Saham yang ketiganya sepakat tidak mengajarkan apa pun yang tidak bisa didapat dari satu lensa saja.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="note">
+      AAPL ditandai di keempat daftar cuma untuk mockup ini — <strong>di dashboard asli kamu cuma melihat satu daftar sekali waktu</strong>, karena melihat empat sekaligus sudah setengah jalan menuju penggabungan yang dilarang.<br>
+      Tiap baris cuma: ticker · stance lensa itu · confidence. Tidak ada kolom lensa lain (L2). Baris daftar bukan tempat meringkas — ia tempat memutuskan mau klik atau tidak.
+    </div>
+  </div>
+</div>
+
+<!-- ============ LAYER 2 ============ -->
+<div id="l2" hidden>
+  <div class="meta">
+    <div><span>Ticker</span><b>AAPL — Apple Inc.</b></div>
+    <div><span>Snapshot evidence</span><b>2026-07-15</b></div>
+    <div><span>Kelengkapan field</span><b>41 / 47</b></div>
+    <div><span>Screening flags</span><b>—</b></div>
+    <div><span>Konteks sesi</span><b>2026-07-16T09:14Z (low confidence)</b></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-n">§1</div><div class="sec-t">Snapshot — Fakta Perusahaan</div>
+      <div class="sec-note">7 bagian Knowledge · tanpa kata sifat evaluatif</div>
+    </div>
+
+    <div class="kn">
+      <div class="kn-sec"><div class="kn-h"><i>1</i> Identitas</div><div class="rows">
+        <div class="row"><k>ticker</k><v>AAPL</v></div>
+        <div class="row"><k>sektor</k><v>Technology</v></div>
+        <div class="row"><k>industri</k><v>Consumer Electronics</v></div>
+        <div class="row"><k>exchange</k><v>NASDAQ</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>2</i> Kesehatan Finansial</div><div class="rows">
+        <div class="row"><k>revenue TTM</k><v>394.3B</v></div>
+        <div class="row"><k>gross margin</k><v>42.1%</v></div>
+        <div class="row"><k>operating margin</k><v>29.8%</v></div>
+        <div class="row"><k>FCF TTM</k><v>108.8B</v></div>
+        <div class="row"><k>FCF positif berturut</k><v>8 kuartal</v></div>
+        <div class="row"><k>debt/equity</k><v>1.87</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>3</i> Posisi Kompetitif</div><div class="rows">
+        <div class="row"><k>model bisnis</k><v>hardware + services</v></div>
+        <div class="row"><k>konsentrasi revenue</k><v>iPhone 52%</v></div>
+        <div class="row m"><k>segmen geografis</k><v>MISSING — parse 10-K gagal</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>4</i> Tren Historis</div><div class="rows">
+        <div class="row"><k>return 12 bulan</k><v>+18.4%</v></div>
+        <div class="row"><k>volatilitas 90 hari</k><v>21.3%</v></div>
+        <div class="row"><k>earnings beat 8 kuartal</k><v>7 / 8</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>5</i> Kepemilikan</div><div class="rows">
+        <div class="row"><k>institusional</k><v>61.2%</v></div>
+        <div class="row"><k>insider</k><v>0.07%</v></div>
+        <div class="row"><k>insider sell 90 hari</k><v>4 transaksi · 182M</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>6</i> Valuasi <i>— angka absolut saja (D-02)</i></div><div class="rows">
+        <div class="row"><k>P/E trailing</k><v>34.2</v></div>
+        <div class="row"><k>P/S</k><v>8.6</v></div>
+        <div class="row"><k>EV/EBITDA</k><v>25.1</v></div>
+        <div class="row"><k>FCF yield</k><v>2.8%</v></div>
+        <div class="row nm"><k>P/E forward</k><v>tidak tersedia — estimasi analis tak ditarik</v></div>
+      </div></div>
+
+      <div class="kn-sec"><div class="kn-h"><i>7</i> Governance &amp; Peristiwa Filing <i>— bahan Risk (D-01)</i></div><div class="rows">
+        <div class="row"><k>shares outstanding 12bln</k><v>−2.4% (buyback)</v></div>
+        <div class="row m"><k>riwayat auditor</k><v>MISSING — EDGAR 403</v></div>
+        <div class="row"><k>restatement 2 tahun</k><v>tidak ada</v></div>
+        <div class="row"><k>litigasi material</k><v>2 tercatat · antitrust</v></div>
+      </div></div>
+    </div>
+
+    <div class="peer">
+      <div class="peer-h">Peer / Relative Comparison — konteks peer, bukan fakta perusahaan</div>
+      <div class="peer-note">Dipisah dari bagian 2 dan 6 supaya batas D-03 tetap terlihat di layar: Knowledge murni per-ticker, semua angka relatif hidup di sini.</div>
+      <div class="rows" style="border-top:1px solid var(--rule)">
+        <div class="row"><k>peer group</k><v>7 ticker · Consumer Electronics</v></div>
+        <div class="row"><k>P/E vs median</k><v>34.2 vs 19.4 · p86</v></div>
+        <div class="row"><k>gross margin vs median</k><v>42.1% vs 31.2% · p91</v></div>
+        <div class="row"><k>peer gagal ditarik</k><v>1 — SONY (timeout)</v></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-n">§2</div><div class="sec-t">Hasil Reasoning</div>
+      <div class="sec-note">urutan tetap · tanpa peringkat</div>
+    </div>
+
+    <div class="flags">
+      <div class="flag"><span class="sev t">TRIGGERED</span><b>insider_selling_90d</b><span>4 transaksi senilai 182M dalam 90 hari</span></div>
+      <div class="flag"><span class="sev u">UNDETERMINED</span><b>auditor_change</b><span>EDGAR 403 — <strong style="color:var(--missing)">tidak sempat dilihat</strong>, bukan "tidak ada masalah"</span></div>
+    </div>
+
+    <div class="mods">
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Multibagger</div><div class="stance">ruang_sempit</div></div>
+        <div class="mod-b">Fundamental kuat, tapi <a class="cite">P/E 34.2</a> pada p86 peer group memangkas ruang naik. Basis 3.4T membuat 10x menuntut kapitalisasi yang tak punya preseden.</div>
+        <div class="blk"><div class="blk-l">Confidence</div><div class="conf"><b>54</b> MEDIUM <span style="color:var(--faint);font-size:9px">· plafon ConfidenceReport 66 (V6)</span></div><div class="bar"><i style="width:54%"></i></div>
+          <div class="item">konteks makro low confidence — breadth missing</div>
+          <div class="item">P/E forward tidak tersedia</div>
+        </div>
+        <div class="blk"><div class="blk-l">Respons flag — wajib (V1)</div>
+          <div class="fr"><b>insider_selling_90d</b> · lowers_confidence<i>182M pada kap 3.4T = 0.005%. Tidak mengubah stance; stance sudah weak karena valuasi.</i></div>
+          <div class="fr"><b>auditor_change</b> · lowers_confidence<i>Tidak bisa diverifikasi. Untuk emiten seukuran ini pergantian auditor akan terberitakan luas, jadi bobotnya kecil — tapi tetap gap.</i></div>
+        </div>
+        <div class="blk"><div class="blk-l">Context used</div>
+          <div class="item"><a class="cite">sector_rotation</a> — XLK memimpin, mendukung</div>
+          <div class="item"><a class="cite">business_cycle_stage</a> — mid-cycle <span style="color:var(--derived)">(DERIVED)</span></div>
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Quality / Compound</div><div class="stance">compounding_kuat</div></div>
+        <div class="mod-b">Margin 42.1% pada p91 peer group, FCF positif 8 kuartal, shares outstanding turun 2.4%. <a class="cite">P/E 34.2</a> wajar untuk konsistensi margin sebesar ini.</div>
+        <div class="blk"><div class="blk-l">Confidence</div><div class="conf"><b>66</b> MEDIUM <span style="color:var(--faint);font-size:9px">· dipotong plafon V6 dari 78</span></div><div class="bar"><i style="width:66%"></i></div>
+          <div class="item">segmen geografis missing — eksposur DXY tak terukur</div>
+        </div>
+        <div class="blk"><div class="blk-l">Respons flag — wajib (V1)</div>
+          <div class="fr"><b>insider_selling_90d</b> · none<i>Pola terjadwal (10b5-1), bukan diskresioner. Tidak informatif untuk tesis compounding.</i></div>
+          <div class="fr"><b>auditor_change</b> · lowers_confidence<i>Kontinuitas audit adalah bahan langsung tesis quality. Gap ini menahan confidence di 78, bukan 85.</i></div>
+        </div>
+        <div class="blk"><div class="blk-l">Context used</div>
+          <div class="item"><a class="cite">liquidity_conditions</a> — pengetatan melambat</div>
+          <div class="item"><a class="cite">yield_curve</a> — biaya modal</div>
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-h"><div class="mod-n">Speculative</div><div class="stance">asimetri_tanpa_katalis</div></div>
+        <div class="mod-b">Volatilitas 21.3% terlalu rendah untuk asimetri. Satu katalis terjadwal (<a class="cite">catalysts[0]</a> — earnings 31 Jul), tapi earnings rutin bukan asimetri. <strong>Valuasi tidak relevan tanpa katalis</strong> — tidak ada yang ditunggu.</div>
+        <div class="blk"><div class="blk-l">Confidence</div><div class="conf"><b>61</b> MEDIUM <span style="color:var(--faint);font-size:9px">· plafon ConfidenceReport 66 (V6)</span></div><div class="bar"><i style="width:61%"></i></div>
+          <div class="item">market_sentiment degraded — risk appetite tak terbaca penuh</div>
+        </div>
+        <div class="blk"><div class="blk-l">Respons flag — wajib (V1)</div>
+          <div class="fr"><b>insider_selling_90d</b> · none<i>Tidak mengubah apa pun: stance not_applicable karena tidak ada katalis, bukan karena penilaian risiko.</i></div>
+          <div class="fr"><b>auditor_change</b> · none<i>Tesis spekulatif bergantung katalis, bukan governance. Gap ini tidak menyentuh alasan stance.</i></div>
+        </div>
+        <div class="blk"><div class="blk-l">Context used</div>
+          <div class="item"><a class="cite">market_sentiment</a> — degraded <span style="color:var(--derived)">(DERIVED)</span></div>
+          <div class="item"><a class="cite">macro_calendar</a> — CPI 3 hari, bukan katalis emiten</div>
+        </div>
+        <div class="blk"><div class="blk-l">Catalyst set (D-11)</div>
+          <div class="item">earnings · 31 Jul · <b style="color:var(--direct)">scheduled</b> · kedaluwarsa 01 Agt</div>
+          <div class="item" style="color:var(--faint)">horizon 90 hari · 1 katalis · status ok</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S1: DI BAWAH tiga kolom, bukan di atas -->
+    <div class="syn">
+      <div class="syn-h">
+        <div class="syn-t">Peta Konvergensi</div>
+        <div class="syn-r">synthesis · D-07 · method 1.0.0 · di bawah tiga kolom (S1)</div>
+      </div>
+      <div class="syn-b">
+        <div class="syn-narr">
+          Ketiganya sepakat fundamentalnya kuat — margin 42.1%, FCF positif 8 kuartal, buyback berjalan. Tidak ada modul yang menyanggah itu.
+          <br><br>
+          Perpecahannya <strong>satu titik saja: apa arti P/E 34.2.</strong> Quality/Compound membacanya wajar untuk margin sekonsisten itu. Multibagger membaca angka yang sama sebagai pemangkas ruang naik. Speculative tidak membacanya sama sekali — tanpa katalis, valuasi bukan pertanyaan yang relevan.
+          <br><br>
+          Jadi ini bukan tiga penilaian berbeda atas satu pertanyaan. Ini <strong>tiga pertanyaan berbeda</strong> yang kebetulan menyentuh angka yang sama.
+        </div>
+
+        <div class="dv">
+          <div class="dv-row">
+            <div class="dv-k">Sepakat</div>
+            <div class="dv-v">fundamental kuat · <b>3/3 modul</b> · sitasi: <a class="cite">knowledge.financial_health.gross_margin</a>, <a class="cite">knowledge.financial_health.fcf_streak</a></div>
+          </div>
+          <div class="dv-row">
+            <div class="dv-k">Berbeda</div>
+            <div class="dv-v">
+              arti P/E 34.2 — multibagger: <b>ruang_sempit</b> · quality: <b>compounding_kuat</b> · speculative: <b>asimetri_tanpa_katalis</b><br>
+              <span class="rc">root_cause: different_weights</span> — ketiganya membaca field yang sama (<a class="cite">knowledge.valuation.pe_trailing</a>), membobotinya berbeda. Bukan gap data.
+            </div>
+          </div>
+          <div class="dv-row">
+            <div class="dv-k">Berbeda</div>
+            <div class="dv-v">
+              bobot flag auditor — quality: <b>lowers_confidence</b> · multibagger: <b>lowers_confidence</b> · speculative: <b>none</b><br>
+              <span class="rc">root_cause: flag_response</span> — kontinuitas audit menyentuh tesis quality secara langsung, tesis spekulatif tidak sama sekali.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="syn-f">
+        <span class="pill">CONFIDENCE: 54 — MEDIUM</span>
+        <span>= terendah dari tiga modul (multibagger 54), bukan rata-rata (S4)</span>
+        <span style="margin-left:auto">full_convergence: false</span>
+      </div>
+    </div>
+    <div class="note">
+      Uji pembeda (D-07): coba tutup tiga kolom di atas dan baca peta ini sendirian. Kalau terasa cukup → ia sudah berubah jadi verdict dan D-07 perlu diperketat. Yang benar terasa menggantung, karena ia menunjuk ke atas.<br>
+      Tidak ada di sini: buy/sell/hold, skor, peringkat, "secara keseluruhan", dan skor kesepakatan seperti "3/3 modul positif".
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+tabs.forEach(t=>t.onclick=()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected', x===t));
+  ['l1','ls','l2'].forEach(id=>document.getElementById(id).hidden = t.dataset.p!==id);
+  window.scrollTo(0,0);
+});
+document.querySelectorAll('.cite').forEach(c=>c.onclick=()=>{
+  c.style.background='rgba(95,179,201,.25)';
+  setTimeout(()=>c.style.background='',450);
+});
+</script>
+</body>
+</html>

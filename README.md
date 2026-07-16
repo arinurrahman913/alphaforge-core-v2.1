@@ -28,6 +28,20 @@ python -m alphaforge.cli layer1                    # cetak MarketContextPackage 
 python -m alphaforge.cli layer1 --out context.json  # tulis ke file
 ```
 
+### Lihat di dashboard lokal
+
+```
+python -m alphaforge.cli layer1 --out dashboard/data/layer1_context.json
+python -m http.server 8532 --directory dashboard
+```
+
+Buka `http://localhost:8532/layer1-live.html`. Halaman ini cuma membaca file JSON tadi
+(Prinsip 2.1, `05_DASHBOARD_LOCAL.md`) — tidak menghitung ulang apa pun. Generate ulang
+JSON-nya dan refresh browser untuk data terbaru.
+
+`dashboard/dashboard-mockup.html` (data contoh hardcoded, statis) tetap ada sebagai
+referensi visual untuk halaman yang belum ada datanya (Daftar Lensa, Layer 2).
+
 ### Status implementasi per komponen
 
 | Komponen | Sumber | Status |

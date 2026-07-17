@@ -5,8 +5,8 @@ Implementasi kode AlphaForge v2 (Layer 1 — Market Context Engine, Layer 2 — 
 ## Isi Repo
 
 - `alphaforge/layer1/` — Market Context Engine, 12 komponen sesuai `02_LAYER1_SPECS/`. Lihat §Layer 1 di bawah.
-- `alphaforge/layer2/` — Screening (tahap pertama Layer 2), lihat §Layer 2 di bawah.
-- `alphaforge/cache.py` — cache lokal berbasis file (`.cache/`, gitignored) dengan TTL, dipakai Screening.
+- `alphaforge/layer2/` — Stock Analysis Engine: Screening (tahap 1), Evidence (tahap 2). Lihat §Layer 2 di bawah.
+- `alphaforge/cache.py` — cache lokal berbasis file (`.cache/`, gitignored) dengan TTL, dipakai Screening & Evidence.
 - `dashboard/dashboard-mockup.html` — mockup dashboard lokal (statis, data contoh hardcoded), mengikuti spec `01_ARCHITECTURE/05_DASHBOARD_LOCAL.md`. Belum terhubung ke pipeline nyata.
 
 ## Layer 1 — Market Context Engine
@@ -61,10 +61,11 @@ referensi visual untuk halaman yang belum ada datanya (Daftar Lensa, Layer 2).
 | Market Breadth | Cache harga universe Screening | **`status=missing`** — Screening belum diimplementasikan |
 | Market Sentiment | VIX + Market Breadth + AAII + put/call | **Selalu `status=degraded`** — AAII survey & CBOE put/call belum diintegrasikan (tidak ada API resmi gratis, butuh scraping yang belum diverifikasi) |
 
-## Layer 2 — Screening
+## Layer 2 — Stock Analysis Engine
 
-Tahap pertama Layer 2 (`03_LAYER2_SPECS/01_SCREENING.md`): menyaring seluruh NASDAQ+NYSE
-jadi kandidat yang layak diproses ke Evidence.
+### Tahap 1: Screening
+
+Tahap pertama (`03_LAYER2_SPECS/01_SCREENING.md`): menyaring seluruh NASDAQ+NYSE jadi kandidat untuk dianalisis.
 
 ```
 python -m alphaforge.cli screening                  # full market (~5.000+ ticker, lama)
@@ -73,31 +74,50 @@ python -m alphaforge.cli screening --out screening.json
 ```
 
 Dua tahap filter:
-1. **Cheap filter** (nol panggilan API) — exclude ETF, test issue, tipe bukan common stock (warrant/right/unit/preferred), langsung dari kolom listing file NASDAQ Trader.
-2. **Hard exclude/soft flag** (butuh harga & market cap via Yahoo Finance, di-batch + cache) — market cap < $30jt, avg dollar volume 20 hari < $300rb, harga < $0.50, histori < 20 hari → hard exclude. Micro/small-cap, recent IPO, ADR, low liquidity → soft flag, tetap lolos.
+1. **Cheap filter** — exclude ETF, test issue, non-common-stock (warrant/right/unit/preferred) langsung dari listing file.
+2. **Hard exclude/soft flag** — market cap, liquidity, price history via Yahoo Finance (di-batch + cache). Market cap < $30jt, avg dollar volume < $300rb, harga < $0.50, histori < 20 hari → hard exclude. Micro-cap, recent IPO, ADR → soft flag, tetap lolos.
 
-Supaya `market_breadth` (Layer 1) bisa terisi, jalankan Layer 1 dengan `--with-screening`:
+Jalankan Layer 1 dengan `--with-screening` supaya `market_breadth` komponen terisi:
 
 ```
 python -m alphaforge.cli layer1 --with-screening --screening-limit 500 --out dashboard/data/layer1_context.json
 ```
 
-`--screening-limit` membatasi jumlah ticker yang di-scan (full market tanpa limit bisa
-makan waktu lama karena rate-limit Yahoo Finance — lihat `04_DATA_SOURCES/05_RATE_LIMIT_CACHING_STRATEGY.md`).
-Tanpa `--with-screening`, `market_breadth` tetap `status=missing` seperti sebelumnya.
+### Tahap 2: Evidence
 
-### Yang belum diimplementasikan di Screening
+Tahap kedua (`03_LAYER2_SPECS/02_EVIDENCE.md`): kumpulkan fakta terverifikasi (price, fundamental, news, filing) per kandidat yang lolos Screening.
 
-- Kolom "ketersediaan data fundamental" (laporan kuartalan 2 kuartal terakhir) — hard
-  exclude ini belum dicek; spec menyebutnya tapi butuh panggilan tambahan per ticker
-  yang belum dipasang.
-- Ambang belum dikalibrasi ke funnel riil skala penuh (spec sendiri menyebut ini perlu divalidasi saat implementasi).
+```
+python -m alphaforge.cli evidence --screening-out screening.json --out evidence.json
+python -m alphaforge.cli evidence --screening-out screening.json --out evidence.json --limit 50  # testing
+```
 
-## Status Keseluruhan
+Evidence mengumpulkan:
+- **Price & Market Data** — OHLCV, market cap, shares outstanding, beta (Yahoo Finance)
+- **Fundamental** — revenue, net income, EPS, P/E, debt/equity, current ratio, ROE, margins (Yahoo Finance)
+- **Institutional Ownership** — persentase agregat (Yahoo Finance)
+- **Company News** — berita terkini 30 hari terakhir (Finnhub, graceful degradation jika API key missing)
+- **SEC Filings** — daftar filing (10-K, 10-Q, 8-K) — placeholder di MVP, diintegrasikan nanti
 
-- **Layer 1**: 11/12 komponen live begitu `FRED_API_KEY` diset + Screening dijalankan (`--with-screening`). `market_sentiment` selalu `degraded` sampai AAII survey & CBOE put/call diintegrasikan.
-- **Layer 2**: Screening jalan. Evidence → Knowledge → Peer → Confidence → Risk/Red-Flag → 3 modul reasoning → Aggregator → Historical Tracking belum diimplementasikan.
-- Dashboard (`dashboard/layer1-live.html`) sudah terhubung ke output pipeline asli.
+Tiap field ditandai dengan metadata: source, fetched_at timestamp, status (ok/missing/degraded).
+
+Output: `EvidencePackage` per ticker → input untuk Knowledge (tahap 3).
+
+## Status Implementasi
+
+### Layer 1
+- **11/12 komponen**: live (yield curve, VIX, DXY, commodities, regime, sector rotation, liquidity, macro calendar, business cycle, money flow, market breadth)
+- `FRED_API_KEY` diperlukan untuk 4 komponen FRED
+- `market_sentiment`: degraded (AAII survey & CBOE put/call belum integrated)
+
+### Layer 2
+- **Screening**: ✅ Jalan — 2-tahap filter, rate-limited + cached
+- **Evidence**: ✅ Jalan — price, fundamental, institutional ownership, news (Finnhub), SEC filing placeholder
+- **Belum diimplementasikan**: Knowledge → Peer Comparison → Confidence → Risk/Red-Flag → 3 Reasoning Modules → Aggregator → Historical Tracking
+
+### Dashboard
+- **Layer 1 Live** (`layer1-live.html`): ✅ terhubung, membaca JSON dari pipeline
+- **Layer 2 Dashboard**: Belum ada
 
 ---
 

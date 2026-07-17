@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaForge v2 — Unified Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        body.dark-mode { background: #1a1a1a; color: #e0e0e0; }
+
+        .app-container { display: flex; height: 100vh; }
+
+        .sidebar { width: 240px; background: white; border-right: 1px solid #ddd; overflow-y: auto; }
+        body.dark-mode .sidebar { background: #222; border-right-color: #555; }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #ddd; }
+        body.dark-mode .sidebar-header { border-bottom-color: #555; }
+
+        .sidebar-header h1 { font-size: 16px; margin-bottom: 8px; }
+        .sidebar-header p { font-size: 12px; color: #666; }
+        body.dark-mode .sidebar-header p { color: #999; }
+
+        .nav-section { padding: 16px 0; border-bottom: 1px solid #eee; }
+        body.dark-mode .nav-section { border-bottom-color: #444; }
+
+        .nav-section-title { padding: 0 16px; font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; margin-bottom: 8px; }
+        body.dark-mode .nav-section-title { color: #999; }
+
+        .nav-item { padding: 10px 16px; cursor: pointer; border-left: 3px solid transparent; font-size: 13px; transition: all 0.2s; }
+        .nav-item:hover { background: #f5f5f5; }
+        body.dark-mode .nav-item:hover { background: #333; }
+
+        .nav-item.active { background: #e0e7ff; color: #4338ca; border-left-color: #0066cc; font-weight: 500; }
+        body.dark-mode .nav-item.active { background: #312e81; color: #a5b4fc; }
+
+        .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+        .content-header { background: white; padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+        body.dark-mode .content-header { background: #222; border-bottom-color: #555; }
+
+        .content-header h2 { font-size: 20px; }
+        .content-header p { font-size: 13px; color: #666; margin-top: 4px; }
+        body.dark-mode .content-header p { color: #999; }
+
+        .theme-toggle { padding: 8px 12px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        body.dark-mode .theme-toggle { background: #333; border-color: #555; color: #e0e0e0; }
+
+        .content-body { flex: 1; padding: 20px; }
+
+        .stage-content { display: none; }
+        .stage-content.active { display: block; }
+
+        .search-box { width: 300px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 16px; }
+        body.dark-mode .search-box { background: #333; border-color: #555; color: #e0e0e0; }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 16px; border-radius: 8px; }
+        body.dark-mode .stat-card { background: #333; }
+
+        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 4px; }
+        body.dark-mode .stat-label { color: #999; }
+
+        .stat-value { font-size: 20px; font-weight: 600; }
+
+        .table-wrapper { background: white; border-radius: 8px; overflow: hidden; }
+        body.dark-mode .table-wrapper { background: #333; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f9f9f9; padding: 12px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 2px solid #ddd; }
+        body.dark-mode th { background: #222; border-bottom-color: #555; }
+
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+        body.dark-mode td { border-bottom-color: #444; }
+
+        tr:hover { background: #f9f9f9; cursor: pointer; }
+        body.dark-mode tr:hover { background: #2a2a2a; }
+
+        .ticker-cell { font-weight: 600; color: #0066cc; }
+
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 12px; font-weight: 500; }
+        .badge-high { background: #dcfce7; color: #166534; }
+        .badge-medium { background: #fef3c7; color: #92400e; }
+        .badge-low { background: #fee2e2; color: #991b1b; }
+
+        .progress-bar { display: inline-block; height: 20px; background: linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #10b981); border-radius: 3px; width: 120px; position: relative; }
+        .progress-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: white; font-size: 11px; font-weight: 600; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
+        .modal-content { background: white; margin: 5% auto; padding: 0; border-radius: 8px; width: 90%; max-width: 900px; max-height: 80vh; overflow-y: auto; }
+        body.dark-mode .modal-content { background: #222; }
+
+        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #f9f9f9; }
+        body.dark-mode .modal-header { background: #333; border-bottom-color: #555; }
+
+        .close { font-size: 28px; cursor: pointer; }
+        .modal-body { padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlphaForge v2</h1>
+                <p>Multi-Lens Stock Analysis</p>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Market</div>
+                <div class="nav-item active" onclick="switchStage('layer1')">🌍 Market Context</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Fase A (Per-Ticker)</div>
+                <div class="nav-item" onclick="switchStage('evidence')">🔍 Evidence</div>
+                <div class="nav-item" onclick="switchStage('knowledge')">📚 Knowledge</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Fase B (Analysis)</div>
+                <div class="nav-item" onclick="switchStage('peer')">🤝 Peer Comparison</div>
+                <div class="nav-item" onclick="switchStage('confidence')">✅ Confidence</div>
+                <div class="nav-item" onclick="switchStage('risk')">⚠️ Risk</div>
+                <div class="nav-item" onclick="switchStage('reasoning')">🧠 Reasoning</div>
+                <div class="nav-item" onclick="switchStage('aggregator')">🎯 Aggregator</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="content-header">
+                <div>
+                    <h2 id="stageTitle">Market Context</h2>
+                    <p id="stageDesc">Layer 1: 12 macro components</p>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+            </div>
+
+            <div class="content-body">
+                <input type="text" class="search-box" id="searchBox" placeholder="Cari ticker..." onkeyup="filterTable()">
+
+                <div id="statsContainer"></div>
+                <div id="tableContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentStage = 'layer1';
+        let allData = {};
+
+        const stages = {
+            layer1: { file: 'data/layer1_context.json', title: '🌍 Market Context', desc: 'Layer 1: 12 macro components' },
+            evidence: { file: 'data/evidence.json', title: '🔍 Evidence', desc: 'Layer 2 Fase A: Price, fundamentals, news' },
+            knowledge: { file: 'data/knowledge.json', title: '📚 Knowledge', desc: 'Layer 2 Fase A: 7-section profiles' },
+            peer: { file: 'data/peer_results.json', title: '🤝 Peer Comparison', desc: 'Layer 2 Fase B: Percentile positioning' },
+            confidence: { file: 'data/confidence_scores.json', title: '✅ Confidence Scoring', desc: 'Layer 2 Fase B: Data quality (0-100)' },
+            risk: { file: 'data/risk_assessments.json', title: '⚠️ Risk Assessment', desc: 'Layer 2 Fase B: Red flags & anomalies' },
+            reasoning: { file: 'data/reasoning_outputs.json', title: '🧠 Reasoning Pipeline', desc: 'Layer 2 Fase B: 3-lens analysis' },
+            aggregator: { file: 'data/final_recommendations.json', title: '🎯 Final Recommendations', desc: 'Layer 2 Fase B: Aggregated recommendation' }
+        };
+
+        function switchStage(stage) {
+            currentStage = stage;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('stageTitle').textContent = stages[stage].title;
+            document.getElementById('stageDesc').textContent = stages[stage].desc;
+
+            loadAndRender(stage);
+        }
+
+        async function loadAndRender(stage) {
+            try {
+                if (!allData[stage]) {
+                    const response = await fetch(stages[stage].file);
+                    allData[stage] = await response.json();
+                }
+
+                renderStage(stage, allData[stage]);
+            } catch (error) {
+                console.error('Error loading stage:', error);
+                document.getElementById('tableContainer').innerHTML = `<p style="color: #f97316;">Error loading ${stage} data</p>`;
+            }
+        }
+
+        function renderStage(stage, data) {
+            let statsHtml = '';
+            let tableHtml = '';
+
+            if (stage === 'layer1') {
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Components</div>
+                            <div class="stat-value">${Object.keys(data).length}</div>
+                        </div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Component</th><th>Status</th><th>Value</th></tr></thead>
+                            <tbody>
+                                ${Object.entries(data).map(([key, val]) => `
+                                    <tr>
+                                        <td class="ticker-cell">${key}</td>
+                                        <td><span class="badge ${val.status === 'ok' ? 'badge-high' : (val.status === 'degraded' ? 'badge-medium' : 'badge-low')}">${val.status}</span></td>
+                                        <td>${val.value ? val.value.toString().substring(0, 50) : '—'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'evidence') {
+                const packages = data.packages || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Packages</div><div class="stat-value">${packages.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Avg Market Cap</div><div class="stat-value">$${(packages.reduce((s, p) => s + (p.price_market?.market_cap || 0), 0) / packages.length / 1e9).toFixed(1)}B</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Price</th><th>Market Cap</th><th>Revenue</th><th>Net Income</th></tr></thead>
+                            <tbody>
+                                ${packages.map(pkg => `
+                                    <tr onclick="showDetail('${pkg.ticker}', 'evidence', ${JSON.stringify(pkg).replace(/"/g, '&quot;')})">
+                                        <td class="ticker-cell">${pkg.ticker}</td>
+                                        <td>$${pkg.price_market?.close || '—'}</td>
+                                        <td>$${(pkg.price_market?.market_cap / 1e9).toFixed(1)}B</td>
+                                        <td>$${(pkg.fundamental?.revenue / 1e9).toFixed(2)}B</td>
+                                        <td>$${(pkg.fundamental?.net_income / 1e9).toFixed(2)}B</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'knowledge') {
+                const profiles = data.profiles || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Profiles</div><div class="stat-value">${profiles.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Avg Completion</div><div class="stat-value">${(profiles.reduce((s, p) => s + (p.metadata.fields_completed / p.metadata.fields_expected * 100), 0) / profiles.length).toFixed(0)}%</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Size</th><th>Return 1Y</th><th>Volatility</th><th>P/E</th><th>Completion</th></tr></thead>
+                            <tbody>
+                                ${profiles.map(p => `
+                                    <tr onclick="showDetail('${p.ticker}', 'knowledge', ${JSON.stringify(p).replace(/"/g, '&quot;')})">
+                                        <td class="ticker-cell">${p.ticker}</td>
+                                        <td>${p.size_category || '—'}</td>
+                                        <td>${p.historical_trend?.return_1y ? (p.historical_trend.return_1y.toFixed(2) + '%') : '—'}</td>
+                                        <td>${p.historical_trend?.volatility_daily ? (p.historical_trend.volatility_daily.toFixed(2) + '%') : '—'}</td>
+                                        <td>${p.valuation?.pe_ratio_trailing ? p.valuation.pe_ratio_trailing.toFixed(1) + 'x' : '—'}</td>
+                                        <td><div class="progress-bar"><div class="progress-text">${(p.metadata.fields_completed / p.metadata.fields_expected * 100).toFixed(0)}%</div></div></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'confidence') {
+                const scores = data.scores || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${scores.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Avg Confidence</div><div class="stat-value">${(scores.reduce((s, s2) => s + s2.overall_confidence, 0) / scores.length).toFixed(0)}%</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Overall</th><th>Price</th><th>Fundamentals</th><th>Ownership</th><th>Rating</th></tr></thead>
+                            <tbody>
+                                ${scores.map(s => `
+                                    <tr>
+                                        <td class="ticker-cell">${s.ticker}</td>
+                                        <td><div class="progress-bar"><div class="progress-text">${s.overall_confidence.toFixed(0)}</div></div></td>
+                                        <td>${s.price_data_confidence.toFixed(0)}%</td>
+                                        <td>${s.fundamental_data_confidence.toFixed(0)}%</td>
+                                        <td>${s.ownership_data_confidence.toFixed(0)}%</td>
+                                        <td><span class="badge ${s.confidence_rating === 'high' ? 'badge-high' : (s.confidence_rating === 'medium' ? 'badge-medium' : 'badge-low')}">${s.confidence_rating}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'risk') {
+                const assessments = data.assessments || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${assessments.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">High Risk</div><div class="stat-value">${assessments.filter(a => a.risk_rating === 'high' || a.risk_rating === 'critical').length}</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Risk Score</th><th>Governance</th><th>Financial</th><th>Red Flags</th><th>Rating</th></tr></thead>
+                            <tbody>
+                                ${assessments.map(a => `
+                                    <tr>
+                                        <td class="ticker-cell">${a.ticker}</td>
+                                        <td><div class="progress-bar"><div class="progress-text">${a.risk_score.toFixed(0)}</div></div></td>
+                                        <td>${a.governance_risk_score.toFixed(0)}</td>
+                                        <td>${a.financial_risk_score.toFixed(0)}</td>
+                                        <td>${a.red_flags.length}</td>
+                                        <td><span class="badge ${a.risk_rating === 'low' ? 'badge-high' : (a.risk_rating === 'medium' ? 'badge-medium' : 'badge-low')}">${a.risk_rating}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'reasoning') {
+                const outputs = data.reasoning_outputs || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${outputs.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Avg Consensus</div><div class="stat-value">${(outputs.reduce((s, o) => s + o.lens_agreement, 0) / outputs.length).toFixed(0)}%</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Quality</th><th>Speculative</th><th>Multibagger</th><th>Final</th><th>Divergence</th></tr></thead>
+                            <tbody>
+                                ${outputs.map(o => `
+                                    <tr>
+                                        <td class="ticker-cell">${o.ticker}</td>
+                                        <td>${o.quality_output?.conviction_score?.toFixed(0) || '—'}</td>
+                                        <td>${o.speculative_output?.conviction_score?.toFixed(0) || '—'}</td>
+                                        <td>${o.multibagger_output?.conviction_score?.toFixed(0) || '—'}</td>
+                                        <td><strong>${o.final_score.toFixed(0)}</strong></td>
+                                        <td><span class="badge">${o.divergence_level}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'aggregator') {
+                const recs = data.recommendations || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${recs.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Buy/Strong Buy</div><div class="stat-value">${recs.filter(r => r.recommendation.includes('buy')).length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Hold</div><div class="stat-value">${recs.filter(r => r.recommendation === 'hold').length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Sell/Strong Sell</div><div class="stat-value">${recs.filter(r => r.recommendation.includes('sell')).length}</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Recommendation</th><th>Conviction</th><th>Confidence</th><th>Risk</th><th>Red Flags</th></tr></thead>
+                            <tbody>
+                                ${recs.map(r => `
+                                    <tr>
+                                        <td class="ticker-cell">${r.ticker}</td>
+                                        <td><span class="badge">${r.recommendation.replace('_', ' ').toUpperCase()}</span></td>
+                                        <td>${r.conviction}%</td>
+                                        <td>${r.confidence_score.toFixed(0)}</td>
+                                        <td>${r.risk_score.toFixed(0)}</td>
+                                        <td>${r.red_flags.length}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (stage === 'peer') {
+                const comps = data.comparisons || [];
+                statsHtml = `
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-label">Comparisons</div><div class="stat-value">${comps.length}</div></div>
+                        <div class="stat-card"><div class="stat-label">Avg Group Size</div><div class="stat-value">${(comps.reduce((s, c) => s + c.peer_group.group_size, 0) / comps.length).toFixed(0)}</div></div>
+                    </div>
+                `;
+                tableHtml = `
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ticker</th><th>Peer Group Size</th><th>Peers</th><th>Status</th><th>Metrics</th></tr></thead>
+                            <tbody>
+                                ${comps.map(c => {
+                                    const metricsCount = Object.values(c).filter(v => v !== null && typeof v === 'object' && v.metric_name).length;
+                                    return `
+                                        <tr>
+                                            <td class="ticker-cell">${c.ticker}</td>
+                                            <td>${c.peer_group.group_size}</td>
+                                            <td>${c.peer_group.peer_tickers.join(', ')}</td>
+                                            <td><span class="badge">${c.peer_group.group_size >= 3 ? 'ok' : 'low_sample'}</span></td>
+                                            <td>${metricsCount}/11</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            document.getElementById('statsContainer').innerHTML = statsHtml;
+            document.getElementById('tableContainer').innerHTML = tableHtml;
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchBox').value.toUpperCase();
+            const rows = document.querySelectorAll('table tbody tr');
+            rows.forEach(row => {
+                const ticker = row.cells[0]?.textContent.toUpperCase();
+                row.style.display = ticker?.includes(search) ? '' : 'none';
+            });
+        }
+
+        function showDetail(ticker, stage, data) {
+            document.getElementById('modalTitle').textContent = ticker;
+            document.getElementById('modalBody').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('unifiedDarkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        if (localStorage.getItem('unifiedDarkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        // Load initial stage
+        loadAndRender('layer1');
+    </script>
+</body>
+</html>

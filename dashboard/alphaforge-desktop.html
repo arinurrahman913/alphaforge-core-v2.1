@@ -202,10 +202,8 @@
             let tableHtml = '';
 
             if (stage === 'layer1') {
-                const components = data.components || {};
-                const compCount = Object.keys(components).length;
-                statsHtml = `<div class="stats"><div class="stat-card"><div class="stat-label">Components</div><div class="stat-value">${compCount}</div></div><div class="stat-card"><div class="stat-label">Overall Confidence</div><div class="stat-value">${data.context_summary?.confidence?.score?.toFixed(0) || 'N/A'}%</div></div></div>`;
-                tableHtml = `<div class="table-wrapper"><table><thead><tr><th>Component</th><th>Status</th><th>Narrative</th></tr></thead><tbody>${Object.entries(components).map(([key, comp]) => `<tr><td class="ticker-cell">${comp.name}</td><td><span class="badge ${comp.status === 'ok' ? 'badge-high' : comp.status === 'degraded' ? 'badge-medium' : 'badge-low'}">${comp.status}</span></td><td style="font-size:12px;">${comp.narrative ? comp.narrative.substring(0, 120) + '...' : '—'}</td></tr>`).join('')}</tbody></table></div>`;
+                statsHtml = `<div class="stats"><div class="stat-card"><div class="stat-label">Components</div><div class="stat-value">${Object.keys(data).length}</div></div></div>`;
+                tableHtml = `<div class="table-wrapper"><table><thead><tr><th>Component</th><th>Status</th><th>Value</th></tr></thead><tbody>${Object.entries(data).map(([key, val]) => `<tr><td class="ticker-cell">${key}</td><td><span class="badge ${val.status === 'ok' ? 'badge-high' : 'badge-medium'}">${val.status}</span></td><td>${val.value ? val.value.toString().substring(0, 80) : '—'}</td></tr>`).join('')}</tbody></table></div>`;
             } else if (stage === 'evidence') {
                 const packages = data.packages || [];
                 statsHtml = `<div class="stats"><div class="stat-card"><div class="stat-label">Packages</div><div class="stat-value">${packages.length}</div></div><div class="stat-card"><div class="stat-label">Avg Market Cap</div><div class="stat-value">$${(packages.reduce((s, p) => s + (p.price_market?.market_cap || 0), 0) / packages.length / 1e9).toFixed(1)}B</div></div></div>`;

@@ -202,24 +202,30 @@
             let tableHtml = '';
 
             if (stage === 'layer1') {
+                const components = data.components || {};
+                const compCount = Object.keys(components).length;
                 statsHtml = `
                     <div class="stats">
                         <div class="stat-card">
                             <div class="stat-label">Components</div>
-                            <div class="stat-value">${Object.keys(data).length}</div>
+                            <div class="stat-value">${compCount}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Overall Confidence</div>
+                            <div class="stat-value">${data.context_summary?.confidence?.score?.toFixed(0) || 'N/A'}%</div>
                         </div>
                     </div>
                 `;
                 tableHtml = `
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>Component</th><th>Status</th><th>Value</th></tr></thead>
+                            <thead><tr><th>Component</th><th>Status</th><th>Narrative</th></tr></thead>
                             <tbody>
-                                ${Object.entries(data).map(([key, val]) => `
+                                ${Object.entries(components).map(([key, comp]) => `
                                     <tr>
-                                        <td class="ticker-cell">${key}</td>
-                                        <td><span class="badge ${val.status === 'ok' ? 'badge-high' : (val.status === 'degraded' ? 'badge-medium' : 'badge-low')}">${val.status}</span></td>
-                                        <td>${val.value ? val.value.toString().substring(0, 50) : '—'}</td>
+                                        <td class="ticker-cell">${comp.name}</td>
+                                        <td><span class="badge ${comp.status === 'ok' ? 'badge-high' : comp.status === 'degraded' ? 'badge-medium' : 'badge-low'}">${comp.status}</span></td>
+                                        <td>${comp.narrative ? comp.narrative.substring(0, 80) + '...' : '—'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>

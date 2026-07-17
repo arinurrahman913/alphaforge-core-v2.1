@@ -124,6 +124,92 @@ Features:
 
 Dashboard reads dari `dashboard/data/evidence.json` — tidak ada calculation, pure visualization (sesuai Prinsip 2.1).
 
+## CLI Reference — Full Pipeline
+
+### Quick Start: End-to-End on 3 Tickers
+
+```bash
+# Stage 1: Screening (filter universe)
+python -m alphaforge.cli screening --limit 3 --out screening.json
+
+# Stage 2: Evidence (collect data)
+python -m alphaforge.cli evidence --screening-out screening.json --limit 3 --out evidence.json
+
+# Stage 3: Knowledge (build profiles)
+python -m alphaforge.cli knowledge --evidence-out evidence.json --limit 3 --out knowledge.json
+
+# Stage 4: Peer Comparison
+python -m alphaforge.cli peer --knowledge-out knowledge.json --limit 3 --out peer.json
+
+# Stage 5: Confidence Scoring
+python -m alphaforge.cli confidence \
+  --knowledge-out knowledge.json \
+  --peer-out peer.json \
+  --limit 3 --out confidence.json
+
+# Stage 6: Risk Assessment
+python -m alphaforge.cli risk --knowledge-out knowledge.json --limit 3 --out risk.json
+
+# Stage 7: Reasoning Pipeline (3 lenses)
+python -m alphaforge.cli reasoning \
+  --knowledge-out knowledge.json \
+  --confidence-out confidence.json \
+  --risk-out risk.json \
+  --limit 3 --out reasoning.json
+
+# Stage 8: Aggregator (final recommendation)
+python -m alphaforge.cli aggregator \
+  --knowledge-out knowledge.json \
+  --peer-out peer.json \
+  --confidence-out confidence.json \
+  --risk-out risk.json \
+  --reasoning-out reasoning.json \
+  --limit 3 --out recommendations.json
+
+# Stage 9: Historical Tracking
+python -c "
+import json
+from alphaforge.layer2 import update_timeline, save_historical_timeline
+from alphaforge.layer2.aggregator_contracts import FinalRecommendation
+
+with open('recommendations.json') as f:
+    data = json.load(f)
+recs = [FinalRecommendation(**r) for r in data['recommendations']]
+timelines = update_timeline({}, recs)
+save_historical_timeline(timelines, 'historical.json')
+print(f'Tracked {len(timelines)} tickers')
+"
+```
+
+### Full Production Run (300+ tickers)
+
+Remove `--limit` flag to run on complete screening universe:
+
+```bash
+python -m alphaforge.cli screening --out screening_prod.json
+python -m alphaforge.cli evidence --screening-out screening_prod.json --out evidence_prod.json
+python -m alphaforge.cli knowledge --evidence-out evidence_prod.json --out knowledge_prod.json
+# ... continue for peer, confidence, risk, reasoning, aggregator
+```
+
+### View Dashboards
+
+```bash
+# Generate data
+python -m alphaforge.cli screening --out dashboard/data/screening_prod.json
+python -m alphaforge.cli evidence --screening-out dashboard/data/screening_prod.json --out dashboard/data/evidence_prod.json
+python -m alphaforge.cli knowledge --evidence-out dashboard/data/evidence_prod.json --out dashboard/data/knowledge_prod.json
+python -m alphaforge.cli peer --knowledge-out dashboard/data/knowledge_prod.json --out dashboard/data/peer_prod.json
+
+# Start local server
+python -m http.server 8765 --directory dashboard
+
+# Open browser
+http://localhost:8765/evidence-live.html
+http://localhost:8765/knowledge-live.html
+http://localhost:8765/peer-live.html
+```
+
 ## Status Implementasi
 
 ### Layer 1
@@ -131,16 +217,91 @@ Dashboard reads dari `dashboard/data/evidence.json` — tidak ada calculation, p
 - `FRED_API_KEY` diperlukan untuk 4 komponen FRED
 - `market_sentiment`: degraded (AAII survey & CBOE put/call belum integrated)
 
-### Layer 2
-- **Screening**: ✅ Jalan — 2-tahap filter (8.5K → 5.2K → ~300+ candidate), rate-limited + cached
-- **Evidence**: ✅ Jalan — extended price history (1-year OHLCV), 18 fundamental fields, institutional ownership, Finnhub news, caching 24h, rate limiting
-  - Features: price/market data, fundamentals (revenue, FCF, margins, ratios), institutional ownership %, company news
-  - Tested: 23 ticker run ~10sec, 251 price bars/ticker, 83% with Finnhub news
-- **Belum diimplementasikan**: Knowledge → Peer Comparison → Confidence → Risk/Red-Flag → 3 Reasoning Modules → Aggregator → Historical Tracking
+### Layer 2 — Stock Analysis Engine (Complete ✅)
 
-### Dashboard
-- **Layer 1 Live** (`layer1-live.html`): ✅ terhubung, membaca JSON dari pipeline
-- **Evidence Live** (`evidence-live.html`): ✅ interactive table + detail modal, search/filter, 18+ fundamental fields per ticker
+#### Fase A: Per-Ticker Analysis (Parallel)
+- **Screening** ✅ — 2-stage filter (8.5K → 5.2K → 300+ candidates), rate-limited + cached
+- **Evidence** ✅ — price (1Y OHLCV), fundamentals (18 fields), ownership, news (Finnhub)
+  - Caching: 6h price, 24h fundamentals, 24h ownership
+  - Rate limiting: batch 50 tickers/2sec
+  - Dashboard: `evidence-live.html` with search/filter/modal
+  
+- **Knowledge** ✅ — 7-section profile per ticker
+  - Section 1: Identity (sector, size category, flags)
+  - Section 2: Financial Health (margins, balance sheet, cash flow, capex)
+  - Section 3a: Competitive Structure (business model, TAM, revenue)
+  - Section 3b: Competitive Momentum (segment growth, guidance, acceleration)
+  - Section 4: Historical Trend (returns 1Y/3Y/5Y, volatility, beta)
+  - Section 5: Ownership (institutional %, insider %, transactions)
+  - Section 6: Valuation (P/E, P/S, P/B, EV/EBITDA, FCF yield)
+  - Section 7: Governance (shares change, auditor changes, restatements, litigation)
+  - Dashboard: `knowledge-live.html` with 7 collapsible sections
+
+#### Fase B: Population-Dependent Analysis (Sequential)
+- **Peer Comparison** ✅ — percentile positioning vs sector peers
+  - Grouping: by sector, min 3 peers for calculation
+  - Metrics: P/E, P/S, P/B, FCF yield, margins (gross/operating/net), ROE/ROA, D/E
+  - Dashboard: `peer-live.html` with percentile heatmap
+  
+- **Confidence Scoring** ✅ — data quality assessment (0-100)
+  - Per-category: price, fundamentals, ownership, news, governance, peer_group
+  - Flags: low_sample_size_peer, insufficient_price_history, stale_data, incomplete_fundamentals
+  - Output: confidence_score + confidence_rating (high/medium/low)
+  
+- **Risk/Red-Flag Detection** ✅ — anomaly detection
+  - Governance: auditor changes, restatements, litigation, unusual filings
+  - Financial: high debt (D/E >2), poor liquidity (current ratio <1), negative FCF
+  - Momentum: earnings misses, guidance downgrades, volatility extremes
+  - Valuation: extreme P/E (>100x), severe drawdowns (>50%)
+  - Output: risk_score (0-100) + red_flags list + recommended_risk_adjustment
+  
+- **Reasoning Pipeline** ✅ — 3 independent analytical lenses
+  - Quality Lens: fundamentals + margins + valuation (sections 1,2,3a,4,6,7)
+  - Speculative Lens: momentum + volatility + insider activity (sections 1,3a,4-vol,5)
+  - Multibagger Lens: growth + TAM + acceleration (sections 1,3a,3b,4,6)
+  - Each lens: conviction_score (0-100) + stance (strong_buy/buy/hold/sell/strong_sell)
+  - Aggregation: weighted average (Quality 40%, Speculative 30%, Multibagger 30%)
+  - Divergence detection: flags when lenses disagree
+  
+- **Aggregator** ✅ — final recommendation combining all stages
+  - Weighted scoring: Confidence 20% + Risk 25% + Reasoning 55%
+  - Output: final recommendation + conviction (0-100)
+  - Includes: tracking_id (UUID), next_review_date, red_flags, bull/bear case
+  - Dashboard: `final_recommendations.json` (aggregated view)
+  
+- **Historical Tracking** ✅ — decision timeline + backtesting framework
+  - Stores: recommendation_date, conviction, scores, reasoning, tracking_id
+  - Outcome fields: actual_return_pct, decision_correct, accuracy_pct
+  - Functions: load/update/save timeline, compare vs new, record outcomes
+  - Enables backtesting: measure forecast accuracy over time
+
+### Dashboards (Interactive Visualization)
+
+#### Layer 1
+- **layer1-live.html** ✅ — 12 market context components, sparklines, status badges
+
+#### Layer 2 — Fase A
+- **evidence-live.html** ✅ — Price/market data, 18 fundamentals, ownership %, news
+  - Table: 300+ tickers with key metrics
+  - Detail modal: 18 field fundamentals, 52w high/low, news headlines
+  - Search/filter by ticker, statistics, data quality tracking
+
+- **knowledge-live.html** ✅ — 7-section Knowledge profiles
+  - Table: 300+ tickers with returns, volatility, P/E, institutional ownership
+  - Detail modal: all 7 sections + metadata + data quality notes
+  - Collapsible sections, search/filter, statistics
+
+#### Layer 2 — Fase B (Stage 1)
+- **peer-live.html** ✅ — Peer comparison + percentile positioning
+  - Table: peer group size, member tickers, sample size status
+  - Detail modal: peer group composition, percentile bars vs metrics
+  - Warnings for low sample size, metric comparison cards
+
+#### Pending Dashboards (Scope 2)
+- confidence-live.html — data quality scores per category
+- risk-live.html — red flags by severity, risk heatmap
+- reasoning-live.html — 3 lens scores side-by-side
+- aggregator-live.html — final recommendations with conviction + tracking
 
 ---
 

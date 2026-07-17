@@ -41,9 +41,9 @@ class PeerComparisonResult:
     """
     ticker: str
     exchange: str
-
-    # Peer group info
     peer_group: PeerGroupInfo
+    generated_at: str  # ISO datetime
+    peer_group_basis: Literal["screening_universe", "manual"] = "screening_universe"
 
     # Metric comparisons (TBD: mana saja yang dibandingkan)
     pe_ratio_comparison: PeerMetricComparison | None = None
@@ -60,10 +60,6 @@ class PeerComparisonResult:
     roa_comparison: PeerMetricComparison | None = None
 
     debt_to_equity_comparison: PeerMetricComparison | None = None
-
-    # Metadata
-    generated_at: str  # ISO datetime
-    peer_group_basis: Literal["screening_universe", "manual"]  # screening_universe = dari Fase A, manual = supplied by caller
 
     def to_dict(self) -> dict:
         from dataclasses import asdict

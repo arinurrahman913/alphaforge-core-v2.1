@@ -218,21 +218,87 @@ def main() -> None:
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
             knowledge_dict = json.load(f)
 
-        # Reconstruct KnowledgeProfile objects
-        from .layer2.knowledge_contracts import KnowledgeProfile
+        # Reconstruct KnowledgeProfile objects properly
+        from .layer2.knowledge_contracts import (
+            KnowledgeProfile, KnowledgeMetadata, FinancialHealth, Ownership,
+            RevenueTrend, MarginTrend, BalanceSheet, CashFlowTrend, CapExInfo,
+            CompetitiveStructure, CompetitiveMomentum, HistoricalTrend, Valuation, Governance
+        )
+
         profiles = []
         for profile_dict in knowledge_dict.get("profiles", []):
-            # Simplified reconstruction (full would need all nested objects)
-            # For now, create minimal profile for peer comparison
-            from dataclasses import make_dataclass
-            # This is placeholder — in production, use proper deserialization
-            # For MVP, just read the JSON and pass to peer logic
-            pass
+            # Reconstruct nested financial health objects
+            fh_dict = profile_dict["financial_health"]
+            financial_health = FinancialHealth(
+                revenue_trend=RevenueTrend(**fh_dict["revenue_trend"]),
+                gross_margin_trend=MarginTrend(**fh_dict["gross_margin_trend"]),
+                operating_margin_trend=MarginTrend(**fh_dict["operating_margin_trend"]),
+                net_margin_trend=MarginTrend(**fh_dict["net_margin_trend"]),
+                balance_sheet=BalanceSheet(**fh_dict["balance_sheet"]),
+                cash_flow_trend=CashFlowTrend(**fh_dict["cash_flow_trend"]),
+                capex_info=CapExInfo(**fh_dict["capex_info"])
+            )
 
-        # TODO: Proper deserialization dari knowledge.json
-        print("Peer subcommand: TODO implement full deserialization", file=sys.stderr)
-        # result = run_peer_comparison(profiles)
-        # _write(json.dumps(result, indent=2, ensure_ascii=False), args.out)
+            # Reconstruct competitive structures
+            cs_dict = profile_dict["competitive_structure"]
+            competitive_structure = CompetitiveStructure(**cs_dict)
+
+            cm_dict = profile_dict["competitive_momentum"]
+            competitive_momentum = CompetitiveMomentum(**cm_dict)
+
+            # Reconstruct historical trend
+            ht_dict = profile_dict["historical_trend"]
+            historical_trend = HistoricalTrend(**ht_dict)
+
+            # Reconstruct ownership
+            own_dict = profile_dict["ownership"]
+            ownership = Ownership(**own_dict)
+
+            # Reconstruct valuation
+            val_dict = profile_dict["valuation"]
+            valuation = Valuation(**val_dict)
+
+            # Reconstruct governance
+            gov_dict = profile_dict["governance"]
+            governance = Governance(**gov_dict)
+
+            # Reconstruct metadata
+            meta_dict = profile_dict["metadata"]
+            metadata = KnowledgeMetadata(**meta_dict)
+
+            # Create full KnowledgeProfile
+            profile = KnowledgeProfile(
+                ticker=profile_dict["ticker"],
+                exchange=profile_dict["exchange"],
+                sector=profile_dict.get("sector"),
+                size_category=profile_dict.get("size_category"),
+                screening_flags=profile_dict.get("screening_flags", []),
+                financial_health=financial_health,
+                competitive_structure=competitive_structure,
+                competitive_momentum=competitive_momentum,
+                historical_trend=historical_trend,
+                ownership=ownership,
+                valuation=valuation,
+                governance=governance,
+                metadata=metadata
+            )
+            profiles.append(profile)
+
+        # Apply limit if specified
+        if args.limit:
+            profiles = profiles[:args.limit]
+
+        # Run peer comparison
+        comparisons = run_peer_comparison(profiles)
+
+        # Output results
+        result_dict = {
+            "knowledge_count": len(profiles),
+            "peer_comparisons_generated": len(comparisons),
+            "generated_at": comparisons[0].generated_at if comparisons else None,
+            "comparisons": [c.to_dict() for c in comparisons],
+        }
+        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
 
 
 if __name__ == "__main__":

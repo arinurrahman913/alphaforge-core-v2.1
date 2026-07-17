@@ -1,0 +1,91 @@
+{
+  "knowledge_count": 3,
+  "peer_comparisons_generated": 3,
+  "generated_at": "2026-07-17T02:27:28.147852+00:00",
+  "comparisons": [
+    {
+      "ticker": "AACO",
+      "exchange": "NASDAQ",
+      "peer_group": {
+        "ticker": "AACO",
+        "sector": null,
+        "industry": null,
+        "peer_tickers": [
+          "AAL",
+          "AAOI"
+        ],
+        "group_size": 2,
+        "peer_failures": []
+      },
+      "generated_at": "2026-07-17T02:27:28.147852+00:00",
+      "peer_group_basis": "screening_universe",
+      "pe_ratio_comparison": null,
+      "ps_ratio_comparison": null,
+      "pb_ratio_comparison": null,
+      "fcf_yield_comparison": null,
+      "gross_margin_comparison": null,
+      "operating_margin_comparison": null,
+      "net_margin_comparison": null,
+      "revenue_growth_comparison": null,
+      "roe_comparison": null,
+      "roa_comparison": null,
+      "debt_to_equity_comparison": null
+    },
+    {
+      "ticker": "AAL",
+      "exchange": "NASDAQ",
+      "peer_group": {
+        "ticker": "AAL",
+        "sector": null,
+        "industry": null,
+        "peer_tickers": [
+          "AACO",
+          "AAOI"
+        ],
+        "group_size": 2,
+        "peer_failures": []
+      },
+      "generated_at": "2026-07-17T02:27:28.147932+00:00",
+      "peer_group_basis": "screening_universe",
+      "pe_ratio_comparison": null,
+      "ps_ratio_comparison": null,
+      "pb_ratio_comparison": null,
+      "fcf_yield_comparison": null,
+      "gross_margin_comparison": null,
+      "operating_margin_comparison": null,
+      "net_margin_comparison": null,
+      "revenue_growth_comparison": null,
+      "roe_comparison": null,
+      "roa_comparison": null,
+      "debt_to_equity_comparison": null
+    },
+    {
+      "ticker": "AAOI",
+      "exchange": "NASDAQ",
+      "peer_group": {
+        "ticker": "AAOI",
+        "sector": null,
+        "industry": null,
+        "peer_tickers": [
+          "AACO",
+          "AAL"
+        ],
+        "group_size": 2,
+        "peer_failures": []
+      },
+      "generated_at": "2026-07-17T02:27:28.147967+00:00",
+      "peer_group_basis": "screening_universe",
+      "pe_ratio_comparison": null,
+      "ps_ratio_comparison": null,
+      "pb_ratio_comparison": null,
+      "fcf_yield_comparison": null,
+      "gross_margin_comparison": null,
+      "operating_margin_comparison": null,
+      "net_margin_comparison": null,
+      "revenue_growth_comparison": null,
+      "roe_comparison": null,
+      "roa_comparison": null,
+      "debt_to_equity_comparison": null
+    }
+  ]
+}

@@ -116,6 +116,7 @@
 
             <div class="nav-section">
                 <div class="nav-section-title">Fase A</div>
+                <div class="nav-item" onclick="switchStage('screening')">🔎 Screening</div>
                 <div class="nav-item" onclick="switchStage('evidence')">🔍 Evidence</div>
                 <div class="nav-item" onclick="switchStage('knowledge')">📚 Knowledge</div>
             </div>
@@ -144,6 +145,12 @@
                 <!-- LAYER1 -->
                 <div id="stage-layer1" class="stage active">
                     <div class="layer1-grid" id="layer1-content"></div>
+                </div>
+
+                <!-- SCREENING -->
+                <div id="stage-screening" class="stage">
+                    <div class="stats" id="screening-stats"></div>
+                    <div class="table-wrapper"><table id="screening-table"><thead></thead><tbody></tbody></table></div>
                 </div>
 
                 <!-- EVIDENCE -->
@@ -203,6 +210,7 @@
 
         const stages = {
             layer1: { file: 'data/layer1_context.json', title: '🌍 Layer 1 — Market Context', desc: '12 macro components' },
+            screening: { file: 'data/screening.json', title: '🔎 Screening', desc: 'Candidate filtering from universe' },
             evidence: { file: 'data/evidence.json', title: '🔍 Evidence', desc: 'Price, fundamentals, news' },
             knowledge: { file: 'data/knowledge.json', title: '📚 Knowledge', desc: '7-section profiles' },
             peer: { file: 'data/peer_results.json', title: '🤝 Peer Comparison', desc: 'Percentile positioning' },
@@ -243,6 +251,7 @@
 
         function renderStage(stage, data) {
             if (stage === 'layer1') renderLayer1(data);
+            else if (stage === 'screening') renderScreening(data);
             else if (stage === 'evidence') renderEvidence(data);
             else if (stage === 'knowledge') renderKnowledge(data);
             else if (stage === 'peer') renderPeer(data);
@@ -263,6 +272,35 @@
                 </div>
             `).join('');
             document.getElementById('layer1-content').innerHTML = html;
+        }
+
+        function renderScreening(data) {
+            const passed = data.passed || [];
+            const excluded = data.hard_excluded || [];
+
+            document.getElementById('screening-stats').innerHTML = `
+                <div class="stat-card"><div class="stat-label">Universe Raw</div><div class="stat-value">${data.universe_raw || 0}</div></div>
+                <div class="stat-card"><div class="stat-label">After Filter</div><div class="stat-value">${data.universe_after_cheap_filter || 0}</div></div>
+                <div class="stat-card"><div class="stat-label">Passed</div><div class="stat-value">${passed.length}</div></div>
+                <div class="stat-card"><div class="stat-label">Excluded</div><div class="stat-value">${excluded.length}</div></div>
+            `;
+
+            const thead = document.querySelector('#screening-table thead');
+            thead.innerHTML = '<tr><th>Ticker</th><th>Exchange</th><th>Market Cap</th><th>Avg Volume 20d</th><th>Price</th><th>Status</th><th>Flags</th></tr>';
+
+            const tbody = document.querySelector('#screening-table tbody');
+            const allTickers = [...passed.map(p => ({ ...p, status: 'passed' })), ...excluded.map(e => ({ ...e, status: 'excluded' }))];
+            tbody.innerHTML = allTickers.map(t => `
+                <tr>
+                    <td class="ticker">${t.ticker}</td>
+                    <td>${t.exchange}</td>
+                    <td>$${t.market_cap ? (t.market_cap / 1e9).toFixed(2) : '—'}B</td>
+                    <td>$${t.avg_dollar_volume_20d ? (t.avg_dollar_volume_20d / 1e6).toFixed(2) : '—'}M</td>
+                    <td>$${t.last_price?.toFixed(2) || '—'}</td>
+                    <td><span class="badge ${t.status === 'passed' ? 'badge-ok' : 'badge-alert'}">${t.status === 'passed' ? 'PASSED' : 'EXCLUDED'}</span></td>
+                    <td>${t.soft_flags?.join(', ') || (t.hard_exclude_reason || '—')}</td>
+                </tr>
+            `).join('');
         }
 
         function renderEvidence(data) {

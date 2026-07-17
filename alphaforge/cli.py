@@ -6,7 +6,7 @@ import json
 import sys
 
 from .layer1 import build_market_context_package
-from .layer2 import run_screening, run_evidence, run_knowledge
+from .layer2 import run_screening, run_evidence, run_knowledge, run_peer_comparison
 
 
 def _write(data: str, out: str | None) -> None:
@@ -49,6 +49,13 @@ def main() -> None:
     knowledge_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
     knowledge_parser.add_argument("--limit", type=int, default=None,
                                  help="Batasi jumlah ticker yang di-knowledge (buat testing)")
+
+    peer_parser = sub.add_parser("peer", help="Jalankan Peer Comparison (Layer 2, Fase B) — butuh Knowledge dulu")
+    peer_parser.add_argument("--knowledge-out", type=str, required=True,
+                            help="Path ke knowledge.json hasil Knowledge (Fase A complete)")
+    peer_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
+    peer_parser.add_argument("--limit", type=int, default=None,
+                            help="Batasi jumlah ticker yang di-peer (buat testing)")
 
     args = parser.parse_args()
 
@@ -206,6 +213,26 @@ def main() -> None:
             "profiles": [p.to_dict() for p in profiles],
         }
         _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+
+    elif args.command == "peer":
+        with open(args.knowledge_out, "r", encoding="utf-8") as f:
+            knowledge_dict = json.load(f)
+
+        # Reconstruct KnowledgeProfile objects
+        from .layer2.knowledge_contracts import KnowledgeProfile
+        profiles = []
+        for profile_dict in knowledge_dict.get("profiles", []):
+            # Simplified reconstruction (full would need all nested objects)
+            # For now, create minimal profile for peer comparison
+            from dataclasses import make_dataclass
+            # This is placeholder — in production, use proper deserialization
+            # For MVP, just read the JSON and pass to peer logic
+            pass
+
+        # TODO: Proper deserialization dari knowledge.json
+        print("Peer subcommand: TODO implement full deserialization", file=sys.stderr)
+        # result = run_peer_comparison(profiles)
+        # _write(json.dumps(result, indent=2, ensure_ascii=False), args.out)
 
 
 if __name__ == "__main__":

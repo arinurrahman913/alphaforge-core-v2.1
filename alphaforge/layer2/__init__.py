@@ -1,5 +1,6 @@
 from .screening import run_screening
 from .evidence import run_evidence
 from .knowledge import run_knowledge
+from .peer import run_peer_comparison
 
-__all__ = ["run_screening", "run_evidence", "run_knowledge"]
+__all__ = ["run_screening", "run_evidence", "run_knowledge", "run_peer_comparison"]

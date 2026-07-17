@@ -5,5 +5,6 @@ from .peer import run_peer_comparison
 from .confidence import run_confidence
 from .risk import run_risk_assessment
 from .reasoning import run_reasoning_pipeline
+from .aggregator import run_aggregator
 
-__all__ = ["run_screening", "run_evidence", "run_knowledge", "run_peer_comparison", "run_confidence", "run_risk_assessment", "run_reasoning_pipeline"]
+__all__ = ["run_screening", "run_evidence", "run_knowledge", "run_peer_comparison", "run_confidence", "run_risk_assessment", "run_reasoning_pipeline", "run_aggregator"]

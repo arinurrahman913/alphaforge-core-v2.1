@@ -6,7 +6,7 @@ import json
 import sys
 
 from .layer1 import build_market_context_package
-from .layer2 import run_screening, run_evidence, run_knowledge, run_peer_comparison, run_confidence, run_risk_assessment, run_reasoning_pipeline
+from .layer2 import run_screening, run_evidence, run_knowledge, run_peer_comparison, run_confidence, run_risk_assessment, run_reasoning_pipeline, run_aggregator
 
 
 def _write(data: str, out: str | None) -> None:
@@ -83,6 +83,21 @@ def main() -> None:
     reasoning_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
     reasoning_parser.add_argument("--limit", type=int, default=None,
                                  help="Batasi jumlah ticker (buat testing)")
+
+    aggregator_parser = sub.add_parser("aggregator", help="Jalankan Aggregator (Layer 2, Fase B, tahap 5/final) — butuh semua stages")
+    aggregator_parser.add_argument("--knowledge-out", type=str, required=True,
+                                  help="Path ke knowledge.json")
+    aggregator_parser.add_argument("--peer-out", type=str, default=None,
+                                  help="Path ke peer_results.json (optional)")
+    aggregator_parser.add_argument("--confidence-out", type=str, default=None,
+                                  help="Path ke confidence_scores.json (optional)")
+    aggregator_parser.add_argument("--risk-out", type=str, default=None,
+                                  help="Path ke risk_assessments.json (optional)")
+    aggregator_parser.add_argument("--reasoning-out", type=str, default=None,
+                                  help="Path ke reasoning_outputs.json (optional)")
+    aggregator_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
+    aggregator_parser.add_argument("--limit", type=int, default=None,
+                                  help="Batasi jumlah ticker (buat testing)")
 
     args = parser.parse_args()
 
@@ -632,6 +647,141 @@ def main() -> None:
             "reasoning_outputs_generated": len(reasonings),
             "generated_at": reasonings[0].aggregated_at if reasonings else None,
             "reasoning_outputs": [r.to_dict() for r in reasonings],
+        }
+        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+
+    elif args.command == "aggregator":
+        with open(args.knowledge_out, "r", encoding="utf-8") as f:
+            knowledge_dict = json.load(f)
+
+        # Reconstruct KnowledgeProfile objects (simplified - reuse pattern)
+        from .layer2.knowledge_contracts import (
+            KnowledgeProfile, KnowledgeMetadata, FinancialHealth, Ownership,
+            RevenueTrend, MarginTrend, BalanceSheet, CashFlowTrend, CapExInfo,
+            CompetitiveStructure, CompetitiveMomentum, HistoricalTrend, Valuation, Governance
+        )
+
+        profiles = []
+        for profile_dict in knowledge_dict.get("profiles", []):
+            fh_dict = profile_dict["financial_health"]
+            financial_health = FinancialHealth(
+                revenue_trend=RevenueTrend(**fh_dict["revenue_trend"]),
+                gross_margin_trend=MarginTrend(**fh_dict["gross_margin_trend"]),
+                operating_margin_trend=MarginTrend(**fh_dict["operating_margin_trend"]),
+                net_margin_trend=MarginTrend(**fh_dict["net_margin_trend"]),
+                balance_sheet=BalanceSheet(**fh_dict["balance_sheet"]),
+                cash_flow_trend=CashFlowTrend(**fh_dict["cash_flow_trend"]),
+                capex_info=CapExInfo(**fh_dict["capex_info"])
+            )
+            cs_dict = profile_dict["competitive_structure"]
+            competitive_structure = CompetitiveStructure(**cs_dict)
+            cm_dict = profile_dict["competitive_momentum"]
+            competitive_momentum = CompetitiveMomentum(**cm_dict)
+            ht_dict = profile_dict["historical_trend"]
+            historical_trend = HistoricalTrend(**ht_dict)
+            own_dict = profile_dict["ownership"]
+            ownership = Ownership(**own_dict)
+            val_dict = profile_dict["valuation"]
+            valuation = Valuation(**val_dict)
+            gov_dict = profile_dict["governance"]
+            governance = Governance(**gov_dict)
+            meta_dict = profile_dict["metadata"]
+            metadata = KnowledgeMetadata(**meta_dict)
+
+            profile = KnowledgeProfile(
+                ticker=profile_dict["ticker"],
+                exchange=profile_dict["exchange"],
+                sector=profile_dict.get("sector"),
+                size_category=profile_dict.get("size_category"),
+                screening_flags=profile_dict.get("screening_flags", []),
+                financial_health=financial_health,
+                competitive_structure=competitive_structure,
+                competitive_momentum=competitive_momentum,
+                historical_trend=historical_trend,
+                ownership=ownership,
+                valuation=valuation,
+                governance=governance,
+                metadata=metadata
+            )
+            profiles.append(profile)
+
+        # Load optional outputs (peer, confidence, risk, reasoning)
+        peers, confidences, risks, reasonings = None, None, None, None
+
+        if args.peer_out:
+            with open(args.peer_out, "r", encoding="utf-8") as f:
+                peer_dict = json.load(f)
+            from .layer2.peer_contracts import PeerComparisonResult, PeerGroupInfo, PeerMetricComparison
+            peers = []
+            for comp_dict in peer_dict.get("comparisons", []):
+                pg_dict = comp_dict["peer_group"]
+                peer_group = PeerGroupInfo(**pg_dict)
+                metric_comparisons = {}
+                for metric_key in [
+                    "pe_ratio_comparison", "ps_ratio_comparison", "pb_ratio_comparison",
+                    "fcf_yield_comparison", "gross_margin_comparison", "operating_margin_comparison",
+                    "net_margin_comparison", "revenue_growth_comparison", "roe_comparison",
+                    "roa_comparison", "debt_to_equity_comparison"
+                ]:
+                    metric_dict = comp_dict.get(metric_key)
+                    metric_comparisons[metric_key] = PeerMetricComparison(**metric_dict) if metric_dict else None
+
+                peers.append(PeerComparisonResult(
+                    ticker=comp_dict["ticker"],
+                    exchange=comp_dict["exchange"],
+                    peer_group=peer_group,
+                    generated_at=comp_dict["generated_at"],
+                    peer_group_basis=comp_dict.get("peer_group_basis", "screening_universe"),
+                    **metric_comparisons
+                ))
+
+        if args.confidence_out:
+            with open(args.confidence_out, "r", encoding="utf-8") as f:
+                conf_dict = json.load(f)
+            from .layer2.confidence_contracts import ConfidenceScore, DataQualityScore
+            confidences = []
+            for score_dict in conf_dict.get("scores", []):
+                quality_scores = [DataQualityScore(**qs) for qs in score_dict.get("quality_scores", [])]
+                score_dict_copy = score_dict.copy()
+                score_dict_copy["quality_scores"] = quality_scores
+                confidences.append(ConfidenceScore(**score_dict_copy))
+
+        if args.risk_out:
+            with open(args.risk_out, "r", encoding="utf-8") as f:
+                risk_dict = json.load(f)
+            from .layer2.risk_contracts import RiskAssessment, RedFlag
+            risks = []
+            for assess_dict in risk_dict.get("assessments", []):
+                red_flags = [RedFlag(**rf) for rf in assess_dict.get("red_flags", [])]
+                assess_dict_copy = assess_dict.copy()
+                assess_dict_copy["red_flags"] = red_flags
+                risks.append(RiskAssessment(**assess_dict_copy))
+
+        if args.reasoning_out:
+            with open(args.reasoning_out, "r", encoding="utf-8") as f:
+                reason_dict = json.load(f)
+            from .layer2.reasoning_contracts import AggregatedReasoning, ReasoningOutput
+            reasonings = []
+            for out_dict in reason_dict.get("reasoning_outputs", []):
+                # Reconstruct ReasoningOutput objects (simplified)
+                for key in ["quality_output", "speculative_output", "multibagger_output"]:
+                    if out_dict.get(key):
+                        out_dict[key] = ReasoningOutput(**out_dict[key])
+                reasonings.append(AggregatedReasoning(**out_dict))
+
+        # Apply limit
+        if args.limit:
+            profiles = profiles[:args.limit]
+
+        # Run aggregator
+        recommendations = run_aggregator(profiles, peers, confidences, risks, reasonings)
+
+        # Output results
+        result_dict = {
+            "profiles_count": len(profiles),
+            "recommendations_generated": len(recommendations),
+            "generated_at": recommendations[0].recommended_at if recommendations else None,
+            "recommendations": [r.to_dict() for r in recommendations],
         }
         _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
 

@@ -1,0 +1,173 @@
+"""Helper functions untuk Knowledge calculations — tren, technical indicators, financial metrics."""
+from __future__ import annotations
+
+import math
+from .contracts import PriceBar
+
+
+def calculate_returns(price_history: list[PriceBar]) -> dict[str, float | None]:
+    """Calculate returns dari price history.
+
+    Returns: {
+        'return_1y': % annual return, past 1 year (atau max available),
+        'return_3y': % annual return (CAGR), past 3 years,
+        'return_5y': % annual return (CAGR), past 5 years
+    }
+    """
+    if not price_history or len(price_history) < 2:
+        return {'return_1y': None, 'return_3y': None, 'return_5y': None}
+
+    # Bars sudah sorted chronologically, last = most recent
+    prices_by_date = {bar.date: bar.close for bar in price_history}
+    sorted_dates = sorted(prices_by_date.keys())
+
+    latest_price = prices_by_date[sorted_dates[-1]]
+    first_price = prices_by_date[sorted_dates[0]]
+
+    if first_price <= 0:
+        return {'return_1y': None, 'return_3y': None, 'return_5y': None}
+
+    # Calculate based on available history
+    total_days = len(sorted_dates) - 1
+    total_return_pct = ((latest_price - first_price) / first_price) * 100
+
+    # 1-year return (365 days or actual available)
+    return_1y = total_return_pct if total_days <= 365 else _cagr(first_price, latest_price, 1)
+
+    # 3-year CAGR (roughly 756 trading days = 3 years)
+    price_3y_ago = None
+    date_3y_ago = None
+    if total_days >= 756:
+        date_3y_ago = sorted_dates[max(0, len(sorted_dates) - 756)]
+        price_3y_ago = prices_by_date[date_3y_ago]
+
+    return_3y = _cagr(price_3y_ago, latest_price, 3) if price_3y_ago else None
+
+    # 5-year CAGR (roughly 1260 trading days = 5 years)
+    price_5y_ago = None
+    if total_days >= 1260:
+        price_5y_ago = prices_by_date[sorted_dates[max(0, len(sorted_dates) - 1260)]]
+
+    return_5y = _cagr(price_5y_ago, latest_price, 5) if price_5y_ago else None
+
+    return {
+        'return_1y': return_1y,
+        'return_3y': return_3y,
+        'return_5y': return_5y
+    }
+
+
+def _cagr(start_price: float | None, end_price: float, years: float) -> float | None:
+    """Calculate CAGR (Compound Annual Growth Rate)."""
+    if not start_price or start_price <= 0 or end_price <= 0 or years <= 0:
+        return None
+    return (pow(end_price / start_price, 1 / years) - 1) * 100
+
+
+def calculate_volatility(price_history: list[PriceBar]) -> float | None:
+    """Calculate daily volatility (std dev of daily returns %)."""
+    if not price_history or len(price_history) < 2:
+        return None
+
+    daily_returns = []
+    for i in range(1, len(price_history)):
+        prev_close = price_history[i - 1].close
+        curr_close = price_history[i].close
+        if prev_close > 0:
+            ret = ((curr_close - prev_close) / prev_close) * 100
+            daily_returns.append(ret)
+
+    if len(daily_returns) < 2:
+        return None
+
+    mean_ret = sum(daily_returns) / len(daily_returns)
+    variance = sum((r - mean_ret) ** 2 for r in daily_returns) / len(daily_returns)
+    std_dev = math.sqrt(variance)
+
+    return std_dev
+
+
+def calculate_high_low_52w(price_history: list[PriceBar]) -> dict[str, float | None]:
+    """Calculate 52-week high/low dari price history."""
+    if not price_history:
+        return {'high_52w': None, 'low_52w': None}
+
+    # 52-week = roughly 252 trading days
+    relevant_bars = price_history[-252:] if len(price_history) >= 252 else price_history
+
+    closes = [bar.close for bar in relevant_bars]
+    if not closes:
+        return {'high_52w': None, 'low_52w': None}
+
+    return {
+        'high_52w': max(closes),
+        'low_52w': min(closes)
+    }
+
+
+def calculate_financial_metrics(
+    revenue: float | None,
+    net_income: float | None,
+    free_cash_flow: float | None,
+    market_cap: float | None,
+    shares_outstanding: int | None,
+    last_price: float | None,
+    eps: float | None
+) -> dict[str, float | None]:
+    """Calculate derived financial metrics dari fundamental data."""
+    metrics = {
+        'ps_ratio': None,
+        'fcf_yield_pct': None,
+        'price_to_fcf': None,
+        'net_margin_pct': None,
+        'fcf_to_net_income_pct': None
+    }
+
+    # P/S ratio
+    if market_cap and market_cap > 0 and revenue and revenue > 0:
+        metrics['ps_ratio'] = market_cap / revenue
+
+    # FCF yield
+    if free_cash_flow and market_cap and market_cap > 0:
+        metrics['fcf_yield_pct'] = (free_cash_flow / market_cap) * 100
+
+    # Price to FCF
+    if free_cash_flow and free_cash_flow > 0 and shares_outstanding and shares_outstanding > 0 and last_price and last_price > 0:
+        fcf_per_share = free_cash_flow / shares_outstanding
+        if fcf_per_share > 0:
+            metrics['price_to_fcf'] = last_price / fcf_per_share
+
+    # Net margin
+    if net_income is not None and revenue and revenue > 0:
+        metrics['net_margin_pct'] = (net_income / revenue) * 100
+
+    # FCF to Net Income
+    if free_cash_flow is not None and net_income and net_income > 0:
+        metrics['fcf_to_net_income_pct'] = (free_cash_flow / net_income) * 100
+
+    return metrics
+
+
+def infer_size_category(market_cap: float | None, soft_flags: list[str]) -> str | None:
+    """Infer size category dari market cap + soft flags dari Screening."""
+    if not market_cap:
+        # Check flags
+        if "micro_cap" in soft_flags:
+            return "micro"
+        if "small_cap" in soft_flags or "recent_ipo" in soft_flags:
+            return "small"
+        if "mid_cap" in soft_flags:
+            return "mid"
+        if "large_cap" in soft_flags:
+            return "large"
+        return None
+
+    # Thresholds (typical market cap ranges)
+    if market_cap < 300_000_000:
+        return "micro"
+    elif market_cap < 2_000_000_000:
+        return "small"
+    elif market_cap < 10_000_000_000:
+        return "mid"
+    else:
+        return "large"

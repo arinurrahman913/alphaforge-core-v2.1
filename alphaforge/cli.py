@@ -104,19 +104,84 @@ def main() -> None:
         with open(args.evidence_out, "r", encoding="utf-8") as f:
             evidence_dict = json.load(f)
 
-        # Reconstruct Evidence packages
-        from .layer2.contracts import EvidencePackage
+        # Reconstruct Evidence packages properly
+        from .layer2.contracts import (
+            EvidencePackage, PriceBar, SourceMetadata,
+            PriceMarketData, FundamentalData, InstitutionalOwnership,
+            NewsCollection, SecFilings
+        )
         evidence_packages = []
         for pkg_dict in evidence_dict.get("packages", []):
-            # Simplified reconstruction (would need more fields in production)
+            # Reconstruct nested objects
+            pm_dict = pkg_dict["price_market"]
+            price_bars = [
+                PriceBar(**bar) for bar in pm_dict.get("price_history", [])
+            ]
+            price_market = PriceMarketData(
+                metadata=SourceMetadata(**pm_dict["metadata"]),
+                last_price=pm_dict.get("last_price"),
+                open=pm_dict.get("open"),
+                high=pm_dict.get("high"),
+                low=pm_dict.get("low"),
+                close=pm_dict.get("close"),
+                volume=pm_dict.get("volume"),
+                market_cap=pm_dict.get("market_cap"),
+                shares_outstanding=pm_dict.get("shares_outstanding"),
+                beta=pm_dict.get("beta"),
+                high_52w=pm_dict.get("high_52w"),
+                low_52w=pm_dict.get("low_52w"),
+                price_history=price_bars
+            )
+
+            fund_dict = pkg_dict["fundamental"]
+            fundamental = FundamentalData(
+                metadata=SourceMetadata(**fund_dict["metadata"]),
+                revenue=fund_dict.get("revenue"),
+                net_income=fund_dict.get("net_income"),
+                eps=fund_dict.get("eps"),
+                pe_ratio=fund_dict.get("pe_ratio"),
+                debt_to_equity=fund_dict.get("debt_to_equity"),
+                current_ratio=fund_dict.get("current_ratio"),
+                quick_ratio=fund_dict.get("quick_ratio"),
+                roe=fund_dict.get("roe"),
+                roa=fund_dict.get("roa"),
+                operating_margin=fund_dict.get("operating_margin"),
+                gross_margin=fund_dict.get("gross_margin"),
+                free_cash_flow=fund_dict.get("free_cash_flow"),
+                dividend_yield=fund_dict.get("dividend_yield"),
+                payout_ratio=fund_dict.get("payout_ratio"),
+                book_value_per_share=fund_dict.get("book_value_per_share"),
+                asset_turnover=fund_dict.get("asset_turnover"),
+                inventory_turnover=fund_dict.get("inventory_turnover"),
+                interest_coverage=fund_dict.get("interest_coverage")
+            )
+
+            inst_dict = pkg_dict["institutional_ownership"]
+            institutional_ownership = InstitutionalOwnership(
+                metadata=SourceMetadata(**inst_dict["metadata"]),
+                percentage=inst_dict.get("percentage")
+            )
+
+            news_dict = pkg_dict["news"]
+            news = NewsCollection(
+                news=[],
+                metadata=SourceMetadata(**news_dict.get("metadata")) if news_dict.get("metadata") else None
+            )
+
+            sec_dict = pkg_dict["sec_filings"]
+            sec_filings = SecFilings(
+                filings=[],
+                metadata=SourceMetadata(**sec_dict.get("metadata")) if sec_dict.get("metadata") else None
+            )
+
             pkg = EvidencePackage(
                 ticker=pkg_dict["ticker"],
                 exchange=pkg_dict["exchange"],
-                price_market=type('obj', (object,), pkg_dict["price_market"])(),
-                fundamental=type('obj', (object,), pkg_dict["fundamental"])(),
-                institutional_ownership=type('obj', (object,), pkg_dict["institutional_ownership"])(),
-                news=type('obj', (object,), pkg_dict["news"])(),
-                sec_filings=type('obj', (object,), pkg_dict["sec_filings"])(),
+                price_market=price_market,
+                fundamental=fundamental,
+                institutional_ownership=institutional_ownership,
+                news=news,
+                sec_filings=sec_filings,
                 generated_at=pkg_dict["generated_at"]
             )
             evidence_packages.append(pkg)

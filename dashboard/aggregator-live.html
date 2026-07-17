@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaForge v2 — Recommendations Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        body.dark-mode { background: #1a1a1a; color: #e0e0e0; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        body.dark-mode header { background: #222; }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        .meta { font-size: 13px; color: #666; }
+        body.dark-mode .meta { color: #999; }
+        .search-box { width: 300px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; margin-top: 16px; }
+        body.dark-mode .search-box { background: #333; border-color: #555; color: #e0e0e0; }
+        .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 20px 0; }
+        .stat-card { background: white; padding: 16px; border-radius: 8px; }
+        body.dark-mode .stat-card { background: #222; }
+        .stat-value { font-size: 20px; font-weight: 600; }
+        .table-wrapper { background: white; border-radius: 8px; overflow: hidden; }
+        body.dark-mode .table-wrapper { background: #222; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f9f9f9; padding: 12px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 2px solid #ddd; }
+        body.dark-mode th { background: #333; border-bottom-color: #555; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        body.dark-mode td { border-bottom-color: #444; }
+        tr:hover { background: #f9f9f9; cursor: pointer; }
+        body.dark-mode tr:hover { background: #2a2a2a; }
+        .ticker-cell { font-weight: 600; color: #0066cc; }
+        .rec-strong-buy { background: #164e63; color: #cffafe; padding: 6px 12px; border-radius: 3px; font-weight: 600; }
+        .rec-buy { background: #0c4a6e; color: #cffafe; padding: 6px 12px; border-radius: 3px; font-weight: 600; }
+        .rec-hold { background: #78350f; color: #fef3c7; padding: 6px 12px; border-radius: 3px; font-weight: 600; }
+        .rec-sell { background: #7c2d12; color: #fed7aa; padding: 6px 12px; border-radius: 3px; font-weight: 600; }
+        .rec-strong-sell { background: #7f1d1d; color: #fca5a5; padding: 6px 12px; border-radius: 3px; font-weight: 600; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
+        .modal-content { background: white; margin: 3% auto; padding: 0; border-radius: 8px; width: 90%; max-width: 950px; max-height: 85vh; overflow-y: auto; }
+        body.dark-mode .modal-content { background: #222; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #f9f9f9; }
+        body.dark-mode .modal-header { background: #333; border-bottom-color: #555; }
+        .close { font-size: 28px; cursor: pointer; }
+        .modal-body { padding: 20px; }
+        .section { background: #f9f9f9; padding: 16px; border-radius: 6px; margin-bottom: 16px; border-left: 4px solid #0066cc; }
+        body.dark-mode .section { background: #333; }
+        .section-title { font-weight: 600; margin-bottom: 12px; font-size: 14px; }
+        .scores-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+        .score-item { background: white; padding: 10px; border-radius: 4px; text-align: center; font-size: 13px; }
+        body.dark-mode .score-item { background: #222; }
+        .score-value { font-weight: 600; font-size: 16px; }
+        .flag-item { background: #fee2e2; padding: 8px; border-radius: 3px; margin: 4px 0; font-size: 13px; border-left: 3px solid #ef4444; }
+        .conviction-bar { display: inline-block; height: 24px; background: linear-gradient(to right, #ef4444 0%, #f97316 25%, #eab308 50%, #84cc16 75%, #10b981 100%); border-radius: 3px; width: 150px; position: relative; }
+        .conviction-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: white; font-size: 12px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>AlphaForge v2 — Final Recommendations</h1>
+                <div class="meta">Layer 2 Fase B Stage 5: Aggregated Recommendation (buy/hold/sell)</div>
+            </div>
+        </header>
+
+        <input type="text" class="search-box" id="searchBox" placeholder="Cari ticker..." onkeyup="filterTable()">
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Recs</div>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Strong Buy</div>
+                <div class="stat-value" id="statSB">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Buy</div>
+                <div class="stat-value" id="statB">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Hold</div>
+                <div class="stat-value" id="statH">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Sell/Strong Sell</div>
+                <div class="stat-value" id="statSS">0</div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Recommendation</th>
+                        <th>Conviction</th>
+                        <th>Confidence</th>
+                        <th>Risk</th>
+                        <th>Reasoning</th>
+                        <th>Red Flags</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTicker"></h2>
+                    <div class="meta" id="modalSubtitle"></div>
+                </div>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let allRecs = [];
+
+        async function loadData() {
+            try {
+                const response = await fetch('data/final_recommendations.json');
+                const data = await response.json();
+                allRecs = data.recommendations || [];
+                renderTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" style="text-align:center;">Error loading data</td></tr>';
+            }
+        }
+
+        function getRecClass(rec) {
+            const classes = {
+                'strong_buy': 'rec-strong-buy',
+                'buy': 'rec-buy',
+                'hold': 'rec-hold',
+                'sell': 'rec-sell',
+                'strong_sell': 'rec-strong-sell'
+            };
+            return classes[rec] || 'rec-hold';
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            allRecs.forEach(rec => {
+                const row = document.createElement('tr');
+                row.onclick = () => showDetail(rec);
+
+                row.innerHTML = `
+                    <td class="ticker-cell">${rec.ticker}</td>
+                    <td><span class="${getRecClass(rec.recommendation)}">${rec.recommendation.replace('_', ' ').toUpperCase()}</span></td>
+                    <td>${rec.conviction}%</td>
+                    <td>${rec.confidence_score.toFixed(0)}</td>
+                    <td>${rec.risk_score.toFixed(0)}</td>
+                    <td>${rec.reasoning_score.toFixed(0)}</td>
+                    <td>${rec.red_flags.length}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchBox').value.toUpperCase();
+            const rows = document.getElementById('tableBody').getElementsByTagName('tr');
+            for (let row of rows) {
+                const ticker = row.cells[0].textContent.toUpperCase();
+                row.style.display = ticker.includes(search) ? '' : 'none';
+            }
+        }
+
+        function showDetail(rec) {
+            document.getElementById('modalTicker').textContent = rec.ticker + ' — ' + rec.recommendation.toUpperCase();
+            document.getElementById('modalSubtitle').textContent = `Conviction: ${rec.conviction}% | Next Review: ${new Date(rec.next_review_date).toLocaleDateString()}`;
+
+            let html = `
+                <div class="section" style="border-left-color: #8b5cf6;">
+                    <div class="section-title">📊 Scores</div>
+                    <div class="scores-grid">
+                        <div class="score-item">
+                            <div>Confidence</div>
+                            <div class="score-value">${rec.confidence_score.toFixed(0)}</div>
+                        </div>
+                        <div class="score-item">
+                            <div>Risk</div>
+                            <div class="score-value">${rec.risk_score.toFixed(0)}</div>
+                        </div>
+                        <div class="score-item">
+                            <div>Reasoning</div>
+                            <div class="score-value">${rec.reasoning_score.toFixed(0)}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <strong>Final Score:</strong>
+                        <div class="conviction-bar" style="margin-top: 6px;">
+                            <div class="conviction-text">${rec.risk_adjusted_score.toFixed(0)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section" style="border-left-color: #10b981;">
+                    <div class="section-title">📈 Bull Case</div>
+                    <div>${rec.bull_case}</div>
+                </div>
+
+                <div class="section" style="border-left-color: #ef4444;">
+                    <div class="section-title">📉 Bear Case</div>
+                    <div>${rec.bear_case}</div>
+                </div>
+
+                ${rec.red_flags.length ? `
+                    <div class="section" style="border-left-color: #f97316;">
+                        <div class="section-title">⚠️ Red Flags (${rec.red_flags.length})</div>
+                        ${rec.red_flags.map(flag => `<div class="flag-item">${flag}</div>`).join('')}
+                    </div>
+                ` : ''}
+
+                <div class="section" style="border-left-color: #0066cc;">
+                    <div class="section-title">📝 Recommendation</div>
+                    <div>${rec.reasoning_summary}</div>
+                    ${rec.data_quality_notes ? `<div style="margin-top: 8px; font-size: 12px; color: #666;">Quality: ${rec.data_quality_notes}</div>` : ''}
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function updateStats() {
+            const total = allRecs.length;
+            const sb = allRecs.filter(r => r.recommendation === 'strong_buy').length;
+            const b = allRecs.filter(r => r.recommendation === 'buy').length;
+            const h = allRecs.filter(r => r.recommendation === 'hold').length;
+            const ss = total - sb - b - h;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statSB').textContent = sb;
+            document.getElementById('statB').textContent = b;
+            document.getElementById('statH').textContent = h;
+            document.getElementById('statSS').textContent = ss;
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        loadData();
+    </script>
+</body>
+</html>

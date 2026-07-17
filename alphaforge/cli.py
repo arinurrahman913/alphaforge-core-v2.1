@@ -157,7 +157,7 @@ def main() -> None:
         from .layer2.contracts import (
             EvidencePackage, PriceBar, SourceMetadata,
             PriceMarketData, FundamentalData, InstitutionalOwnership,
-            NewsCollection, SecFilings
+            NewsCollection, SecFilings, QuarterlyFundamental
         )
         evidence_packages = []
         for pkg_dict in evidence_dict.get("packages", []):
@@ -202,7 +202,10 @@ def main() -> None:
                 book_value_per_share=fund_dict.get("book_value_per_share"),
                 asset_turnover=fund_dict.get("asset_turnover"),
                 inventory_turnover=fund_dict.get("inventory_turnover"),
-                interest_coverage=fund_dict.get("interest_coverage")
+                interest_coverage=fund_dict.get("interest_coverage"),
+                quarterly_data=[
+                    QuarterlyFundamental(**q) for q in fund_dict.get("quarterly_data") or []
+                ]
             )
 
             inst_dict = pkg_dict["institutional_ownership"]

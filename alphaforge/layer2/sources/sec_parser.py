@@ -1,166 +1,213 @@
-"""Parse SEC EDGAR 10-K/10-Q filings untuk extract quarterly fundamental data.
+"""Parse SEC EDGAR XBRL company facts untuk extract quarterly fundamental data.
 
-SEC menyediakan free JSON access ke company facts via XBRL converter.
-Endpoint: https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=<cik>&type=10-K&dateb=&owner=exclude&count=10&output=json
+SEC EDGAR mewajibkan header User-Agent yang mengidentifikasi pemanggil
+(https://www.sec.gov/os/webmaster-faq#developers) — tanpa header ini semua
+request di-403. Ini penyebab utama endpoint "blocked" sebelumnya, bukan
+rate limit sungguhan.
 
-Lihat: https://www.sec.gov/cgi-bin/viewer?action=view&cik=<cik>&accession_number=<accession>&xbrl_type=v
+Dua endpoint dipakai:
+- https://www.sec.gov/files/company_tickers.json — lookup ticker -> CIK
+- https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json — semua fakta XBRL
+  (us-gaap tags) hasil laporan 10-K/10-Q, granular per periode.
+
+Lihat: 03_LAYER2_SPECS/02_EVIDENCE.md §1.5.
 """
 from __future__ import annotations
 
-import requests
 from datetime import datetime, timezone
+
+import requests
+
+from ... import cache
+
+SEC_USER_AGENT = "AlphaForge Research research@alphaforge.local"
+TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
+FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
+
+_TICKER_MAP_TTL = 7 * 24 * 3600  # 7 hari — mapping ticker->CIK nyaris tidak berubah
+_FACTS_TTL = 24 * 3600  # 24 jam, selaras kebijakan fundamental cache lain
+
+# us-gaap tags, urutan = prioritas fallback (perusahaan beda-beda pakai tag berbeda).
+REVENUE_TAGS = [
+    "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "RevenueFromContractWithCustomerIncludingAssessedTax",
+    "Revenues",
+    "SalesRevenueNet",
+]
+GROSS_PROFIT_TAGS = ["GrossProfit"]
+OPERATING_INCOME_TAGS = ["OperatingIncomeLoss"]
+NET_INCOME_TAGS = ["NetIncomeLoss", "ProfitLoss"]
+CASH_OPS_TAGS = ["NetCashProvidedByUsedInOperatingActivities"]
+CAPEX_TAGS = ["PaymentsToAcquirePropertyPlantAndEquipment"]
+
+_HEADERS = {"User-Agent": SEC_USER_AGENT}
+
+
+def _get_ticker_cik_map() -> dict[str, str]:
+    """Fetch (atau baca dari cache) mapping TICKER -> CIK 10-digit zero-padded."""
+    cached = cache.get("sec_edgar", "ticker_cik_map", _TICKER_MAP_TTL)
+    if cached is not None:
+        return cached
+
+    try:
+        resp = requests.get(TICKERS_URL, headers=_HEADERS, timeout=10)
+        resp.raise_for_status()
+        raw = resp.json()
+    except Exception:
+        return {}
+
+    mapping = {
+        entry["ticker"].upper(): str(entry["cik_str"]).zfill(10)
+        for entry in raw.values()
+        if entry.get("ticker")
+    }
+    cache.set("sec_edgar", "ticker_cik_map", mapping)
+    return mapping
 
 
 def get_cik_from_ticker(ticker: str) -> str | None:
-    """Lookup CIK dari ticker via SEC company_tickers.json."""
+    """Lookup CIK dari ticker via SEC company_tickers.json (cached 7 hari)."""
+    mapping = _get_ticker_cik_map()
+    return mapping.get(ticker.upper())
+
+
+def _fetch_company_facts(cik: str) -> dict | None:
+    cache_key = f"facts_{cik}"
+    cached = cache.get("sec_edgar", cache_key, _FACTS_TTL)
+    if cached is not None:
+        return cached
+
     try:
-        # Note: SEC endpoint sometimes blocks direct access. Fallback ke simple mapping.
-        # For production, cache this lookup hasil
-        url = "https://www.sec.gov/files/company_tickers.json"
-        resp = requests.get(url, timeout=5)
-        if resp.status_code == 403:
-            return None  # Endpoint blocked, return None gracefully
+        resp = requests.get(FACTS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
+        if resp.status_code == 404:
+            return None  # Perusahaan tanpa XBRL facts (mis. foreign private issuer)
         resp.raise_for_status()
         data = resp.json()
-
-        for entry in data.values():
-            if entry.get("ticker", "").upper() == ticker.upper():
-                return str(entry.get("cik_str", "")).zfill(10)
-        return None
     except Exception:
         return None
 
+    cache.set("sec_edgar", cache_key, data)
+    return data
 
-def fetch_quarterly_financials(ticker: str, max_periods: int = 8) -> dict[str, dict] | None:
-    """Fetch quarterly financial data dari SEC EDGAR.
 
-    Returns: {
-        'periods': [
-            {
-                'period': '2024-Q1',  # atau '2024-09-30' format
-                'revenue': float,
-                'gross_profit': float,
-                'operating_income': float,
-                'net_income': float,
-                'cash_from_operations': float,
-                'capital_expenditures': float,
-                'date': ISO datetime
-            },
-            ...
-        ],
-        'source': 'sec_edgar',
-        'last_updated': ISO datetime
-    }
+def _extract_quarterly_series(facts: dict, tags: list[str]) -> dict[str, float]:
+    """Ekstrak {fiscal_date_end: value} untuk satu metrik dari daftar tag fallback.
 
-    Jika data tidak tersedia, return None (graceful degradation).
+    Filter hanya datapoint berdurasi ~1 kuartal (75-100 hari) dari form
+    10-Q/10-K, supaya tidak tercampur dengan angka YTD/kumulatif atau
+    tahunan penuh yang juga ada di XBRL companyfacts.
     """
-    try:
-        cik = get_cik_from_ticker(ticker)
-        if not cik:
-            return None
-
-        # Try to fetch company facts (quarterly XBRL data)
-        # This is more reliable than parsing HTML
-        url = f"https://www.sec.gov/cgi-bin/browse-edgar"
-        params = {
-            "action": "getcompany",
-            "CIK": cik,
-            "type": "10-Q",
-            "dateb": "",
-            "owner": "exclude",
-            "count": 40,
-            "output": "json"
-        }
-
-        resp = requests.get(url, params=params, timeout=10)
-        if resp.status_code == 403:
-            return None  # Rate limited or blocked
-        resp.raise_for_status()
-        filings = resp.json()
-
-        # Extract quarterly data dari filing list
-        # For MVP, just mark as attempted but return None (full parsing would require XML/JSON XBRL parsing)
-        # This is intentionally limited to show requirement for full implementation
-        periods = []
-
-        for filing in filings.get("filings", {}).get("recent", [])[:max_periods]:
-            form_type = filing.get("form", "")
-            if form_type not in ["10-Q", "10-Q/A"]:
+    gaap = facts.get("facts", {}).get("us-gaap", {})
+    for tag in tags:
+        node = gaap.get(tag)
+        if not node:
+            continue
+        units = node.get("units", {}).get("USD", [])
+        series: dict[str, float] = {}
+        filed_at: dict[str, str] = {}
+        for point in units:
+            if point.get("form") not in ("10-Q", "10-Q/A", "10-K", "10-K/A"):
                 continue
+            start, end = point.get("start"), point.get("end")
+            if not start or not end:
+                continue
+            try:
+                d0 = datetime.fromisoformat(start)
+                d1 = datetime.fromisoformat(end)
+            except ValueError:
+                continue
+            duration_days = (d1 - d0).days
+            if not (75 <= duration_days <= 100):
+                continue  # buang YTD/kumulatif/tahunan
+            filed = point.get("filed", "")
+            if end in filed_at and filed <= filed_at[end]:
+                continue  # sudah ada revisi lebih baru untuk periode ini
+            series[end] = point.get("val")
+            filed_at[end] = filed
+        if series:
+            return series
+    return {}
 
-            filing_date = filing.get("filingDate", "")
-            # Would need to fetch actual filing document and parse XBRL to extract quarterly figures
-            # For now, return empty (this is placeholder showing where quarterly data would come from)
 
-        # Return structure even if empty (shows attempt was made)
-        return {
-            "periods": periods,
-            "source": "sec_edgar",
-            "last_updated": datetime.now(timezone.utc).isoformat(),
-            "status": "limited" if not periods else "ok"
-        }
+def fetch_quarterly_financials(ticker: str, max_periods: int = 8) -> dict | None:
+    """Fetch quarterly financial data dari SEC EDGAR XBRL company facts.
 
-    except Exception:
+    Returns dict dengan 'periods' (list terurut dari terbaru), atau None kalau
+    ticker tidak ditemukan / tidak punya data XBRL (mis. baru IPO, foreign issuer).
+    """
+    cik = get_cik_from_ticker(ticker)
+    if not cik:
         return None
+
+    facts = _fetch_company_facts(cik)
+    if not facts:
+        return None
+
+    revenue = _extract_quarterly_series(facts, REVENUE_TAGS)
+    if not revenue:
+        return None  # Tanpa revenue, quarterly trend tidak berguna
+
+    gross_profit = _extract_quarterly_series(facts, GROSS_PROFIT_TAGS)
+    operating_income = _extract_quarterly_series(facts, OPERATING_INCOME_TAGS)
+    net_income = _extract_quarterly_series(facts, NET_INCOME_TAGS)
+    cash_ops = _extract_quarterly_series(facts, CASH_OPS_TAGS)
+    capex = _extract_quarterly_series(facts, CAPEX_TAGS)
+
+    end_dates = sorted(revenue.keys(), reverse=True)[:max_periods]
+
+    periods = []
+    for end_date in end_dates:
+        periods.append({
+            "period": end_date,
+            "revenue": revenue.get(end_date),
+            "gross_profit": gross_profit.get(end_date),
+            "operating_income": operating_income.get(end_date),
+            "net_income": net_income.get(end_date),
+            "cash_from_operations": cash_ops.get(end_date),
+            "capital_expenditures": capex.get(end_date),
+            "fiscal_date": end_date,
+        })
+
+    return {
+        "periods": periods,
+        "source": "sec_edgar",
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+        "status": "ok" if len(periods) >= 4 else "limited",
+    }
 
 
 def extract_quarterly_metrics(quarterly_data: dict | None) -> dict:
-    """Extract key metrics dari quarterly financial data untuk Knowledge.
+    """Extract key metrics (YoY growth, margins) dari quarterly financial data.
 
-    Returns: {
-        'revenue_yoy_q1': float % or None,  # YoY growth Q-3 vs prior year Q-3
-        'revenue_yoy_q2': float % or None,
-        'revenue_yoy_q3': float % or None,
-        'revenue_yoy_q4': float % or None,
-        'gross_margin_q1': float % or None,  # Q-3
-        'gross_margin_q2': float % or None,
-        'gross_margin_q3': float % or None,
-        'gross_margin_q4': float % or None,
-        'operating_margin_q1': float % or None,
-        'operating_margin_q2': float % or None,
-        'operating_margin_q3': float % or None,
-        'operating_margin_q4': float % or None,
-        'net_margin_q1': float % or None,
-        'net_margin_q2': float % or None,
-        'net_margin_q3': float % or None,
-        'net_margin_q4': float % or None,
-        'capex_pct_revenue_q1': float % or None,
-        'capex_pct_revenue_q2': float % or None,
-        'capex_pct_revenue_q3': float % or None,
-        'capex_pct_revenue_q4': float % or None,
-    }
+    Returns dict flat: revenue_yoy_q1..q4, gross_margin_q1..q4,
+    operating_margin_q1..q4, net_margin_q1..q4, capex_pct_revenue_q1..q4.
+    q4 = kuartal paling baru, q1 = 3 kuartal sebelumnya.
     """
     if not quarterly_data or not quarterly_data.get("periods"):
         return {}
 
     periods = quarterly_data["periods"]
     if len(periods) < 4:
-        return {}  # Need at least 4 quarters
+        return {}
 
     metrics = {}
 
-    # Process last 4 quarters (most recent)
-    # periods[0] is most recent, periods[1] is Q-1, etc.
     for i in range(4):
         period = periods[i]
-        q_key = f"q{4-i}"  # q4, q3, q2, q1
+        q_key = f"q{4 - i}"
 
-        # YoY growth (compare to same quarter last year, typically periods[i+4])
         if len(periods) > i + 4:
             prior_year = periods[i + 4]
             if period.get("revenue") and prior_year.get("revenue"):
                 yoy = ((period["revenue"] - prior_year["revenue"]) / prior_year["revenue"]) * 100
                 metrics[f"revenue_yoy_{q_key}"] = yoy
 
-        # Margins
         if period.get("gross_profit") and period.get("revenue"):
             metrics[f"gross_margin_{q_key}"] = (period["gross_profit"] / period["revenue"]) * 100
         if period.get("operating_income") and period.get("revenue"):
             metrics[f"operating_margin_{q_key}"] = (period["operating_income"] / period["revenue"]) * 100
         if period.get("net_income") and period.get("revenue"):
             metrics[f"net_margin_{q_key}"] = (period["net_income"] / period["revenue"]) * 100
-
-        # CapEx as % of revenue
         if period.get("capital_expenditures") and period.get("revenue"):
             metrics[f"capex_pct_revenue_{q_key}"] = (period["capital_expenditures"] / period["revenue"]) * 100
 

@@ -1,14 +1,18 @@
 {
-  "evidence_count": 3,
-  "knowledge_generated": 3,
-  "generated_at": "2026-07-17T01:54:44.069727+00:00",
+  "evidence_count": 47,
+  "knowledge_generated": 47,
+  "generated_at": "2026-07-17T06:16:41.210200+00:00",
   "profiles": [
     {
       "ticker": "AACO",
       "exchange": "NASDAQ",
       "sector": null,
-      "size_category": null,
-      "screening_flags": [],
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
       "financial_health": {
         "revenue_trend": {
           "yoy_q1": null,
@@ -74,10 +78,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": null,
+        "return_1y": 1.1144848830058036,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": null,
+        "volatility_daily": 0.1808406278031612,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -102,30 +106,31 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T01:54:44.069727+00:00",
-        "method_version": "1.0",
-        "fields_completed": 0,
+        "evidence_date": "2026-07-17T06:16:41.210200+00:00",
+        "method_version": "1.1",
+        "fields_completed": 5,
         "fields_expected": 50,
         "sources_used": [
-          "yahoo_finance",
-          "finnhub",
-          "sec_edgar"
+          "sec_edgar",
+          "yahoo_finance"
         ],
-        "data_quality_notes": null
+        "data_quality_notes": "Limited price history (65 bars) | Revenue missing | FCF missing | No news data"
       }
     },
     {
       "ticker": "AAL",
       "exchange": "NASDAQ",
       "sector": null,
-      "size_category": null,
-      "screening_flags": [],
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
       "financial_health": {
         "revenue_trend": {
-          "yoy_q1": null,
-          "yoy_q2": null,
-          "yoy_q3": null,
-          "yoy_q4": null,
+          "yoy_q1": -6.905503634475598,
+          "yoy_q2": 14.494828957836118,
+          "yoy_q3": -4.485837868006139,
+          "yoy_q4": 1.9418187147358392,
           "cagr_3y": null,
           "cagr_5y": null
         },
@@ -136,16 +141,16 @@
           "q4": null
         },
         "operating_margin_trend": {
-          "q1": null,
-          "q2": null,
-          "q3": null,
-          "q4": null
+          "q1": -2.1512230101187155,
+          "q2": 7.886325736520289,
+          "q3": 1.1029143232780658,
+          "q4": -0.29470960322024153
         },
         "net_margin_trend": {
-          "q1": null,
-          "q2": null,
-          "q3": null,
-          "q4": -0.00065
+          "q1": -3.7686240140227865,
+          "q2": 4.162034463590883,
+          "q3": -0.8326637937331094,
+          "q4": -2.745830937320299
         },
         "balance_sheet": {
           "debt_to_equity": null,
@@ -160,7 +165,7 @@
           "fcf_q2": null,
           "fcf_q3": null,
           "fcf_q4": 861124992,
-          "fcf_margin_q4": null
+          "fcf_margin_q4": 1.5378879912892152
         },
         "capex_info": {
           "capex_nominal_q1": null,
@@ -185,10 +190,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": null,
+        "return_1y": 25.301209802914197,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": null,
+        "volatility_daily": 3.0359021886903665,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -200,7 +205,7 @@
       "valuation": {
         "pe_ratio_trailing": 50.322582,
         "pe_ratio_forward": null,
-        "ps_ratio": 50.322582,
+        "ps_ratio": 0.1842627514988493,
         "ev_ebitda": null,
         "pb_ratio": -6.164,
         "fcf_yield": 8.346168603147223
@@ -213,24 +218,362 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T01:54:45.387793+00:00",
-        "method_version": "1.0",
-        "fields_completed": 0,
+        "evidence_date": "2026-07-17T06:16:45.615266+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
         "fields_expected": 50,
         "sources_used": [
-          "yahoo_finance",
-          "finnhub",
-          "sec_edgar"
+          "sec_edgar",
+          "yahoo_finance"
         ],
-        "data_quality_notes": null
+        "data_quality_notes": "No news data"
       }
     },
     {
       "ticker": "AAOI",
       "exchange": "NASDAQ",
       "sector": null,
-      "size_category": null,
-      "screening_flags": [],
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 59.65433993636785,
+          "yoy_q2": 153.12123521746614,
+          "yoy_q3": 174.1622371157846,
+          "yoy_q4": 131.99029945818177,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 30.58712785026888,
+          "q2": 30.2684746289533,
+          "q3": 28.039281800556353,
+          "q4": 29.055734928280312
+        },
+        "operating_margin_trend": {
+          "q1": -8.94961896273746,
+          "q2": -15.517911259616133,
+          "q3": -15.330860659192446,
+          "q4": -8.595114592706294
+        },
+        "net_margin_trend": {
+          "q1": -9.184950780600646,
+          "q2": -8.83712798197218,
+          "q3": -15.119278428727977,
+          "q4": -9.44860530355158
+        },
+        "balance_sheet": {
+          "debt_to_equity": 25.356,
+          "current_ratio": 3.826,
+          "quick_ratio": 2.847,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -445583264,
+          "fcf_margin_q4": -87.88624536489152
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 38.52286561160218,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 507000000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 240.7205900877646,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 8.882420762220557,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.68856,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 15.86496014331944,
+        "ev_ebitda": null,
+        "pb_ratio": 14.005,
+        "fcf_yield": -5.539644888543855
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:48.234229+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "AAON",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 3.2323620860980222,
+          "yoy_q2": 18.873784333400735,
+          "yoy_q3": 22.53815783598987,
+          "yoy_q4": 51.851172796499334,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 26.816620815142798,
+          "q2": 26.552555309130945,
+          "q3": 27.811148298710698,
+          "q4": 25.14710143760967
+        },
+        "operating_margin_trend": {
+          "q1": 10.902208946325771,
+          "q2": 7.568837521303603,
+          "q3": 11.3458325308793,
+          "q4": 11.482162692982598
+        },
+        "net_margin_trend": {
+          "q1": 9.095369099591993,
+          "q2": 4.9706804635921005,
+          "q3": 8.011180570375652,
+          "q4": 8.0120981373859
+        },
+        "balance_sheet": {
+          "debt_to_equity": 47.455,
+          "current_ratio": 2.624,
+          "quick_ratio": 1.691,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -215134368,
+          "fcf_margin_q4": -13.304883267613876
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1616957952,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 43.067912312633375,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 3.9536859230071264,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.87732005,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 79.16084,
+        "pe_ratio_forward": null,
+        "ps_ratio": 5.734475228967054,
+        "ev_ebitda": null,
+        "pb_ratio": 11.413,
+        "fcf_yield": -2.3201570739037742
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:50.683434+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -20.251724858875182,
+          "yoy_q2": 3.6175112668451734,
+          "yoy_q3": 67.59271133287477,
+          "yoy_q4": -10.551890587288817,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 47.050619238876244,
+          "q2": 46.490705687183635,
+          "q3": 48.158685550516154,
+          "q4": 49.27057850050367
+        },
+        "operating_margin_trend": {
+          "q1": 31.029058610094484,
+          "q2": 29.99064188183249,
+          "q3": 35.373827875010434,
+          "q4": 32.275327385235286
+        },
+        "net_margin_trend": {
+          "q1": 25.986010759341017,
+          "q2": 24.920243311072355,
+          "q3": 29.283647291243497,
+          "q4": 26.60274859692042
+        },
+        "balance_sheet": {
+          "debt_to_equity": 79.548,
+          "current_ratio": 1.07,
+          "quick_ratio": 0.906,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 101090746368,
+          "fcf_margin_q4": 22.392852842185228
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 451442016256,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 59.30965152439749,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.5393605447412584,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.65745,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 40.395153,
+        "pe_ratio_forward": null,
+        "ps_ratio": 10.842385572758829,
+        "ev_ebitda": null,
+        "pb_ratio": 7.26,
+        "fcf_yield": 2.065306817574041
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:51.664888+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "AARD",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
       "financial_health": {
         "revenue_trend": {
           "yoy_q1": null,
@@ -256,12 +599,12 @@
           "q1": null,
           "q2": null,
           "q3": null,
-          "q4": -0.08595
+          "q4": 0.0
         },
         "balance_sheet": {
-          "debt_to_equity": 25.356,
-          "current_ratio": 3.826,
-          "quick_ratio": 2.847,
+          "debt_to_equity": 0.386,
+          "current_ratio": 8.064,
+          "quick_ratio": 7.859,
           "cash_and_equivalents": null,
           "total_debt": null,
           "shareholders_equity": null
@@ -270,7 +613,7 @@
           "fcf_q1": null,
           "fcf_q2": null,
           "fcf_q3": null,
-          "fcf_q4": -445583264,
+          "fcf_q4": -34437376,
           "fcf_margin_q4": null
         },
         "capex_info": {
@@ -285,7 +628,7 @@
       "competitive_structure": {
         "business_model": null,
         "revenue_by_segment": null,
-        "total_revenue_ttm": 507000000,
+        "total_revenue_ttm": null,
         "employees_count": null,
         "tam_estimate": null,
         "tam_source": null
@@ -296,15 +639,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": null,
+        "return_1y": -47.07357940203823,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": null,
+        "volatility_daily": 7.795482052267717,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.68856,
+        "institutional_pct": 0.56234,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -313,8 +656,8 @@
         "pe_ratio_forward": null,
         "ps_ratio": null,
         "ev_ebitda": null,
-        "pb_ratio": 14.005,
-        "fcf_yield": -5.539644888543855
+        "pb_ratio": 3.987,
+        "fcf_yield": -24.859735638194323
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -324,16 +667,4638 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T01:54:46.684441+00:00",
-        "method_version": "1.0",
-        "fields_completed": 0,
+        "evidence_date": "2026-07-17T06:16:53.205043+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
         "fields_expected": 50,
         "sources_used": [
-          "yahoo_finance",
-          "finnhub",
-          "sec_edgar"
+          "sec_edgar",
+          "yahoo_finance"
         ],
-        "data_quality_notes": null
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ABAT",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": 2256.818676965736,
+          "yoy_q4": 2249.665804355673,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": -274.4921564485697,
+          "q2": -375.0728730819154,
+          "q3": -33.60155013907006,
+          "q4": 9.444723743216336
+        },
+        "operating_margin_trend": {
+          "q1": -1086.2582489180868,
+          "q2": -1080.7890237620109,
+          "q3": -207.45455038214592,
+          "q4": -440.4642982557546
+        },
+        "net_margin_trend": {
+          "q1": -1173.083347874491,
+          "q2": -1098.5160875394229,
+          "q3": -194.98530515054,
+          "q4": -433.1737937781622
+        },
+        "balance_sheet": {
+          "debt_to_equity": 0.196,
+          "current_ratio": 8.118,
+          "quick_ratio": 6.909,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -580404,
+          "fcf_margin_q4": -3.5641508340202854
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 16284496,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 2.542380672253542,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 8.139964158910693,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.36321,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 20.272219673706417,
+        "ev_ebitda": null,
+        "pb_ratio": 0.852,
+        "fcf_yield": -0.17581453296123656
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:55.082638+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABCL",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -35.823609637823914,
+          "yoy_q2": 71.6294956801286,
+          "yoy_q3": 22.285948381810734,
+          "yoy_q4": 27.785461810358075,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -1479.5749704840614,
+          "q2": -290.24233200655584,
+          "q3": -851.7922948073701,
+          "q4": -691.7498496692724
+        },
+        "net_margin_trend": {
+          "q1": -1077.237308146399,
+          "q2": -203.27206743151484,
+          "q3": -637.8447794528197,
+          "q4": -519.1220685508118
+        },
+        "balance_sheet": {
+          "debt_to_equity": 14.943,
+          "current_ratio": 14.052,
+          "quick_ratio": 12.291,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -114039248,
+          "fcf_margin_q4": -143.9744066255934
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 46.07336139506915,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 79208000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 57.94871017385849,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.98581284539134,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.42571,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 23.749019976308112,
+        "ev_ebitda": null,
+        "pb_ratio": 3.086,
+        "fcf_yield": -6.062330435917837
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:56.913057+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABEO",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": 104.79812755997659,
+          "yoy_q3": -94.28571428571428,
+          "yoy_q4": 2420.2312138728325,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -800.8,
+          "q2": -301.54285714285714,
+          "q3": -5698.0,
+          "q4": -264.13990825688074
+        },
+        "net_margin_trend": {
+          "q1": -409.70000000000005,
+          "q2": -475.8285714285714,
+          "q3": 27208.25,
+          "q4": -195.81422018348624
+        },
+        "balance_sheet": {
+          "debt_to_equity": 15.988,
+          "current_ratio": 5.894,
+          "quick_ratio": 5.636,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -56589752,
+          "fcf_margin_q4": -389.2004951856946
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 10.722477064220183,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 14540000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 5.88235082584886,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 3.2526858250178385,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.70372003,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 7.389474,
+        "pe_ratio_forward": null,
+        "ps_ratio": 27.51760039841155,
+        "ev_ebitda": null,
+        "pb_ratio": 2.549,
+        "fcf_yield": -14.1436931109793
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:16:59.050707+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -33.11745657933471,
+          "yoy_q2": 44.537815126050425,
+          "yoy_q3": 49.0174672489083,
+          "yoy_q4": -28.2422293676313,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 1.6725352112676055,
+          "q2": 19.767441860465116,
+          "q3": 39.682539682539684,
+          "q4": 3.2113517550410755
+        },
+        "net_margin_trend": {
+          "q1": 6.778169014084508,
+          "q2": 20.73643410852713,
+          "q3": 33.55311355311355,
+          "q4": 5.974607916355489
+        },
+        "balance_sheet": {
+          "debt_to_equity": 33.185,
+          "current_ratio": 1.442,
+          "quick_ratio": 0.745,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 3191000064,
+          "fcf_margin_q4": 25.231280523855304
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 12647000064,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 6.101938129062187,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.8933283784031012,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.8836,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 36.493828,
+        "pe_ratio_forward": null,
+        "ps_ratio": 6.936034552599595,
+        "ev_ebitda": null,
+        "pb_ratio": 12.834,
+        "fcf_yield": 3.6377097507968346
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:00.867538+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABOS",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.0
+        },
+        "balance_sheet": {
+          "debt_to_equity": 35.622,
+          "current_ratio": 4.553,
+          "quick_ratio": 4.43,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -67432624,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 46.62162488703309,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.473546469354807,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.64204,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 1.211,
+        "fcf_yield": -43.02364947425285
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:02.630762+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ABSI",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 58.46774193548387,
+          "yoy_q2": -33.96436525612472,
+          "yoy_q3": -70.23622047244095,
+          "yoy_q4": -87.36037624926513,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -2351.9083969465646,
+          "q2": -5293.929173693086,
+          "q3": -7977.248677248677,
+          "q4": -14346.976744186046
+        },
+        "net_margin_trend": {
+          "q1": -2234.6055979643766,
+          "q2": -5154.974704890388,
+          "q3": -7594.179894179893,
+          "q4": -13766.976744186048
+        },
+        "balance_sheet": {
+          "debt_to_equity": 2.567,
+          "current_ratio": 6.589,
+          "quick_ratio": 6.276,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -41475376,
+          "fcf_margin_q4": -2259.0074074074073
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 13.953488372093023,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1836000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 185.7638616390813,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 6.695676759636704,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.73009,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 759.3489450134431,
+        "ev_ebitda": null,
+        "pb_ratio": 1.107,
+        "fcf_yield": -2.974926642411303
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:04.728435+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABTC",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": -1.9027699
+        },
+        "balance_sheet": {
+          "debt_to_equity": 29.137,
+          "current_ratio": 0.126,
+          "quick_ratio": 0.12,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": null,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 234944000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -94.52631575123111,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 7.007597876969428,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.23055,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1.6964893880445084,
+        "ev_ebitda": null,
+        "pb_ratio": 9.84,
+        "fcf_yield": null
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:06.800333+00:00",
+        "method_version": "1.1",
+        "fields_completed": 8,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "FCF missing | No news data"
+      }
+    },
+    {
+      "ticker": "ABUS",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -62.129669386002575,
+          "yoy_q2": 600.9791122715404,
+          "yoy_q3": -69.35110081112398,
+          "yoy_q4": 13277.595220313668,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -1456.859410430839,
+          "q2": 13.856038737312598,
+          "q3": -1636.8620037807184,
+          "q4": 94.29563547447049
+        },
+        "net_margin_trend": {
+          "q1": -1390.3628117913834,
+          "q2": 23.493807617096564,
+          "q3": -1463.5160680529302,
+          "q4": 94.73499101191341
+        },
+        "balance_sheet": {
+          "debt_to_equity": 1.502,
+          "current_ratio": 54.263,
+          "quick_ratio": 54.002,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -90406624,
+          "fcf_margin_q4": -47.223290123985066
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 191444992,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 50.9554016802435,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.9287844656918955,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.71919996,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 5.710843,
+        "pe_ratio_forward": null,
+        "ps_ratio": 4.890849796620463,
+        "ev_ebitda": null,
+        "pb_ratio": 1.321,
+        "fcf_yield": -9.655436598485597
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:10.393047+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ABVC",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -97.14921100570157,
+          "yoy_q2": -8.6768741424473,
+          "yoy_q3": 6272.172204943526,
+          "yoy_q4": 4911.0173759758245,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 77.0124481327801,
+          "q2": 99.83780369124652,
+          "q3": 99.92396140527543,
+          "q4": 100.0
+        },
+        "operating_margin_trend": {
+          "q1": -235539.83402489626,
+          "q2": -734.243055436991,
+          "q3": -77.66109392821545,
+          "q4": -246.79439663295435
+        },
+        "net_margin_trend": {
+          "q1": -235203.2365145228,
+          "q2": -804.4390568711478,
+          "q3": -101.41108108385824,
+          "q4": -256.6069476725925
+        },
+        "balance_sheet": {
+          "debt_to_equity": 21.29,
+          "current_ratio": 0.12,
+          "quick_ratio": 0.038,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 1156323,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -66.2011155325845,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.569751041947679,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.031400003,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 0.43,
+        "fcf_yield": 3.6754714125526498
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:12.482863+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACAD",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 15.407725119155028,
+          "yoy_q2": 28.53554615194018,
+          "yoy_q3": 15.155209680818968,
+          "yoy_q4": 7.053086848694694,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 7.895480052554673,
+          "q2": 12.236644164405101,
+          "q3": 12.832650834610401,
+          "q4": -1.7219896889525557
+        },
+        "net_margin_trend": {
+          "q1": 7.77146084799666,
+          "q2": 10.079148492247683,
+          "q3": 25.761126643290638,
+          "q4": 1.356775671299923
+        },
+        "balance_sheet": {
+          "debt_to_equity": 4.07,
+          "current_ratio": 3.587,
+          "quick_ratio": 3.273,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 154138624,
+          "fcf_margin_q4": 14.07337295090445
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 1.94432631256948,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1095250048,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 13.658536709145984,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.3334385367820745,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.98908997,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 11.597284,
+        "pe_ratio_forward": null,
+        "ps_ratio": 4.007098846886459,
+        "ev_ebitda": null,
+        "pb_ratio": 7.295,
+        "fcf_yield": 3.5121102544898655
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:14.547169+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACB",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": -0.26386
+        },
+        "balance_sheet": {
+          "debt_to_equity": 4.661,
+          "current_ratio": 5.938,
+          "quick_ratio": 2.413,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 8985625,
+          "fcf_margin_q4": 2.802813918028501
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 320592992,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -43.29670735048117,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.060583890273841,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.097040005,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 0.49848479518288813,
+        "ev_ebitda": null,
+        "pb_ratio": 6.1843886,
+        "fcf_yield": 5.622666819757626
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:16.294814+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACDC",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 4.545454545454546,
+          "yoy_q2": -13.688736027515047,
+          "yoy_q3": -30.4280289955126,
+          "yoy_q4": -21.84946984182166,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 2.6653339996668333,
+          "q2": -10.818888224745965,
+          "q3": -19.5484991317291,
+          "q4": -10.320284697508896
+        },
+        "net_margin_trend": {
+          "q1": -2.915209062135599,
+          "q2": -21.099820681410637,
+          "q3": -25.031009675018606,
+          "q4": -18.572064056939503
+        },
+        "balance_sheet": {
+          "debt_to_equity": 154.256,
+          "current_ratio": 0.82,
+          "quick_ratio": 0.549,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 155962496,
+          "fcf_margin_q4": 8.707637385604155
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 9.052491103202847,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1791100032,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -40.66748949072142,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.756381057595912,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.16695999,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 0.4848526790199371,
+        "ev_ebitda": null,
+        "pb_ratio": 3.412,
+        "fcf_yield": 17.95934675086347
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:18.146005+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACET",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.0
+        },
+        "balance_sheet": {
+          "debt_to_equity": 9.923,
+          "current_ratio": 7.655,
+          "quick_ratio": 7.542,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -50383248,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -34.96835408417428,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.710145001505222,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.63329,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 13.029,
+        "fcf_yield": -65.56690166996238
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:20.443734+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACGL",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 40.37248422949835,
+          "yoy_q2": 32.27607206292819,
+          "yoy_q3": 20.80870182076141,
+          "yoy_q4": -4.256670902160101,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": 12.283329766745132,
+          "q2": 23.729138691732206,
+          "q3": 26.423957721667644,
+          "q4": 23.158593231585932
+        },
+        "balance_sheet": {
+          "debt_to_equity": 11.282,
+          "current_ratio": 0.566,
+          "quick_ratio": 0.269,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 5276125184,
+          "fcf_margin_q4": 26.6780873624199
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 19776999424,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 12.83554791717366,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.3122501938781501,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.94857,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 7.6953845,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1.767352769448901,
+        "ev_ebitda": null,
+        "pb_ratio": 66.454,
+        "fcf_yield": 15.094941894785785
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:24.042246+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACHC",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 2.6882694906534956,
+          "yoy_q2": 13.173734556689595,
+          "yoy_q3": 6.97615697703633,
+          "yoy_q4": 1.6144496183337136,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": 1.0868196831947878,
+          "q2": 3.4659331455813867,
+          "q3": 4.256358527102198,
+          "q4": 0.49529320633878776
+        },
+        "balance_sheet": {
+          "debt_to_equity": 124.183,
+          "current_ratio": 1.711,
+          "quick_ratio": 1.443,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -216916256,
+          "fcf_margin_q4": -6.434648529373013
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 9.237912070675506,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 3371066112,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 47.60649949346785,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.195393277471931,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.4639599,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 0.9169241216003238,
+        "ev_ebitda": null,
+        "pb_ratio": 21.576,
+        "fcf_yield": -7.017645602061933
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:28.145056+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACHV",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.0
+        },
+        "balance_sheet": {
+          "debt_to_equity": 140.026,
+          "current_ratio": 2.625,
+          "quick_ratio": 2.474,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -26947124,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 116.72727411443537,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.730096374129016,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.63632,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 0.201,
+        "fcf_yield": -4.404218812630023
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:30.862681+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACIC",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 37.4438437523795,
+          "yoy_q2": 29.834229256133817,
+          "yoy_q3": 31.663656490328595,
+          "yoy_q4": -13.285282945358917,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 34.79682003268608,
+          "q2": 41.83445707610996,
+          "q3": 46.13640134963217,
+          "q4": 35.86010333595417
+        },
+        "net_margin_trend": {
+          "q1": 29.56704800421041,
+          "q2": 30.580452658239558,
+          "q3": 35.934509652082525,
+          "q4": 27.033022576659555
+        },
+        "balance_sheet": {
+          "debt_to_equity": 45.979,
+          "current_ratio": 1.068,
+          "quick_ratio": 0.423,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -18018500,
+          "fcf_margin_q4": -5.387324809465374
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.1909468718409525,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 334460992,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 1.143778751434316,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.9859265702085669,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.37008,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 4.845794,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1.5026331137704991,
+        "ev_ebitda": null,
+        "pb_ratio": 6.948,
+        "fcf_yield": -3.5852562811870747
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:33.889563+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACIU",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": -13.21537
+        },
+        "balance_sheet": {
+          "debt_to_equity": 13.649,
+          "current_ratio": 0.868,
+          "quick_ratio": 0.827,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": null,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 3702000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 5.314016283183232,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.919167156518105,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.24835,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 59.93149539009157,
+        "ev_ebitda": null,
+        "pb_ratio": 0.3956352,
+        "fcf_yield": null
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:35.843713+00:00",
+        "method_version": "1.1",
+        "fields_completed": 8,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "FCF missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACIW",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 8.69110091869482,
+          "yoy_q2": 26.97274530961746,
+          "yoy_q3": 29.152910873168235,
+          "yoy_q4": -5.75603428429758,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 14.83050954849011,
+          "q2": 8.687178822602915,
+          "q3": 26.47530159072392,
+          "q4": 13.50326131124207
+        },
+        "net_margin_trend": {
+          "q1": 14.920228606186559,
+          "q2": 3.0409362554765265,
+          "q3": 18.917445305260188,
+          "q4": 8.997320017193228
+        },
+        "balance_sheet": {
+          "debt_to_equity": 56.975,
+          "current_ratio": 1.532,
+          "quick_ratio": 0.837,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 261643248,
+          "fcf_margin_q4": 14.609057104520737
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.705345168162462,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1790966016,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 28.38073783255583,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.1587474295215174,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.02596,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 28.759804,
+        "pe_ratio_forward": null,
+        "ps_ratio": 3.3303167522259147,
+        "ev_ebitda": null,
+        "pb_ratio": 14.804,
+        "fcf_yield": 4.386686970468003
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:38.728286+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACLS",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -34.12730992111547,
+          "yoy_q2": -22.913793923256147,
+          "yoy_q3": -16.72475361776447,
+          "yoy_q4": -22.45365678739028,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 46.09816008267424,
+          "q2": 44.89627025248787,
+          "q3": 41.57370172884355,
+          "q4": 40.50192002251754
+        },
+        "operating_margin_trend": {
+          "q1": 15.142576715152964,
+          "q2": 14.888662718973599,
+          "q3": 11.71287995468398,
+          "q4": 3.9958583807475017
+        },
+        "net_margin_trend": {
+          "q1": 14.841376588441186,
+          "q2": 16.127971050250842,
+          "q3": 12.16510385701111,
+          "q4": 4.63117473210157
+        },
+        "balance_sheet": {
+          "debt_to_equity": 6.749,
+          "current_ratio": 4.589,
+          "quick_ratio": 2.591,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 49110624,
+          "fcf_margin_q4": 5.808876385918079
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.9243249763766862,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 845441024,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 94.82662594811393,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.050218877083313,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.07471,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 45.093853,
+        "pe_ratio_forward": null,
+        "ps_ratio": 5.065357575348872,
+        "ev_ebitda": null,
+        "pb_ratio": 33.991,
+        "fcf_yield": 1.146785059003065
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:41.359717+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACMR",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 2.241218729422373,
+          "yoy_q2": 41.5142813964032,
+          "yoy_q3": 32.93164757013039,
+          "yoy_q4": 13.37755422206534,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 47.89755551300574,
+          "q2": 48.502590866036435,
+          "q3": 42.03782137018873,
+          "q4": 46.37058241050233
+        },
+        "operating_margin_trend": {
+          "q1": 14.95645413033009,
+          "q2": 14.715933361811192,
+          "q3": 10.745653143111904,
+          "q4": 15.64322870498091
+        },
+        "net_margin_trend": {
+          "q1": 11.824980997638484,
+          "q2": 13.817952194342812,
+          "q3": 13.333704859563086,
+          "q4": 7.483687403518938
+        },
+        "balance_sheet": {
+          "debt_to_equity": 16.178,
+          "current_ratio": 3.513,
+          "quick_ratio": 2.475,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -142420128,
+          "fcf_margin_q4": -14.831953390125355
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 9.599892762785228,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 960225024,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 178.44368944878764,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.337457741751187,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.72310996,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 70.66386,
+        "pe_ratio_forward": null,
+        "ps_ratio": 6.0521402416018475,
+        "ev_ebitda": null,
+        "pb_ratio": 23.885,
+        "fcf_yield": -2.450695588342764
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:43.958369+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACNB",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": 58.83821623842482,
+          "yoy_q3": 52.874219125420474,
+          "yoy_q4": 48.22445266185361,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": -0.6256613148088513,
+          "q2": 23.176409725814796,
+          "q3": 29.21357144260427,
+          "q4": 27.131429929117335
+        },
+        "balance_sheet": {
+          "debt_to_equity": null,
+          "current_ratio": null,
+          "quick_ratio": null,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": null,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.6613075674177326,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 158856000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 48.31936686649027,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.539086079403339,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.40952,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 12.220906,
+        "pe_ratio_forward": null,
+        "ps_ratio": 3.9830930962040747,
+        "ev_ebitda": null,
+        "pb_ratio": 41.156,
+        "fcf_yield": null
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:48.281557+00:00",
+        "method_version": "1.1",
+        "fields_completed": 6,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "FCF missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACNT",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -56.727969720496894,
+          "yoy_q2": -33.271322266742985,
+          "yoy_q3": -8.24948760946525,
+          "yoy_q4": -7.007376185458377,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 17.202130641996074,
+          "q2": 26.088355136178425,
+          "q3": 29.654262070366045,
+          "q4": 14.478496008241052
+        },
+        "operating_margin_trend": {
+          "q1": -11.438183347350716,
+          "q2": -14.405961827149905,
+          "q3": -4.1123013656902065,
+          "q4": -12.237960339943344
+        },
+        "net_margin_trend": {
+          "q1": -12.856742360527054,
+          "q2": 33.70147973407677,
+          "q3": -10.595522160735138,
+          "q4": -10.198300283286118
+        },
+        "balance_sheet": {
+          "debt_to_equity": 16.166,
+          "current_ratio": 8.691,
+          "quick_ratio": 7.059,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 27187876,
+          "fcf_margin_q4": 35.529489558558325
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 2.173577131084213,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 76522000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 16.937351343345757,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.1943093952540855,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.7511,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1.7858630167227514,
+        "ev_ebitda": null,
+        "pb_ratio": 8.862,
+        "fcf_yield": 19.894857122781296
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:51.546578+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACOG",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -116.26371705227044,
+          "q2": -346.08469512036953,
+          "q3": -186.98526994309466,
+          "q4": -229.10837008793374
+        },
+        "net_margin_trend": {
+          "q1": -58.90327092241009,
+          "q2": -632.7462301387416,
+          "q3": -46.39703920435305,
+          "q4": -183.31602428888124
+        },
+        "balance_sheet": {
+          "debt_to_equity": null,
+          "current_ratio": 12.637,
+          "quick_ratio": 10.659,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -21670372,
+          "fcf_margin_q4": -200.18044567143312
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.037410174548743305,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 10825419,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -18.69522873139221,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.33403582036294,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.54135,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 16.79507986768563,
+        "ev_ebitda": null,
+        "pb_ratio": 2.639,
+        "fcf_yield": -11.918993374755418
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:53.524640+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACRS",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -84.32449903038139,
+          "yoy_q2": -25.896580483736447,
+          "yoy_q3": 19.269703543022416,
+          "yoy_q4": -54.072710538426136,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -1242.8865979381444,
+          "q2": -1035.9032076533483,
+          "q3": -519.8241891482267,
+          "q4": -1111.8236472945891
+        },
+        "net_margin_trend": {
+          "q1": -1036.769759450172,
+          "q2": -868.2611142374789,
+          "q3": -442.98272203698093,
+          "q4": -993.1863727454911
+        },
+        "balance_sheet": {
+          "debt_to_equity": 1.382,
+          "current_ratio": 4.027,
+          "quick_ratio": 4.027,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -32210876,
+          "fcf_margin_q4": -384.9752121429425
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.6513026052104208,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 8367000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 237.1069195592975,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 6.076790702983984,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.79639,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 89.47022151871795,
+        "ev_ebitda": null,
+        "pb_ratio": 1.029,
+        "fcf_yield": -4.302830658158172
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:56.046361+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACRV",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.0
+        },
+        "balance_sheet": {
+          "debt_to_equity": 2.528,
+          "current_ratio": 8.976,
+          "quick_ratio": 8.842,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -40892248,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 32.5757523076705,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.88521680704358,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.47375,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 2.465,
+        "fcf_yield": -54.593586294476225
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:17:58.307911+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ACT",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 2.5886601902787296,
+          "yoy_q2": 4.566219441929377,
+          "yoy_q3": 4.223415006324582,
+          "yoy_q4": 0.801387650684135,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.72339
+        },
+        "balance_sheet": {
+          "debt_to_equity": 13.939,
+          "current_ratio": 0.966,
+          "quick_ratio": 0.883,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 590830016,
+          "fcf_margin_q4": 47.60458424648704
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1241120000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 35.577510857597424,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.3920245011527124,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.23096001,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 9.718163,
+        "pe_ratio_forward": null,
+        "ps_ratio": 5.235927688896387,
+        "ev_ebitda": null,
+        "pb_ratio": 38.088,
+        "fcf_yield": 9.091910178102745
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:00.646654+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACTG",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 1133.855612852043,
+          "yoy_q2": 110.67845394736841,
+          "yoy_q3": 130.07198699589753,
+          "yoy_q4": 132.68554268554269,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 47.36863255694331,
+          "q2": 12.768116790600542,
+          "q3": 21.202435824109276,
+          "q4": 22.22570475119379
+        },
+        "operating_margin_trend": {
+          "q1": 30.78635611065567,
+          "q2": -24.1719850889006,
+          "q3": -10.809810584395922,
+          "q4": -15.407732443444754
+        },
+        "net_margin_trend": {
+          "q1": 19.519859831862533,
+          "q2": -6.426996116087984,
+          "q3": -4.592403189449247,
+          "q4": -29.021552757241096
+        },
+        "balance_sheet": {
+          "debt_to_equity": 18.205,
+          "current_ratio": 8.56,
+          "quick_ratio": 7.687,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 34659876,
+          "fcf_margin_q4": 16.11719993553841
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 215048992,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 18.88297344492591,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.485625224967367,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.88615996,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 2.00769785414662,
+        "ev_ebitda": null,
+        "pb_ratio": 5.472,
+        "fcf_yield": 8.027701928480214
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:04.320158+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ACTU",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.0
+        },
+        "balance_sheet": {
+          "debt_to_equity": null,
+          "current_ratio": 1.804,
+          "quick_ratio": 1.723,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -11840351,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": null,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -73.48242961777161,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.995200664180002,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.58198,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": null,
+        "ev_ebitda": null,
+        "pb_ratio": 0.16,
+        "fcf_yield": -29.811860867848356
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:06.277072+00:00",
+        "method_version": "1.1",
+        "fields_completed": 8,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "Revenue missing | No news data"
+      }
+    },
+    {
+      "ticker": "ADAG",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "micro",
+      "screening_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": -0.74959
+        },
+        "balance_sheet": {
+          "debt_to_equity": 12.068,
+          "current_ratio": 3.074,
+          "quick_ratio": 3.014,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -10250600,
+          "fcf_margin_q4": -133.62965659058088
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 7670902,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 111.83430783985156,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 6.240453979230247,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.12731,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 30.835993143839033,
+        "ev_ebitda": null,
+        "pb_ratio": 0.746,
+        "fcf_yield": -4.333560977499432
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:08.330112+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADAM",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": 0.44512
+        },
+        "balance_sheet": {
+          "debt_to_equity": 765.203,
+          "current_ratio": 0.817,
+          "quick_ratio": 0.772,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": null,
+          "fcf_margin_q4": null
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 323403008,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 56.361290942382894,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.0412572813534897,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.56245,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 7.8803425,
+        "pe_ratio_forward": null,
+        "ps_ratio": 2.561879201060197,
+        "ev_ebitda": null,
+        "pb_ratio": 10.193,
+        "fcf_yield": null
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:11.292627+00:00",
+        "method_version": "1.1",
+        "fields_completed": 9,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "FCF missing | No news data"
+      }
+    },
+    {
+      "ticker": "ADBE",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 13.334619837900425,
+          "yoy_q2": 12.7896025616877,
+          "yoy_q3": 18.306213017751478,
+          "yoy_q4": 15.820791039551976,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 89.13672739656053,
+          "q2": 89.27855711422845,
+          "q3": 89.62175679899968,
+          "q4": 89.19613176186158
+        },
+        "operating_margin_trend": {
+          "q1": 35.91009705431637,
+          "q2": 36.28924515698063,
+          "q3": 37.79306033135355,
+          "q4": 33.816863100634635
+        },
+        "net_margin_trend": {
+          "q1": 28.792780521028433,
+          "q2": 29.592518370073478,
+          "q3": 29.52485151609878,
+          "q4": 25.868842550619526
+        },
+        "balance_sheet": {
+          "debt_to_equity": 61.443,
+          "current_ratio": 0.751,
+          "quick_ratio": 0.631,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 9218374656,
+          "fcf_margin_q4": 36.583755096328254
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 25198000128,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -35.78660397870257,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.2703462569561887,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.88113,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 12.851447,
+        "pe_ratio_forward": null,
+        "ps_ratio": 3.712029667211732,
+        "ev_ebitda": null,
+        "pb_ratio": 28.867,
+        "fcf_yield": 9.855458704835169
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:15.326035+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADEA",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": -13.537875874039665,
+          "yoy_q2": 2.7935975061447156,
+          "yoy_q3": -0.012593016599885518,
+          "yoy_q4": 21.68499785136061,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": 26.046538154442793,
+          "q2": 19.13454248556599,
+          "q3": 30.924329337409407,
+          "q4": 33.245523613179095
+        },
+        "net_margin_trend": {
+          "q1": 13.475533249686325,
+          "q2": 19.50428646410451,
+          "q3": 10.107741100768271,
+          "q4": 21.73576909861413
+        },
+        "balance_sheet": {
+          "debt_to_equity": 85.81,
+          "current_ratio": 3.445,
+          "quick_ratio": 3.34,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 171500496,
+          "fcf_margin_q4": 37.243206337624436
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.41423281029282627,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 460488000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 85.35847039723164,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.010488984427593,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.01105,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 25.392157,
+        "pe_ratio_forward": null,
+        "ps_ratio": 6.210622090540864,
+        "ev_ebitda": null,
+        "pb_ratio": 4.232,
+        "fcf_yield": 5.996694983961106
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:17.710373+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADI",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 5.068802373857008,
+          "yoy_q2": 33.40879900733613,
+          "yoy_q3": 36.677220787567215,
+          "yoy_q4": 49.533834549231706,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 61.04426098115655,
+          "q2": 62.13651961499097,
+          "q3": 64.70904478519668,
+          "q4": 67.33328457705538
+        },
+        "operating_margin_trend": {
+          "q1": 25.679035539993667,
+          "q2": 28.4003182948727,
+          "q3": 31.548829954975265,
+          "q4": 38.07626125821555
+        },
+        "net_margin_trend": {
+          "q1": 21.581641078941907,
+          "q2": 18.001921989981767,
+          "q3": 26.289773984000696,
+          "q4": 32.46478163856971
+        },
+        "balance_sheet": {
+          "debt_to_equity": 25.81,
+          "current_ratio": 1.752,
+          "quick_ratio": 1.232,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 3868954624,
+          "fcf_margin_q4": 30.368099910019573
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 12740193280,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 60.03573888207093,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.2049609682978044,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.93361,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 58.09618,
+        "pe_ratio_forward": null,
+        "ps_ratio": 14.548541506633354,
+        "ev_ebitda": null,
+        "pb_ratio": 69.273,
+        "fcf_yield": 2.08736387054148
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:21.294274+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADMA",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 70.64585655890004,
+          "yoy_q2": 48.988091603053434,
+          "yoy_q3": 25.219468052355143,
+          "yoy_q4": -4.46098515508307,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 53.219456107036464,
+          "q2": 55.11132607555089,
+          "q3": 56.34312790559065,
+          "q4": 70.52832924283581
+        },
+        "operating_margin_trend": {
+          "q1": 30.383617010156616,
+          "q2": 35.08492917103882,
+          "q3": 38.00512575992371,
+          "q4": 50.897434777672004
+        },
+        "net_margin_trend": {
+          "q1": 23.435131792129056,
+          "q2": 28.05203961175236,
+          "q3": 27.139706758850878,
+          "q4": 39.59019328692584
+        },
+        "balance_sheet": {
+          "debt_to_equity": 110.673,
+          "current_ratio": 6.951,
+          "quick_ratio": 3.726,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 58354124,
+          "fcf_margin_q4": 11.445037107934665
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 2.2210964862480678,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 509864000,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -49.91472232408965,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 3.4186155149412953,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.93837,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 12.768117,
+        "pe_ratio_forward": null,
+        "ps_ratio": 4.004828182428454,
+        "ev_ebitda": null,
+        "pb_ratio": 1.68,
+        "fcf_yield": 2.857809770254514
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:24.294058+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADP",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 18.958868894601544,
+          "yoy_q2": -1.4960599946705242,
+          "yoy_q3": 10.896600244169925,
+          "yoy_q4": 17.645194517074717,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": 22.50135062128579,
+          "q2": 19.57412273921781,
+          "q3": 19.81602074897841,
+          "q4": 22.89533943965517
+        },
+        "balance_sheet": {
+          "debt_to_equity": 69.259,
+          "current_ratio": 1.043,
+          "quick_ratio": 0.131,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 4749387264,
+          "fcf_margin_q4": 21.98749747560223
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 21600399360,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -12.72019003775984,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.6240089732891851,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.90589994,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 23.09271,
+        "pe_ratio_forward": null,
+        "ps_ratio": 4.747867143786282,
+        "ev_ebitda": null,
+        "pb_ratio": 15.851,
+        "fcf_yield": 4.631026271318085
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:27.372326+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADPT",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 38.30269785595612,
+          "yoy_q2": 40.613283022472714,
+          "yoy_q3": 117.58045843945357,
+          "yoy_q4": 52.63055884569828,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": -56.449859847834794,
+          "q2": -42.521102600247964,
+          "q3": 10.949953710108222,
+          "q4": -27.098795044727265
+        },
+        "net_margin_trend": {
+          "q1": -56.922754228400365,
+          "q2": -43.50277688140084,
+          "q3": 10.158236940397773,
+          "q4": -28.26565454186302
+        },
+        "balance_sheet": {
+          "debt_to_equity": 92.838,
+          "current_ratio": 3.354,
+          "quick_ratio": 3.083,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 16102625,
+          "fcf_margin_q4": 5.450996274265775
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 1.12311990292632,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 295407008,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 110.47619410923548,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.348263338682048,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.96602,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 11.973247175815445,
+        "ev_ebitda": null,
+        "pb_ratio": 1.355,
+        "fcf_yield": 0.45526465746703604
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:29.655457+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADSK",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "large",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 15.487977369165487,
+          "yoy_q2": 24.417784050811576,
+          "yoy_q3": 23.122923588039868,
+          "yoy_q4": 23.18471337579618,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 90.20208205756278,
+          "q2": 90.98128190584231,
+          "q3": 91.09552077711818,
+          "q4": 90.95139607032058
+        },
+        "operating_margin_trend": {
+          "q1": 14.26821800367422,
+          "q2": 25.184344866704482,
+          "q3": 25.364274150026983,
+          "q4": 27.973112719751807
+        },
+        "net_margin_trend": {
+          "q1": 9.30802204531537,
+          "q2": 17.75382870107771,
+          "q3": 18.510523475445222,
+          "q4": 25.387797311271974
+        },
+        "balance_sheet": {
+          "debt_to_equity": 85.419,
+          "current_ratio": 0.835,
+          "quick_ratio": 0.669,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 3060999936,
+          "fcf_margin_q4": 40.775276599021325
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.8790072388831437,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 7506999808,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": -25.70509486656864,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 2.1341845323050395,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.97334,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 30.485954,
+        "pe_ratio_forward": null,
+        "ps_ratio": 6.105127059911157,
+        "ev_ebitda": null,
+        "pb_ratio": 15.114,
+        "fcf_yield": 6.678857982623984
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:33.053426+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADTN",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 9.537389520411367,
+          "yoy_q2": 17.291396560040003,
+          "yoy_q3": 22.718529318764713,
+          "yoy_q4": 17.80261229061321,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 38.417075691035905,
+          "q2": 37.320234807671994,
+          "q3": 38.336643584375615,
+          "q4": 39.494417762491
+        },
+        "operating_margin_trend": {
+          "q1": -1.6016533195556701,
+          "q2": -5.024371104773115,
+          "q3": -0.9977275573925958,
+          "q4": 2.228350915458988
+        },
+        "net_margin_trend": {
+          "q1": -4.547839705502454,
+          "q2": -7.745559629981741,
+          "q3": -3.6724103995562474,
+          "q4": -0.4617492642072663
+        },
+        "balance_sheet": {
+          "debt_to_equity": 48.044,
+          "current_ratio": 1.766,
+          "quick_ratio": 0.883,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 45972500,
+          "fcf_margin_q4": 4.096826742950013
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 2.623337038512895,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1122148992,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 22.489534771552613,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 4.230565296976071,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.0721099,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 0.8452422635958062,
+        "ev_ebitda": null,
+        "pb_ratio": 1.707,
+        "fcf_yield": 4.846926046411127
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:38.370606+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADUR",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "small",
+      "screening_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": null,
+          "yoy_q2": null,
+          "yoy_q3": null,
+          "yoy_q4": null,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "operating_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": null
+        },
+        "net_margin_trend": {
+          "q1": null,
+          "q2": null,
+          "q3": null,
+          "q4": -72.3004
+        },
+        "balance_sheet": {
+          "debt_to_equity": 0.314,
+          "current_ratio": 75.104,
+          "quick_ratio": 73.645,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": -11859975,
+          "fcf_margin_q4": -4903.32856504986
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": null,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 241876,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 7.3949591819365414,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 5.1733186514823455,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 0.02406,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": null,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1872.7238306222391,
+        "ev_ebitda": null,
+        "pb_ratio": 0.84727335,
+        "fcf_yield": -2.618287055930003
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:40.274225+00:00",
+        "method_version": "1.1",
+        "fields_completed": 10,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
+      }
+    },
+    {
+      "ticker": "ADUS",
+      "exchange": "NASDAQ",
+      "sector": null,
+      "size_category": "mid",
+      "screening_flags": [
+        "recent_ipo"
+      ],
+      "financial_health": {
+        "revenue_trend": {
+          "yoy_q1": 24.743924557016264,
+          "yoy_q2": 24.469449253061487,
+          "yoy_q3": 26.271599947023933,
+          "yoy_q4": 25.475262865483963,
+          "cagr_3y": null,
+          "cagr_5y": null
+        },
+        "gross_margin_trend": {
+          "q1": 31.884645907115022,
+          "q2": 32.5881474231849,
+          "q3": 32.21492626296919,
+          "q4": 31.867297744017648
+        },
+        "operating_margin_trend": {
+          "q1": 9.035616568159476,
+          "q2": 9.411263067224125,
+          "q3": 9.091059643776859,
+          "q4": 9.370453589137842
+        },
+        "net_margin_trend": {
+          "q1": 6.285903798547858,
+          "q2": 6.310614320504346,
+          "q3": 6.306358525093776,
+          "q4": 6.894455888298209
+        },
+        "balance_sheet": {
+          "debt_to_equity": 12.43,
+          "current_ratio": 1.826,
+          "quick_ratio": 1.68,
+          "cash_and_equivalents": null,
+          "total_debt": null,
+          "shareholders_equity": null
+        },
+        "cash_flow_trend": {
+          "fcf_q1": null,
+          "fcf_q2": null,
+          "fcf_q3": null,
+          "fcf_q4": 102889504,
+          "fcf_margin_q4": 7.103504428244796
+        },
+        "capex_info": {
+          "capex_nominal_q1": null,
+          "capex_nominal_q2": null,
+          "capex_nominal_q3": null,
+          "capex_nominal_q4": null,
+          "capex_pct_revenue_q4": 0.47055782140804325,
+          "capex_reason": null
+        }
+      },
+      "competitive_structure": {
+        "business_model": null,
+        "revenue_by_segment": null,
+        "total_revenue_ttm": 1448433024,
+        "employees_count": null,
+        "tam_estimate": null,
+        "tam_source": null
+      },
+      "competitive_momentum": {
+        "segment_growth": null,
+        "guidance_trend": null,
+        "acceleration_signal": null
+      },
+      "historical_trend": {
+        "return_1y": 3.7651537619612263,
+        "return_3y": null,
+        "return_5y": null,
+        "volatility_daily": 1.9446223674812024,
+        "beta": null,
+        "earnings_beat_miss_streak": null
+      },
+      "ownership": {
+        "institutional_pct": 1.0564,
+        "insider_pct": null,
+        "insider_transactions": []
+      },
+      "valuation": {
+        "pe_ratio_trailing": 20.325,
+        "pe_ratio_forward": null,
+        "ps_ratio": 1.46670558004618,
+        "ev_ebitda": null,
+        "pb_ratio": 61.046,
+        "fcf_yield": 4.843169975545561
+      },
+      "governance": {
+        "shares_outstanding_change_12m": null,
+        "auditor_changes": [],
+        "restatements": [],
+        "material_litigation": [],
+        "unusual_filings": []
+      },
+      "metadata": {
+        "evidence_date": "2026-07-17T06:18:42.978291+00:00",
+        "method_version": "1.1",
+        "fields_completed": 11,
+        "fields_expected": 50,
+        "sources_used": [
+          "sec_edgar",
+          "yahoo_finance"
+        ],
+        "data_quality_notes": "No news data"
       }
     }
   ]

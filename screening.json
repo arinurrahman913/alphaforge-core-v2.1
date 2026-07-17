@@ -1,10 +1,10 @@
 {
   "universe_raw": 8495,
   "universe_after_cheap_filter": 5238,
-  "universe_scanned": 5,
-  "passed_count": 2,
-  "hard_excluded_count": 3,
-  "generated_at": "2026-07-17T01:26:14.401310+00:00",
+  "universe_scanned": 60,
+  "passed_count": 47,
+  "hard_excluded_count": 13,
+  "generated_at": "2026-07-17T06:16:03.417780+00:00",
   "passed": [
     {
       "ticker": "AACO",
@@ -32,6 +32,623 @@
       "market_cap": 10360598145.87516,
       "avg_dollar_volume_20d": 2592655434.7148385,
       "last_price": 15.600000381469727,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "AAOI",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 7984957915.587044,
+      "avg_dollar_volume_20d": 1466320405.9458528,
+      "last_price": 100.23999786376953,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "AAON",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 9138070167.62024,
+      "avg_dollar_volume_20d": 113583162.19717026,
+      "last_price": 113.19999694824219,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 4909248743000.0,
+      "avg_dollar_volume_20d": 19833651191.056286,
+      "last_price": 333.260009765625,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "AARD",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 130648418.66852093,
+      "avg_dollar_volume_20d": 3123436.5339677334,
+      "last_price": 6.329999923706055,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABAT",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 328076649.74215245,
+      "avg_dollar_volume_20d": 10178734.796962881,
+      "last_price": 2.4200000762939453,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABCL",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 1858209278.0541468,
+      "avg_dollar_volume_20d": 56307120.12975931,
+      "last_price": 6.159999847412109,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABEO",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 394691383.070961,
+      "avg_dollar_volume_20d": 10052527.707652783,
+      "last_price": 7.019999980926514,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 87681450161.65166,
+      "avg_dollar_volume_20d": 542910891.7399193,
+      "last_price": 147.8000030517578,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABOS",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 153844753.66579056,
+      "avg_dollar_volume_20d": 1804485.689052105,
+      "last_price": 2.1700000762939453,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABSI",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 1396705726.1986704,
+      "avg_dollar_volume_20d": 80764708.78963709,
+      "last_price": 8.229999542236328,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABTC",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 402959998.6076355,
+      "avg_dollar_volume_20d": 14395270.569467496,
+      "last_price": 5.460000038146973,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABUS",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 929414910.4790688,
+      "avg_dollar_volume_20d": 15138950.429651737,
+      "last_price": 4.739999771118164,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABVC",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 31200531.639797688,
+      "avg_dollar_volume_20d": 326694.16558020114,
+      "last_price": 1.2100000381469727,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACAD",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 4402474060.928879,
+      "avg_dollar_volume_20d": 48090565.40944805,
+      "last_price": 25.6299991607666,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACB",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 159810731.9541893,
+      "avg_dollar_volume_20d": 3422129.48534255,
+      "last_price": 2.5799999237060547,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACDC",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 851575913.9666581,
+      "avg_dollar_volume_20d": 8141115.477113485,
+      "last_price": 4.800000190734863,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACET",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 75346786.08267593,
+      "avg_dollar_volume_20d": 817612.0291039944,
+      "last_price": 8.220000267028809,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACGL",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 34743301483.721924,
+      "avg_dollar_volume_20d": 194573940.8581276,
+      "last_price": 100.04000091552734,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACHC",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 3085033752.318344,
+      "avg_dollar_volume_20d": 108568729.41270638,
+      "last_price": 33.61000061035156,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACHV",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 602608652.8416033,
+      "avg_dollar_volume_20d": 16930601.62905555,
+      "last_price": 5.960000038146973,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACIC",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 492879361.68751335,
+      "avg_dollar_volume_20d": 3734468.583968401,
+      "last_price": 10.369999885559082,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACIU",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 219322046.90323472,
+      "avg_dollar_volume_20d": 656362.6579844952,
+      "last_price": 2.180000066757202,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACIW",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 5991932796.189079,
+      "avg_dollar_volume_20d": 62789371.03498459,
+      "last_price": 58.66999816894531,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACLS",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 4248346451.0006256,
+      "avg_dollar_volume_20d": 102088273.43688965,
+      "last_price": 139.33999633789062,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACMR",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 5861866666.249458,
+      "avg_dollar_volume_20d": 184798781.2092209,
+      "last_price": 84.08999633789062,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACNB",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 633146728.0,
+      "avg_dollar_volume_20d": 4914683.8315963745,
+      "last_price": 61.959999084472656,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACNT",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 136205897.29175568,
+      "avg_dollar_volume_20d": 1485173.1317853928,
+      "last_price": 15.119999885559082,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACOG",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 181609092.1214218,
+      "avg_dollar_volume_20d": 470959.0775871277,
+      "last_price": 8.350000381469727,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACRS",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 739519196.2554932,
+      "avg_dollar_volume_20d": 12332392.88623333,
+      "last_price": 5.360000133514404,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACRV",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 75117034.19090545,
+      "avg_dollar_volume_20d": 964068.0543190241,
+      "last_price": 1.75,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACT",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 6461420461.023617,
+      "avg_dollar_volume_20d": 14787276.23588562,
+      "last_price": 46.54999923706055,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACTG",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 430304575.69083405,
+      "avg_dollar_volume_20d": 1246150.2410006523,
+      "last_price": 4.46999979019165,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACTU",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 40197823.08726311,
+      "avg_dollar_volume_20d": 736274.8518317938,
+      "last_price": 1.659999966621399,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADAG",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "micro_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 238522057.40870905,
+      "avg_dollar_volume_20d": 1514032.6075971127,
+      "last_price": 3.5799999237060547,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADAM",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 832563196.4713631,
+      "avg_dollar_volume_20d": 9339791.77204132,
+      "last_price": 9.220000267028809,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADBE",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 93219712257.38525,
+      "avg_dollar_volume_20d": 1451414755.2871704,
+      "last_price": 235.30999755859375,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADEA",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 2862122870.6974525,
+      "avg_dollar_volume_20d": 52728213.33948851,
+      "last_price": 25.93000030517578,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADI",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 184834919663.38867,
+      "avg_dollar_volume_20d": 2114168784.938507,
+      "last_price": 380.5299987792969,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADMA",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 2043076385.4692984,
+      "avg_dollar_volume_20d": 29692044.381623268,
+      "last_price": 8.8100004196167,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADP",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 102160093378.48132,
+      "avg_dollar_volume_20d": 665493073.3614349,
+      "last_price": 256.55999755859375,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADPT",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 3484166487.1025085,
+      "avg_dollar_volume_20d": 77703626.18293762,
+      "last_price": 22.100000381469727,
+      "price_history_days": 250
+    },
+    {
+      "ticker": "ADSK",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 45974768112.595505,
+      "avg_dollar_volume_20d": 597904671.9852448,
+      "last_price": 217.05999755859375,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADTN",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 934718070.9101677,
+      "avg_dollar_volume_20d": 25598857.237415314,
+      "last_price": 11.710000038146973,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADUR",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo"
+      ],
+      "market_cap": 455093569.5682373,
+      "avg_dollar_volume_20d": 8299695.828509331,
+      "last_price": 12.779999732971191,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADUS",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 2123771605.5124512,
+      "avg_dollar_volume_20d": 28874774.874954224,
+      "last_price": 113.81999969482422,
       "price_history_days": 251
     }
   ],
@@ -67,6 +684,116 @@
       "market_cap": null,
       "avg_dollar_volume_20d": 25038.710000699757,
       "last_price": 1.600000023841858,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABLV",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 94237.69482110739,
+      "last_price": 1.0299999713897705,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ABTS",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 82840.15941207409,
+      "last_price": 1.2300000190734863,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACCL",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 58555.16724964976,
+      "last_price": 1.9299999475479126,
+      "price_history_days": 186
+    },
+    {
+      "ticker": "ACFN",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 182412.82582378387,
+      "last_price": 19.770000457763672,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACON",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 213933.07822704315,
+      "last_price": 2.640000104904175,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ACXP",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 153001.4498245716,
+      "last_price": 1.590000033378601,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADAC",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 78588.35080623627,
+      "last_price": 10.020000457763672,
+      "price_history_days": 109
+    },
+    {
+      "ticker": "ADGM",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 39399.12989228964,
+      "last_price": 0.5299999713897705,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADIL",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 213024.29881334305,
+      "last_price": 2.7899999618530273,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "ADSE",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 209930.7498407364,
+      "last_price": 12.0,
       "price_history_days": 251
     }
   ]

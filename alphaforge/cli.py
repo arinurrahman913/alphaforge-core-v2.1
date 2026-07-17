@@ -6,7 +6,7 @@ import json
 import sys
 
 from .layer1 import build_market_context_package
-from .layer2 import run_screening
+from .layer2 import run_screening, run_evidence
 
 
 def _write(data: str, out: str | None) -> None:
@@ -34,6 +34,13 @@ def main() -> None:
     screening_parser.add_argument("--limit", type=int, default=None,
                                    help="Batasi jumlah ticker yang di-screening (buat testing)")
 
+    evidence_parser = sub.add_parser("evidence", help="Jalankan Evidence (Layer 2, tahap 2) — butuh Screening dulu")
+    evidence_parser.add_argument("--screening-out", type=str, required=True,
+                                help="Path ke screening.json hasil Screening")
+    evidence_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
+    evidence_parser.add_argument("--limit", type=int, default=None,
+                                help="Batasi jumlah ticker yang di-evidence (buat testing)")
+
     args = parser.parse_args()
 
     if args.command == "layer1":
@@ -54,6 +61,35 @@ def main() -> None:
             file=sys.stderr,
         )
         _write(json.dumps(result.to_dict(), indent=2, ensure_ascii=False), args.out)
+
+    elif args.command == "evidence":
+        with open(args.screening_out, "r", encoding="utf-8") as f:
+            screening_dict = json.load(f)
+
+        # Reconstruct ScreeningResult dari dict
+        from .layer2.contracts import ScreeningCandidate, ScreeningResult
+        screening_result = ScreeningResult(
+            universe_raw=screening_dict["universe_raw"],
+            universe_after_cheap_filter=screening_dict["universe_after_cheap_filter"],
+            universe_scanned=screening_dict["universe_scanned"],
+            passed=[ScreeningCandidate(**c) for c in screening_dict["passed"]],
+            hard_excluded=[ScreeningCandidate(**c) for c in screening_dict["hard_excluded"]],
+            generated_at=screening_dict["generated_at"]
+        )
+
+        # Apply limit jika ada
+        if args.limit:
+            screening_result.passed = screening_result.passed[:args.limit]
+
+        packages = run_evidence(screening_result)
+        result_dict = {
+            "screening_universe": screening_result.universe_raw,
+            "screening_passed": len(screening_result.passed),
+            "evidence_generated": len(packages),
+            "generated_at": packages[0].generated_at if packages else None,
+            "packages": [p.to_dict() for p in packages],
+        }
+        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
 
 
 if __name__ == "__main__":

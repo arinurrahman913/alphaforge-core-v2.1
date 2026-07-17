@@ -1,0 +1,69 @@
+"""Layer 2 tahap 2: Evidence — pengumpulan fakta terverifikasi per ticker.
+
+Input: list ScreeningCandidate dari Screening
+Output: list EvidencePackage, satu per ticker
+
+Alur: ambil price/fundamental dari Yahoo, berita dari Finnhub, filing dari EDGAR.
+Tiap field ditandai dengan source + timestamp + status.
+
+Lihat 03_LAYER2_SPECS/02_EVIDENCE.md.
+"""
+from __future__ import annotations
+
+import sys
+from datetime import datetime, timezone
+from .contracts import (
+    ScreeningCandidate, ScreeningResult, EvidencePackage,
+    NewsCollection, SecFilings, SourceMetadata
+)
+from .sources.yahoo_evidence import (
+    fetch_price_market_data, fetch_fundamental_data, fetch_institutional_ownership
+)
+from .sources.finnhub import fetch_company_news
+from .sources.sec_edgar import fetch_sec_filings
+
+
+def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage | None:
+    """Bangun Evidence package untuk satu ticker yang lolos Screening."""
+    ticker = candidate.ticker
+    exchange = candidate.exchange
+
+    # Parallel fetch (dalam praktik bisa di-batch/async, tapi untuk MVP sequential fine)
+    price_market = fetch_price_market_data(ticker)
+    fundamental = fetch_fundamental_data(ticker)
+    institutional = fetch_institutional_ownership(ticker)
+    news = fetch_company_news(ticker)
+    sec_filings = fetch_sec_filings(ticker)
+
+    package = EvidencePackage(
+        ticker=ticker,
+        exchange=exchange,
+        price_market=price_market,
+        fundamental=fundamental,
+        institutional_ownership=institutional,
+        news=news,
+        sec_filings=sec_filings,
+        generated_at=datetime.now(timezone.utc).isoformat()
+    )
+
+    return package
+
+
+def run_evidence(screening_result: ScreeningResult) -> list[EvidencePackage]:
+    """Jalankan Evidence collection untuk semua kandidat dari Screening."""
+    packages = []
+
+    passed_count = len(screening_result.passed)
+    for i, candidate in enumerate(screening_result.passed, 1):
+        if i % 10 == 0 or i == 1:
+            print(f"Evidence {i}/{passed_count}: {candidate.ticker}", file=sys.stderr)
+
+        try:
+            pkg = build_evidence_for_ticker(candidate)
+            if pkg:
+                packages.append(pkg)
+        except Exception as e:
+            print(f"Error building evidence for {candidate.ticker}: {e}", file=sys.stderr)
+
+    print(f"Evidence complete: {len(packages)} packages", file=sys.stderr)
+    return packages

@@ -76,7 +76,7 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
 
         return FundamentalData(
             revenue=info.get("totalRevenue"),
-            net_income=info.get("netIncome"),
+            net_income=info.get("netIncomeToCommon"),
             eps=info.get("trailingEps"),
             pe_ratio=info.get("trailingPE"),
             debt_to_equity=info.get("debtToEquity"),

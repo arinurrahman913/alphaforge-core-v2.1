@@ -1,0 +1,132 @@
+{
+  "screening_universe": 8495,
+  "screening_passed": 2,
+  "evidence_generated": 2,
+  "generated_at": "2026-07-17T01:26:39.748482+00:00",
+  "packages": [
+    {
+      "ticker": "AACO",
+      "exchange": "NASDAQ",
+      "price_market": {
+        "last_price": 9.979999542236328,
+        "open": 9.979999542236328,
+        "high": 9.989999771118164,
+        "low": 9.979999542236328,
+        "close": 9.979999542236328,
+        "volume": 6158,
+        "market_cap": 312989422.30376816,
+        "shares_outstanding": 31361667,
+        "beta": null,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:38.846830+00:00",
+          "status": "ok"
+        }
+      },
+      "fundamental": {
+        "revenue": null,
+        "net_income": null,
+        "eps": null,
+        "pe_ratio": null,
+        "debt_to_equity": null,
+        "current_ratio": 0.086,
+        "roe": null,
+        "operating_margin": 0.0,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:39.043695+00:00",
+          "status": "ok"
+        }
+      },
+      "institutional_ownership": {
+        "percentage": 0.08061,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:39.144742+00:00",
+          "status": "ok"
+        }
+      },
+      "news": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "finnhub",
+          "fetched_at": "2026-07-17T01:26:39.144861+00:00",
+          "status": "missing"
+        }
+      },
+      "sec_filings": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "sec_edgar",
+          "fetched_at": "2026-07-17T01:26:39.748423+00:00",
+          "status": "missing"
+        }
+      },
+      "generated_at": "2026-07-17T01:26:39.748482+00:00"
+    },
+    {
+      "ticker": "AAL",
+      "exchange": "NASDAQ",
+      "price_market": {
+        "last_price": 15.600000381469727,
+        "open": 15.369999885559082,
+        "high": 16.079999923706055,
+        "low": 15.289999961853027,
+        "close": 15.600000381469727,
+        "volume": 190581805,
+        "market_cap": 10317608389.498407,
+        "shares_outstanding": 661385137,
+        "beta": null,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:40.429252+00:00",
+          "status": "ok"
+        }
+      },
+      "fundamental": {
+        "revenue": 55993999360,
+        "net_income": null,
+        "eps": 0.31,
+        "pe_ratio": 50.322582,
+        "debt_to_equity": null,
+        "current_ratio": 0.492,
+        "roe": null,
+        "operating_margin": -0.00065,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:40.626126+00:00",
+          "status": "ok"
+        }
+      },
+      "institutional_ownership": {
+        "percentage": 0.71467,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:26:40.729313+00:00",
+          "status": "ok"
+        }
+      },
+      "news": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "finnhub",
+          "fetched_at": "2026-07-17T01:26:40.729529+00:00",
+          "status": "missing"
+        }
+      },
+      "sec_filings": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "sec_edgar",
+          "fetched_at": "2026-07-17T01:26:40.896075+00:00",
+          "status": "missing"
+        }
+      },
+      "generated_at": "2026-07-17T01:26:40.896134+00:00"
+    }
+  ]
+}

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaForge v2 — Knowledge Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        body.dark-mode header {
+            background: #222;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: #666;
+        }
+
+        body.dark-mode .meta {
+            color: #999;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        body.dark-mode .search-box {
+            background: #333;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #0052a3;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .stat-card {
+            background: #222;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        body.dark-mode .stat-label {
+            color: #999;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        body.dark-mode .table-wrapper {
+            background: #222;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9f9f9;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #ddd;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        body.dark-mode th {
+            background: #333;
+            border-bottom-color: #555;
+        }
+
+        th:hover {
+            background: #f0f0f0;
+        }
+
+        body.dark-mode th:hover {
+            background: #3a3a3a;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #444;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+            cursor: pointer;
+        }
+
+        body.dark-mode tr:hover {
+            background: #2a2a2a;
+        }
+
+        .ticker-cell {
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        .size-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e0e7ff;
+            color: #4338ca;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .size-badge.large {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .size-badge.micro {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        body.dark-mode .size-badge {
+            background: #312e81;
+            color: #a5b4fc;
+        }
+
+        body.dark-mode .size-badge.large {
+            background: #15803d;
+            color: #dcfce7;
+        }
+
+        body.dark-mode .size-badge.micro {
+            background: #92400e;
+            color: #fef3c7;
+        }
+
+        .quality-bar {
+            display: inline-block;
+            height: 6px;
+            background: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+            width: 60px;
+            vertical-align: middle;
+        }
+
+        body.dark-mode .quality-bar {
+            background: #444;
+        }
+
+        .quality-fill {
+            height: 100%;
+            background: #10b981;
+        }
+
+        .quality-fill.low {
+            background: #f97316;
+        }
+
+        .quality-fill.critical {
+            background: #ef4444;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .modal-content {
+            background: #222;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+        }
+
+        body.dark-mode .modal-header {
+            background: #333;
+            border-bottom-color: #555;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        body.dark-mode .close:hover {
+            color: #e0e0e0;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 24px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        body.dark-mode .section {
+            border-color: #444;
+        }
+
+        .section-header {
+            background: #f9f9f9;
+            padding: 12px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .section-header {
+            background: #333;
+        }
+
+        .section-header:hover {
+            background: #f0f0f0;
+        }
+
+        body.dark-mode .section-header:hover {
+            background: #3a3a3a;
+        }
+
+        .section-header.active {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        body.dark-mode .section-header.active {
+            background: #312e81;
+            color: #a5b4fc;
+        }
+
+        .section-content {
+            display: none;
+            padding: 16px;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        body.dark-mode .field-label {
+            color: #999;
+        }
+
+        .field-value {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .field-value.missing {
+            color: #999;
+            font-style: italic;
+        }
+
+        body.dark-mode .field-value.missing {
+            color: #666;
+        }
+
+        .metadata-box {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 16px;
+            border-left: 4px solid #0066cc;
+        }
+
+        body.dark-mode .metadata-box {
+            background: #333;
+            border-left-color: #4080ff;
+        }
+
+        .metadata-box p {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .data-quality-notes {
+            background: #fef3c7;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+            border-left: 4px solid #f59e0b;
+            font-size: 13px;
+        }
+
+        body.dark-mode .data-quality-notes {
+            background: #92400e;
+            border-left-color: #fbbf24;
+            color: #fef3c7;
+        }
+
+        .chevron {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .chevron.active {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>AlphaForge v2 — Knowledge Dashboard</h1>
+                <div class="meta">
+                    Layer 2 Fase A Stage 3: Multi-lens Knowledge Profile (7 sections)
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+            </div>
+        </header>
+
+        <div class="controls">
+            <input
+                type="text"
+                class="search-box"
+                id="searchBox"
+                placeholder="Cari ticker..."
+                onkeyup="filterTable()"
+            >
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Tickers</div>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Data Completion</div>
+                <div class="stat-value" id="statCompletion">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Large Cap</div>
+                <div class="stat-value" id="statLarge">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Small Cap</div>
+                <div class="stat-value" id="statSmall">0</div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Ticker</th>
+                        <th onclick="sortTable(1)">Exchange</th>
+                        <th onclick="sortTable(2)">Size</th>
+                        <th onclick="sortTable(3)">Return 1Y</th>
+                        <th onclick="sortTable(4)">Volatility</th>
+                        <th onclick="sortTable(5)">P/E Ratio</th>
+                        <th onclick="sortTable(6)">Inst. Own %</th>
+                        <th onclick="sortTable(7)">Data Quality</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTicker" style="margin-bottom: 4px;"></h2>
+                    <div class="meta" id="modalSubtitle"></div>
+                </div>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allProfiles = [];
+        let sortDirection = {};
+
+        async function loadData() {
+            try {
+                const response = await fetch('data/knowledge.json');
+                const data = await response.json();
+                allProfiles = data.profiles || [];
+                renderTable();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading knowledge data:', error);
+                document.getElementById('tableBody').innerHTML =
+                    '<tr><td colspan="8" style="text-align:center;color:#f97316;">Error loading data. Make sure knowledge.json is generated.</td></tr>';
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            allProfiles.forEach(profile => {
+                const row = document.createElement('tr');
+                row.onclick = () => showDetail(profile);
+
+                const completion = (profile.metadata.fields_completed / profile.metadata.fields_expected * 100).toFixed(0);
+                const completionColor = completion >= 50 ? 'normal' : (completion >= 20 ? 'low' : 'critical');
+
+                row.innerHTML = `
+                    <td class="ticker-cell">${profile.ticker}</td>
+                    <td>${profile.exchange || '—'}</td>
+                    <td><span class="size-badge ${profile.size_category || 'micro'}">${profile.size_category || 'unknown'}</span></td>
+                    <td>${profile.historical_trend?.return_1y ? (profile.historical_trend.return_1y.toFixed(2) + '%') : '—'}</td>
+                    <td>${profile.historical_trend?.volatility_daily ? (profile.historical_trend.volatility_daily.toFixed(2) + '%') : '—'}</td>
+                    <td>${profile.valuation?.pe_ratio_trailing ? profile.valuation.pe_ratio_trailing.toFixed(1) + 'x' : '—'}</td>
+                    <td>${profile.ownership?.institutional_pct ? (profile.ownership.institutional_pct * 100).toFixed(1) + '%' : '—'}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div class="quality-bar">
+                                <div class="quality-fill ${completionColor}" style="width:${completion}%"></div>
+                            </div>
+                            <span style="font-size:12px;color:#666;">${completion}%</span>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchBox').value.toUpperCase();
+            const rows = document.getElementById('tableBody').getElementsByTagName('tr');
+
+            for (let row of rows) {
+                const ticker = row.cells[0].textContent.toUpperCase();
+                row.style.display = ticker.includes(search) ? '' : 'none';
+            }
+        }
+
+        function sortTable(columnIndex) {
+            const columnKey = ['ticker', 'exchange', 'size_category', 'return_1y', 'volatility', 'pe_ratio', 'inst_own', 'completion'][columnIndex];
+            const isAsc = sortDirection[columnKey] === 'asc';
+            sortDirection[columnKey] = isAsc ? 'desc' : 'asc';
+
+            allProfiles.sort((a, b) => {
+                let aVal, bVal;
+
+                if (columnIndex === 3) aVal = a.historical_trend?.return_1y ?? -Infinity;
+                else if (columnIndex === 4) aVal = a.historical_trend?.volatility_daily ?? -Infinity;
+                else if (columnIndex === 5) aVal = a.valuation?.pe_ratio_trailing ?? -Infinity;
+                else if (columnIndex === 6) aVal = a.ownership?.institutional_pct ?? -Infinity;
+                else aVal = a[columnKey];
+
+                if (columnIndex === 3) bVal = b.historical_trend?.return_1y ?? -Infinity;
+                else if (columnIndex === 4) bVal = b.historical_trend?.volatility_daily ?? -Infinity;
+                else if (columnIndex === 5) bVal = b.valuation?.pe_ratio_trailing ?? -Infinity;
+                else if (columnIndex === 6) bVal = b.ownership?.institutional_pct ?? -Infinity;
+                else bVal = b[columnKey];
+
+                if (typeof aVal === 'string') return isAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                return isAsc ? (aVal - bVal) : (bVal - aVal);
+            });
+
+            renderTable();
+        }
+
+        function showDetail(profile) {
+            document.getElementById('modalTicker').textContent = profile.ticker;
+            document.getElementById('modalSubtitle').textContent =
+                `${profile.exchange} • ${profile.size_category} cap • Generated: ${new Date(profile.metadata.evidence_date).toLocaleDateString()}`;
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = generateModalContent(profile);
+
+            // Setup section toggles
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    this.querySelector('.chevron')?.classList.toggle('active');
+                    this.nextElementSibling.classList.toggle('active');
+                });
+            });
+
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function generateModalContent(profile) {
+            const fh = profile.financial_health;
+            const cs = profile.competitive_structure;
+            const cm = profile.competitive_momentum;
+            const ht = profile.historical_trend;
+            const own = profile.ownership;
+            const val = profile.valuation;
+            const gov = profile.governance;
+            const meta = profile.metadata;
+
+            return `
+                <!-- Section 1: Identitas -->
+                <div class="section">
+                    <div class="section-header active">
+                        <span>1. Identitas (Identity)</span>
+                        <span class="chevron active">▼</span>
+                    </div>
+                    <div class="section-content active">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Sector</div>
+                                <div class="field-value ${!profile.sector ? 'missing' : ''}">${profile.sector || 'Not classified'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Size Category</div>
+                                <div class="field-value">${profile.size_category || 'unknown'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Screening Flags</div>
+                                <div class="field-value">${profile.screening_flags?.length > 0 ? profile.screening_flags.join(', ') : 'None'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Financial Health -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>2. Financial Health</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Net Margin Q4</div>
+                                <div class="field-value ${fh.net_margin_trend.q4 === null ? 'missing' : ''}">${fh.net_margin_trend.q4 !== null ? (fh.net_margin_trend.q4 * 100).toFixed(2) + '%' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Current Ratio</div>
+                                <div class="field-value ${fh.balance_sheet.current_ratio === null ? 'missing' : ''}">${fh.balance_sheet.current_ratio?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Quick Ratio</div>
+                                <div class="field-value ${fh.balance_sheet.quick_ratio === null ? 'missing' : ''}">${fh.balance_sheet.quick_ratio?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">D/E Ratio</div>
+                                <div class="field-value ${fh.balance_sheet.debt_to_equity === null ? 'missing' : ''}">${fh.balance_sheet.debt_to_equity?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">FCF Q4</div>
+                                <div class="field-value ${fh.cash_flow_trend.fcf_q4 === null ? 'missing' : ''}">${fh.cash_flow_trend.fcf_q4 ? '$' + (fh.cash_flow_trend.fcf_q4 / 1e9).toFixed(2) + 'B' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">FCF Margin Q4</div>
+                                <div class="field-value ${fh.cash_flow_trend.fcf_margin_q4 === null ? 'missing' : ''}">${fh.cash_flow_trend.fcf_margin_q4 !== null ? (fh.cash_flow_trend.fcf_margin_q4).toFixed(2) + '%' : '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3a: Competitive Structure -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>3a. Competitive Structure</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Business Model</div>
+                                <div class="field-value ${!cs.business_model ? 'missing' : ''}">${cs.business_model || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Revenue TTM</div>
+                                <div class="field-value ${!cs.total_revenue_ttm ? 'missing' : ''}">${cs.total_revenue_ttm ? '$' + (cs.total_revenue_ttm / 1e9).toFixed(2) + 'B' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">TAM Estimate</div>
+                                <div class="field-value ${!cs.tam_estimate ? 'missing' : ''}">${cs.tam_estimate || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Employees</div>
+                                <div class="field-value ${!cs.employees_count ? 'missing' : ''}">${cs.employees_count || '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3b: Competitive Momentum -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>3b. Competitive Momentum</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Segment Growth</div>
+                                <div class="field-value ${!cm.segment_growth ? 'missing' : ''}">${cm.segment_growth || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Guidance Trend</div>
+                                <div class="field-value ${!cm.guidance_trend ? 'missing' : ''}">${cm.guidance_trend || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Acceleration Signal</div>
+                                <div class="field-value ${!cm.acceleration_signal ? 'missing' : ''}">${cm.acceleration_signal || '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Historical Trend -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>4. Historical Trend</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Return 1Y</div>
+                                <div class="field-value">${ht.return_1y ? (ht.return_1y.toFixed(2) + '%') : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Return 3Y (CAGR)</div>
+                                <div class="field-value ${!ht.return_3y ? 'missing' : ''}">${ht.return_3y ? (ht.return_3y.toFixed(2) + '%') : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Return 5Y (CAGR)</div>
+                                <div class="field-value ${!ht.return_5y ? 'missing' : ''}">${ht.return_5y ? (ht.return_5y.toFixed(2) + '%') : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Daily Volatility</div>
+                                <div class="field-value">${ht.volatility_daily ? (ht.volatility_daily.toFixed(2) + '%') : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Beta</div>
+                                <div class="field-value ${!ht.beta ? 'missing' : ''}">${ht.beta?.toFixed(2) || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Earnings Streak</div>
+                                <div class="field-value ${!ht.earnings_beat_miss_streak ? 'missing' : ''}">${ht.earnings_beat_miss_streak || '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Ownership -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>5. Ownership</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Institutional %</div>
+                                <div class="field-value">${own.institutional_pct ? (own.institutional_pct * 100).toFixed(2) + '%' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Insider %</div>
+                                <div class="field-value ${!own.insider_pct ? 'missing' : ''}">${own.insider_pct ? (own.insider_pct * 100).toFixed(2) + '%' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Insider Transactions</div>
+                                <div class="field-value">${own.insider_transactions?.length || 0} transactions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Valuation -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>6. Valuation</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">P/E (Trailing)</div>
+                                <div class="field-value ${!val.pe_ratio_trailing ? 'missing' : ''}">${val.pe_ratio_trailing ? val.pe_ratio_trailing.toFixed(1) + 'x' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">P/E (Forward)</div>
+                                <div class="field-value ${!val.pe_ratio_forward ? 'missing' : ''}">${val.pe_ratio_forward ? val.pe_ratio_forward.toFixed(1) + 'x' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">P/S Ratio</div>
+                                <div class="field-value ${!val.ps_ratio ? 'missing' : ''}">${val.ps_ratio ? val.ps_ratio.toFixed(2) + 'x' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">P/B Ratio</div>
+                                <div class="field-value ${!val.pb_ratio ? 'missing' : ''}">${val.pb_ratio ? val.pb_ratio.toFixed(2) + 'x' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">EV/EBITDA</div>
+                                <div class="field-value ${!val.ev_ebitda ? 'missing' : ''}">${val.ev_ebitda ? val.ev_ebitda.toFixed(1) + 'x' : '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">FCF Yield</div>
+                                <div class="field-value ${!val.fcf_yield ? 'missing' : ''}">${val.fcf_yield ? val.fcf_yield.toFixed(2) + '%' : '—'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Governance -->
+                <div class="section">
+                    <div class="section-header">
+                        <span>7. Governance</span>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="section-content">
+                        <div class="section-grid">
+                            <div class="field">
+                                <div class="field-label">Shares Change 12m</div>
+                                <div class="field-value ${!gov.shares_outstanding_change_12m ? 'missing' : ''}">${gov.shares_outstanding_change_12m || '—'}</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Auditor Changes</div>
+                                <div class="field-value">${gov.auditor_changes?.length || 0} changes</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Restatements</div>
+                                <div class="field-value">${gov.restatements?.length || 0} incidents</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Material Litigation</div>
+                                <div class="field-value">${gov.material_litigation?.length || 0} cases</div>
+                            </div>
+                            <div class="field">
+                                <div class="field-label">Unusual Filings</div>
+                                <div class="field-value">${gov.unusual_filings?.length || 0} filings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metadata & Data Quality -->
+                <div class="metadata-box">
+                    <p><strong>Data Quality:</strong> ${meta.fields_completed}/${meta.fields_expected} fields populated (${(meta.fields_completed / meta.fields_expected * 100).toFixed(0)}%)</p>
+                    <p><strong>Method:</strong> Knowledge v${meta.method_version}</p>
+                    <p><strong>Sources:</strong> ${meta.sources_used?.join(', ') || 'none'}</p>
+                </div>
+
+                ${meta.data_quality_notes ? `
+                    <div class="data-quality-notes">
+                        <strong>⚠️ Data Quality Notes:</strong><br>
+                        ${meta.data_quality_notes}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function updateStats() {
+            const total = allProfiles.length;
+            const largeCap = allProfiles.filter(p => p.size_category === 'large').length;
+            const smallCap = allProfiles.filter(p => p.size_category === 'small').length;
+            const avgCompletion = total > 0
+                ? (allProfiles.reduce((sum, p) => sum + (p.metadata.fields_completed / p.metadata.fields_expected), 0) / total * 100).toFixed(0)
+                : 0;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statCompletion').textContent = avgCompletion + '%';
+            document.getElementById('statLarge').textContent = largeCap;
+            document.getElementById('statSmall').textContent = smallCap;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('knowledgeDarkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Restore theme preference
+        if (localStorage.getItem('knowledgeDarkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

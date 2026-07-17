@@ -103,6 +103,27 @@ Tiap field ditandai dengan metadata: source, fetched_at timestamp, status (ok/mi
 
 Output: `EvidencePackage` per ticker → input untuk Knowledge (tahap 3).
 
+### Evidence Dashboard (Monitoring)
+
+Visualisasi interactive untuk monitor kualitas data Evidence:
+
+```bash
+python -m alphaforge.cli evidence --screening-out screening.json --out dashboard/data/evidence.json
+python -m http.server 8532 --directory dashboard
+```
+
+Buka browser: `http://localhost:8532/evidence-live.html`
+
+Features:
+- **Table view**: 23+ ticker dengan price, market cap, revenue, net income, FCF, institutional ownership %, news count
+- **Statistics**: total packages, avg market cap/revenue, % with news
+- **Search/filter**: real-time filter by ticker
+- **Detail modal**: klik row untuk lihat full fundamentals (18+ fields), 52w high/low, ownership %, recent news
+- **Responsive**: light/dark theme, works desktop/mobile
+- **Status badges**: track data source completeness (ok/degraded/missing)
+
+Dashboard reads dari `dashboard/data/evidence.json` — tidak ada calculation, pure visualization (sesuai Prinsip 2.1).
+
 ## Status Implementasi
 
 ### Layer 1
@@ -111,13 +132,15 @@ Output: `EvidencePackage` per ticker → input untuk Knowledge (tahap 3).
 - `market_sentiment`: degraded (AAII survey & CBOE put/call belum integrated)
 
 ### Layer 2
-- **Screening**: ✅ Jalan — 2-tahap filter, rate-limited + cached
-- **Evidence**: ✅ Jalan — price, fundamental, institutional ownership, news (Finnhub), SEC filing placeholder
+- **Screening**: ✅ Jalan — 2-tahap filter (8.5K → 5.2K → ~300+ candidate), rate-limited + cached
+- **Evidence**: ✅ Jalan — extended price history (1-year OHLCV), 18 fundamental fields, institutional ownership, Finnhub news, caching 24h, rate limiting
+  - Features: price/market data, fundamentals (revenue, FCF, margins, ratios), institutional ownership %, company news
+  - Tested: 23 ticker run ~10sec, 251 price bars/ticker, 83% with Finnhub news
 - **Belum diimplementasikan**: Knowledge → Peer Comparison → Confidence → Risk/Red-Flag → 3 Reasoning Modules → Aggregator → Historical Tracking
 
 ### Dashboard
 - **Layer 1 Live** (`layer1-live.html`): ✅ terhubung, membaca JSON dari pipeline
-- **Layer 2 Dashboard**: Belum ada
+- **Evidence Live** (`evidence-live.html`): ✅ interactive table + detail modal, search/filter, 18+ fundamental fields per ticker
 
 ---
 

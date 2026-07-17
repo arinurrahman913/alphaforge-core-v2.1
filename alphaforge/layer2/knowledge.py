@@ -20,7 +20,7 @@ from .knowledge_contracts import (
 )
 from .knowledge_helpers import (
     calculate_returns, calculate_volatility, calculate_high_low_52w,
-    calculate_financial_metrics, infer_size_category
+    calculate_financial_metrics, infer_size_category, compute_financial_trends
 )
 
 
@@ -45,12 +45,33 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     high_low = calculate_high_low_52w(price_history)
 
     # 2. Kesehatan Finansial
+    # #2: Compute trends dari quarterly data jika ada
+    trends = compute_financial_trends(evidence.fundamental.quarterly_data)
+
     financial_health = FinancialHealth(
-        revenue_trend=RevenueTrend(),  # TODO: #2 — compute YoY jika quarterly data ada
-        gross_margin_trend=MarginTrend(),
-        operating_margin_trend=MarginTrend(),
+        revenue_trend=RevenueTrend(
+            yoy_q1=trends.get('revenue_yoy_q1'),
+            yoy_q2=trends.get('revenue_yoy_q2'),
+            yoy_q3=trends.get('revenue_yoy_q3'),
+            yoy_q4=trends.get('revenue_yoy_q4')
+        ),
+        gross_margin_trend=MarginTrend(
+            q1=trends.get('gross_margin_q1'),
+            q2=trends.get('gross_margin_q2'),
+            q3=trends.get('gross_margin_q3'),
+            q4=trends.get('gross_margin_q4')
+        ),
+        operating_margin_trend=MarginTrend(
+            q1=trends.get('operating_margin_q1'),
+            q2=trends.get('operating_margin_q2'),
+            q3=trends.get('operating_margin_q3'),
+            q4=trends.get('operating_margin_q4')
+        ),
         net_margin_trend=MarginTrend(
-            q4=evidence.fundamental.operating_margin
+            q1=trends.get('net_margin_q1'),
+            q2=trends.get('net_margin_q2'),
+            q3=trends.get('net_margin_q3'),
+            q4=trends.get('net_margin_q4') or evidence.fundamental.operating_margin
         ),
         balance_sheet=BalanceSheet(
             debt_to_equity=evidence.fundamental.debt_to_equity,
@@ -61,7 +82,9 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
             fcf_q4=evidence.fundamental.free_cash_flow,
             fcf_margin_q4=_fcf_margin_pct(evidence.fundamental.free_cash_flow, evidence.fundamental.revenue)
         ),
-        capex_info=CapExInfo()
+        capex_info=CapExInfo(
+            capex_pct_revenue_q4=trends.get('capex_pct_revenue_q4')
+        )
     )
 
     # 3a. Struktur Kompetitif

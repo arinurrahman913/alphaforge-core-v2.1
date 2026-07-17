@@ -21,6 +21,7 @@ from .sources.yahoo_evidence import (
 )
 from .sources.finnhub import fetch_company_news, reset_batch_tracking
 from .sources.sec_edgar import fetch_sec_filings
+from .sources.sec_parser import fetch_quarterly_financials
 
 
 def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage | None:
@@ -34,6 +35,14 @@ def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage 
     institutional = fetch_institutional_ownership(ticker)
     news = fetch_company_news(ticker)
     sec_filings = fetch_sec_filings(ticker)
+
+    # #2 Financial Trends: Fetch quarterly data dari SEC EDGAR
+    quarterly_data = fetch_quarterly_financials(ticker)
+    if quarterly_data and quarterly_data.get("periods"):
+        from .contracts import QuarterlyFundamental
+        fundamental.quarterly_data = [
+            QuarterlyFundamental(**q) for q in quarterly_data["periods"]
+        ]
 
     package = EvidencePackage(
         ticker=ticker,

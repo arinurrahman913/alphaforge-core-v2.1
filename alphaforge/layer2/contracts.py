@@ -92,8 +92,21 @@ class PriceMarketData:
 
 
 @dataclass
+class QuarterlyFundamental:
+    """Satu quarter fundamental data dari SEC EDGAR 10-K/10-Q."""
+    period: str  # '2024-Q1' atau '2024-09-30'
+    revenue: float | None = None
+    gross_profit: float | None = None
+    operating_income: float | None = None
+    net_income: float | None = None
+    cash_from_operations: float | None = None
+    capital_expenditures: float | None = None
+    fiscal_date: str | None = None  # ISO date end of period
+
+
+@dataclass
 class FundamentalData:
-    """Ringkasan fundamental dari Yahoo Finance."""
+    """Ringkasan fundamental dari Yahoo Finance + quarterly dari SEC EDGAR."""
     metadata: SourceMetadata
     revenue: float | None = None
     net_income: float | None = None
@@ -113,6 +126,7 @@ class FundamentalData:
     asset_turnover: float | None = None
     inventory_turnover: float | None = None
     interest_coverage: float | None = None
+    quarterly_data: list[QuarterlyFundamental] = field(default_factory=list)  # Last 8 quarters dari EDGAR
 
 
 @dataclass

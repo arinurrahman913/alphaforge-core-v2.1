@@ -148,6 +148,79 @@ def calculate_financial_metrics(
     return metrics
 
 
+def compute_financial_trends(quarterly_data: list | None) -> dict:
+    """#2 Financial Trends: Compute YoY growth, margin trends dari quarterly data.
+
+    Input: list of QuarterlyFundamental (most recent first)
+    Returns: {
+        'revenue_yoy_q1': float % or None,  # Q-3 vs prior year Q-3
+        'revenue_yoy_q2': float % or None,  # Q-2
+        'revenue_yoy_q3': float % or None,  # Q-1
+        'revenue_yoy_q4': float % or None,  # Q (most recent)
+        'gross_margin_q1': float % or None,  # Q-3
+        'gross_margin_q2': float % or None,
+        'gross_margin_q3': float % or None,
+        'gross_margin_q4': float % or None,
+        'operating_margin_q1': float % or None,
+        'operating_margin_q2': float % or None,
+        'operating_margin_q3': float % or None,
+        'operating_margin_q4': float % or None,
+        'net_margin_q1': float % or None,
+        'net_margin_q2': float % or None,
+        'net_margin_q3': float % or None,
+        'net_margin_q4': float % or None,
+        'capex_pct_revenue_q1': float % or None,
+        'capex_pct_revenue_q2': float % or None,
+        'capex_pct_revenue_q3': float % or None,
+        'capex_pct_revenue_q4': float % or None,
+    }
+    """
+    if not quarterly_data or len(quarterly_data) < 4:
+        return {}  # Need at least 4 quarters
+
+    trends = {}
+
+    # Process last 4 quarters (most recent first)
+    # quarterly_data[0] is most recent (Q), [1] is Q-1, [2] is Q-2, [3] is Q-3
+    for i in range(min(4, len(quarterly_data))):
+        period = quarterly_data[i]
+        q_num = 4 - i  # q4, q3, q2, q1
+        q_key = f"q{q_num}"
+
+        # YoY growth: compare to same quarter last year (typically i+4 in list)
+        if len(quarterly_data) > i + 4:
+            prior_year = quarterly_data[i + 4]
+            if hasattr(period, 'revenue') and hasattr(prior_year, 'revenue'):
+                rev = getattr(period, 'revenue')
+                prior_rev = getattr(prior_year, 'revenue')
+                if rev and prior_rev and prior_rev > 0:
+                    yoy = ((rev - prior_rev) / prior_rev) * 100
+                    trends[f"revenue_yoy_{q_key}"] = yoy
+
+        # Margins
+        if hasattr(period, 'revenue') and getattr(period, 'revenue'):
+            rev = getattr(period, 'revenue')
+            if rev > 0:
+                # Gross margin
+                if hasattr(period, 'gross_profit') and getattr(period, 'gross_profit'):
+                    gp = getattr(period, 'gross_profit')
+                    trends[f"gross_margin_{q_key}"] = (gp / rev) * 100
+                # Operating margin
+                if hasattr(period, 'operating_income') and getattr(period, 'operating_income'):
+                    oi = getattr(period, 'operating_income')
+                    trends[f"operating_margin_{q_key}"] = (oi / rev) * 100
+                # Net margin
+                if hasattr(period, 'net_income') and getattr(period, 'net_income'):
+                    ni = getattr(period, 'net_income')
+                    trends[f"net_margin_{q_key}"] = (ni / rev) * 100
+                # CapEx as % revenue
+                if hasattr(period, 'capital_expenditures') and getattr(period, 'capital_expenditures'):
+                    capex = getattr(period, 'capital_expenditures')
+                    trends[f"capex_pct_revenue_{q_key}"] = (capex / rev) * 100
+
+    return trends
+
+
 def infer_size_category(market_cap: float | None, soft_flags: list[str]) -> str | None:
     """Infer size category dari market cap + soft flags dari Screening."""
     if not market_cap:

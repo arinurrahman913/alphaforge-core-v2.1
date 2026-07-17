@@ -1,0 +1,73 @@
+{
+  "universe_raw": 8495,
+  "universe_after_cheap_filter": 5238,
+  "universe_scanned": 5,
+  "passed_count": 2,
+  "hard_excluded_count": 3,
+  "generated_at": "2026-07-17T01:47:38.363722+00:00",
+  "passed": [
+    {
+      "ticker": "AACO",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "small_cap",
+        "recent_ipo",
+        "low_liquidity"
+      ],
+      "market_cap": 312989422.30376816,
+      "avg_dollar_volume_20d": 321548.98129005433,
+      "last_price": 9.979999542236328,
+      "price_history_days": 65
+    },
+    {
+      "ticker": "AAL",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 10360598145.87516,
+      "avg_dollar_volume_20d": 2592655434.7148385,
+      "last_price": 15.600000381469727,
+      "price_history_days": 251
+    }
+  ],
+  "hard_excluded": [
+    {
+      "ticker": "AACB",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 244507.5739145279,
+      "last_price": 10.569999694824219,
+      "price_history_days": 251
+    },
+    {
+      "ticker": "AACI",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 105664.14782524109,
+      "last_price": 9.970000267028809,
+      "price_history_days": 76
+    },
+    {
+      "ticker": "AAME",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "avg_dollar_volume_20d": 25038.710000699757,
+      "last_price": 1.600000023841858,
+      "price_history_days": 251
+    }
+  ]
+}

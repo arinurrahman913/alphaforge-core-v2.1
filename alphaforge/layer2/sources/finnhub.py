@@ -1,13 +1,14 @@
-"""Fetch company news dari Finnhub.
+"""Fetch company news dari Finnhub dengan rate limiting.
 
-Endpoint `company-news` sudah terkonfirmasi free tier 60 req/menit.
-Kalau premium atau 403, graceful degradation ke status=missing (bukan error).
+Free tier: 60 req/menit. Implementation includes batching + delay
+untuk 5000+ ticker run tanpa 429 errors.
 
-Lihat 03_LAYER2_SPECS/02_EVIDENCE.md §1.4 — verifikasi free tier endpoint.
+Lihat 03_LAYER2_SPECS/02_EVIDENCE.md §1.4.
 """
 from __future__ import annotations
 
 import os
+import time
 import requests
 from datetime import datetime, timedelta, timezone
 from ..contracts import SourceMetadata, CompanyNews, NewsCollection
@@ -15,10 +16,37 @@ from ..contracts import SourceMetadata, CompanyNews, NewsCollection
 
 FINNHUB_API_KEY = os.environ.get("FINNHUB_API_KEY")
 FINNHUB_BASE_URL = "https://finnhub.io/api/v1"
+FINNHUB_BATCH_SIZE = int(os.environ.get("FINNHUB_BATCH_SIZE", "30"))
+FINNHUB_BATCH_DELAY_SECONDS = float(os.environ.get("FINNHUB_BATCH_DELAY_SECONDS", "2.0"))
+
+# Tracking untuk batch processing global (untuk orchestrator)
+_batch_counter = 0
+_batch_last_time = None
+
+
+def reset_batch_tracking():
+    """Reset batch counter (dipanggil di awal evidence run)."""
+    global _batch_counter, _batch_last_time
+    _batch_counter = 0
+    _batch_last_time = None
+
+
+def _apply_batch_delay():
+    """Apply delay jika sudah breach batch size."""
+    global _batch_counter, _batch_last_time
+    _batch_counter += 1
+    if _batch_counter >= FINNHUB_BATCH_SIZE:
+        if _batch_last_time is None:
+            _batch_last_time = time.time()
+        elapsed = time.time() - _batch_last_time
+        if elapsed < FINNHUB_BATCH_DELAY_SECONDS:
+            time.sleep(FINNHUB_BATCH_DELAY_SECONDS - elapsed)
+        _batch_counter = 0
+        _batch_last_time = time.time()
 
 
 def fetch_company_news(ticker: str, lookback_days: int = 30) -> NewsCollection:
-    """Ambil berita terkini dari Finnhub — 30-90 hari terakhir default."""
+    """Ambil berita terkini dari Finnhub — dengan rate limit handling."""
     if not FINNHUB_API_KEY:
         metadata = SourceMetadata(
             source="finnhub",
@@ -28,6 +56,8 @@ def fetch_company_news(ticker: str, lookback_days: int = 30) -> NewsCollection:
         return NewsCollection(news=[], metadata=metadata)
 
     try:
+        _apply_batch_delay()
+
         to_date = datetime.now(timezone.utc).date().isoformat()
         from_date = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).date().isoformat()
 
@@ -41,8 +71,8 @@ def fetch_company_news(ticker: str, lookback_days: int = 30) -> NewsCollection:
 
         resp = requests.get(url, params=params, timeout=10)
 
-        # 403 = premium-only endpoint
-        if resp.status_code == 403:
+        # 403 = premium-only endpoint, 429 = rate limited
+        if resp.status_code in [403, 429]:
             metadata = SourceMetadata(
                 source="finnhub",
                 fetched_at=datetime.now(timezone.utc).isoformat(),

@@ -1,0 +1,1012 @@
+{
+  "screening_universe": 8495,
+  "screening_passed": 3,
+  "evidence_generated": 3,
+  "generated_at": "2026-07-17T01:38:49.621516+00:00",
+  "packages": [
+    {
+      "ticker": "AACO",
+      "exchange": "NASDAQ",
+      "price_market": {
+        "last_price": 9.979999542236328,
+        "open": 9.979999542236328,
+        "high": 9.989999771118164,
+        "low": 9.979999542236328,
+        "close": 9.979999542236328,
+        "volume": 6158,
+        "market_cap": 312989422.30376816,
+        "shares_outstanding": 31361667,
+        "beta": null,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:48.677135+00:00",
+          "status": "ok"
+        }
+      },
+      "fundamental": {
+        "revenue": null,
+        "net_income": -598290,
+        "eps": null,
+        "pe_ratio": null,
+        "debt_to_equity": null,
+        "current_ratio": 0.086,
+        "roe": null,
+        "operating_margin": 0.0,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:48.922111+00:00",
+          "status": "ok"
+        }
+      },
+      "institutional_ownership": {
+        "percentage": 0.08061,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:49.025459+00:00",
+          "status": "ok"
+        }
+      },
+      "news": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "finnhub",
+          "fetched_at": "2026-07-17T01:38:49.618753+00:00",
+          "status": "degraded"
+        }
+      },
+      "sec_filings": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "sec_edgar",
+          "fetched_at": "2026-07-17T01:38:49.621455+00:00",
+          "status": "missing"
+        }
+      },
+      "generated_at": "2026-07-17T01:38:49.621516+00:00"
+    },
+    {
+      "ticker": "AAL",
+      "exchange": "NASDAQ",
+      "price_market": {
+        "last_price": 15.600000381469727,
+        "open": 15.369999885559082,
+        "high": 16.079999923706055,
+        "low": 15.289999961853027,
+        "close": 15.600000381469727,
+        "volume": 190581805,
+        "market_cap": 10317608389.498407,
+        "shares_outstanding": 661385137,
+        "beta": null,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:50.127778+00:00",
+          "status": "ok"
+        }
+      },
+      "fundamental": {
+        "revenue": 55993999360,
+        "net_income": 202000000,
+        "eps": 0.31,
+        "pe_ratio": 50.322582,
+        "debt_to_equity": null,
+        "current_ratio": 0.492,
+        "roe": null,
+        "operating_margin": -0.00065,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:50.355612+00:00",
+          "status": "ok"
+        }
+      },
+      "institutional_ownership": {
+        "percentage": 0.71467,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:50.488119+00:00",
+          "status": "ok"
+        }
+      },
+      "news": {
+        "count": 115,
+        "items": [
+          {
+            "headline": "Curious about the most active stocks on Thursday?",
+            "source": "ChartMill",
+            "published_at": "2026-07-16T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=bd270dff961470113c83ade4bd4c9631eb8afd94c6f3b982ec733da32b903296"
+          },
+          {
+            "headline": "American Airlines (AAL) Expected to Beat Earnings Estimates: Should You Buy?",
+            "source": "Yahoo",
+            "published_at": "2026-07-16T14:00:04+00:00",
+            "url": "https://finnhub.io/api/news?id=36897e3ae186478577ad7cfa14a9b211d1326957a096798e9929b0b1b29c9c02"
+          },
+          {
+            "headline": "How Much Upside is Left in American Airlines (AAL)? Wall Street Analysts Think 25.66%",
+            "source": "Yahoo",
+            "published_at": "2026-07-16T13:55:02+00:00",
+            "url": "https://finnhub.io/api/news?id=fead1e986d931d9ac352dd2ba2335b104f27ee341cc2997b5ac33f8f6911b0e5"
+          },
+          {
+            "headline": "Boeing, Airbus, Major Airlines Push Congress for $20 Billion to Modernize Air Traffic Control: Report",
+            "source": "Benzinga",
+            "published_at": "2026-07-16T06:43:00+00:00",
+            "url": "https://finnhub.io/api/news?id=b33abd2b4ceef228ce98114e264de0c53ced4d3074f2ee11254ea928908eb879"
+          },
+          {
+            "headline": "Former FedEx CFO John Dietrich joins American Airlines board",
+            "source": "Yahoo",
+            "published_at": "2026-07-15T23:32:28+00:00",
+            "url": "https://finnhub.io/api/news?id=e2e5f6917884b4a4915c6887a307460bc86b2962542ff47ebc4d60aa49ab5f64"
+          },
+          {
+            "headline": "Stock Market Today, July 15: American Airlines Is About to Announce Earnings: Here's What Investors Are Watching",
+            "source": "Yahoo",
+            "published_at": "2026-07-15T21:24:21+00:00",
+            "url": "https://finnhub.io/api/news?id=22f541355c22ee52d82b07bd504a8270621a88ab6031d798d703d23404b4cc82"
+          },
+          {
+            "headline": "American Airlines elects John W. Dietrich to its board of directors",
+            "source": "Yahoo",
+            "published_at": "2026-07-15T20:30:00+00:00",
+            "url": "https://finnhub.io/api/news?id=231f9a31bb7e516002b637c3183f2df5a6df59460d6fe5c104d40ee25c4b4271"
+          },
+          {
+            "headline": "Most active stocks in Wednesday's session",
+            "source": "ChartMill",
+            "published_at": "2026-07-15T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=b0a8114197195c347f2340114443cc88b61d49ed4b05fc05674367bd9345b982"
+          },
+          {
+            "headline": "U.S. Aviation Sector Asks Congress For Another $20B To Complete Air Traffic Control Modernization Effort",
+            "source": "Benzinga",
+            "published_at": "2026-07-15T16:25:34+00:00",
+            "url": "https://finnhub.io/api/news?id=abc8fca2d0be1c8d32a908b82cd20b88ecfdf4549d1459bbacb36b18ec491684"
+          },
+          {
+            "headline": "United Airlines Earnings Prediction Market Preview: What Will Scott Kirby Say?",
+            "source": "Benzinga",
+            "published_at": "2026-07-15T14:30:21+00:00",
+            "url": "https://finnhub.io/api/news?id=fa77fff71784fd06b2112132ccdf62f5b2c804a4bb83caa0be3e86a1ec28f90c"
+          },
+          {
+            "headline": "American Airlines (AAL) Stock Looks Cheap On Cash Flow But Pricey On Earnings",
+            "source": "Yahoo",
+            "published_at": "2026-07-15T01:13:01+00:00",
+            "url": "https://finnhub.io/api/news?id=c6086431b60af5a5a94c417c05b8c2928343370d165a0bd1144b5f9b8db5b16c"
+          },
+          {
+            "headline": "United's latest Economy Plus gambit? Kick out the middle-seat passenger for more space.",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T19:07:42+00:00",
+            "url": "https://finnhub.io/api/news?id=6c5f4bf06f9a7ddc693594f651e85429fb29c14ccce12957c367e40e73f88543"
+          },
+          {
+            "headline": "What Kept Coming Up When Analysts Grilled DAL",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T19:03:21+00:00",
+            "url": "https://finnhub.io/api/news?id=42b5fc4a6ea705dccda014dc4151007a9e3f4247f9d8287f7f0613963e254a57"
+          },
+          {
+            "headline": "Discover the most active stocks in Tuesday's session.",
+            "source": "ChartMill",
+            "published_at": "2026-07-14T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=4ed779cb1411662dce9d8f825cffa0a295384510202af846f472c6bafce86a1c"
+          },
+          {
+            "headline": "Why American Airlines (AAL) Might be Well Poised for a Surge",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T16:20:01+00:00",
+            "url": "https://finnhub.io/api/news?id=da76916aa1519dadae56054a06b366b57711a6c339785fe163efe84023d785b6"
+          },
+          {
+            "headline": "All You Need to Know About American Airlines (AAL) Rating Upgrade to Buy",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T16:00:04+00:00",
+            "url": "https://finnhub.io/api/news?id=836bd2dbf2cfa1de7991cdec6524444055bb08d49ec45e7e4a11453397ce6fac"
+          },
+          {
+            "headline": "Frontier Airlines to add Starlink internet on planes starting 2027",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T14:09:13+00:00",
+            "url": "https://finnhub.io/api/news?id=06f163a1fc1e07022df7705992e87bce4e8c6a24b9d6e95d117e5de1e0c0b5cd"
+          },
+          {
+            "headline": "Is American Airlines (AAL) Stock Undervalued Right Now?",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T13:40:05+00:00",
+            "url": "https://finnhub.io/api/news?id=6d616393c120714422df5adf906238652fb13d2aeb7aa238b7019114e5ad7861"
+          },
+          {
+            "headline": "Fast-paced Momentum Stock American Airlines (AAL) Is Still Trading at a Bargain",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T12:55:02+00:00",
+            "url": "https://finnhub.io/api/news?id=9304a4291fe4c618868a6c391edecf5062e0013fca29b43aeb4d8e99a1a69be8"
+          },
+          {
+            "headline": "Citi Beats Every Profit Estimate as CEO’s Rebuild Gains Steam",
+            "source": "Yahoo",
+            "published_at": "2026-07-14T12:03:33+00:00",
+            "url": "https://finnhub.io/api/news?id=a69392a304c7f46a2d6f4a5e83dcd70d2da40b6a11bc273ccbf0da8ab2a65c98"
+          },
+          {
+            "headline": "American Airlines (AAL) Suffers a Larger Drop Than the General Market: Key Insights",
+            "source": "Yahoo",
+            "published_at": "2026-07-13T22:15:03+00:00",
+            "url": "https://finnhub.io/api/news?id=74dc6fc27f4f90fa6bf00ef9b8d4a846c8d7db695fe43893631ca91dba5ae5f8"
+          },
+          {
+            "headline": "3 Stocks Under $50 We’re Skeptical Of",
+            "source": "Yahoo",
+            "published_at": "2026-07-13T18:14:39+00:00",
+            "url": "https://finnhub.io/api/news?id=9968624923fdba7c82e2569d9a48d779d14ee31f9bb022297168b561ad52f31b"
+          },
+          {
+            "headline": "Discover the most active stocks in Monday's session.",
+            "source": "ChartMill",
+            "published_at": "2026-07-13T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=4561a35487c43ddff6117fb1118055e6c140b25b86520e4ffd9af9ee02bf8303"
+          },
+          {
+            "headline": "Delta Air Lines Trends to Watch in Fuel, Loyalty and AI Push",
+            "source": "Yahoo",
+            "published_at": "2026-07-13T17:14:00+00:00",
+            "url": "https://finnhub.io/api/news?id=11b14a6abff4ade7e12d7d797c10625b408a8c22dccab3dc2854cbfca421b415"
+          },
+          {
+            "headline": "Retail investors are cashing out of Apple, Tesla, and chip stocks: Chart of the Day",
+            "source": "Yahoo",
+            "published_at": "2026-07-13T16:24:04+00:00",
+            "url": "https://finnhub.io/api/news?id=da468894f2ff2dab6984da8eff68e602aee15e6c6c3301ae4a7d3e76ec51f518"
+          },
+          {
+            "headline": "For Delta Stock, Pricing Power Is Only Half the Battle",
+            "source": "Yahoo",
+            "published_at": "2026-07-13T13:07:41+00:00",
+            "url": "https://finnhub.io/api/news?id=7b9e0c004cee501e16192d96c7409a12e4a665acfc12fab439b30590d6d1939a"
+          },
+          {
+            "headline": "EasyJet Has Private Equity Firms Going Out of Their Comfort Zone",
+            "source": "Yahoo",
+            "published_at": "2026-07-11T11:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=8115207e211c49d92c0aba4e64918fd792e597cf3108b1726f42a1e15b5ac820"
+          },
+          {
+            "headline": "What Delta’s report tells investors in American and United",
+            "source": "Yahoo",
+            "published_at": "2026-07-10T14:47:51+00:00",
+            "url": "https://finnhub.io/api/news?id=c971f29658c205711c42072050a1875e8f723ffe866ef005b53134bc8dce37ac"
+          },
+          {
+            "headline": "Delta Air Lines Expects To Overcome Major Fuel Costs. Shares Fall After Results.",
+            "source": "Yahoo",
+            "published_at": "2026-07-10T13:41:58+00:00",
+            "url": "https://finnhub.io/api/news?id=d8782638d5fecc96004b6dd2746a8945f59eb68ce48be7dc588402076f927465"
+          },
+          {
+            "headline": "Palm Beach Airport Just Became DJT— and the First Thing Eric Trump Did Was Make Sure UPS Didn't Steal the Moment: 'There Was No Way in Hell…'",
+            "source": "Benzinga",
+            "published_at": "2026-07-10T04:54:28+00:00",
+            "url": "https://finnhub.io/api/news?id=ff13350d8a86ce1247e82409ff65011c600c4c4cb940940d1ec2d8d3a485794a"
+          },
+          {
+            "headline": "The bizarre reason Wall Street just downgraded American Airlines",
+            "source": "Yahoo",
+            "published_at": "2026-07-09T21:33:00+00:00",
+            "url": "https://finnhub.io/api/news?id=2bed05377a3498d51de504ada9193a3c583b2ca7b536879458f734449aff9291"
+          },
+          {
+            "headline": "Thursday's session: most active stocks",
+            "source": "ChartMill",
+            "published_at": "2026-07-09T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=1845d86ec9dbb7c7d57ac424174627d9ba28273cb0c7fa50db769ff26908fc76"
+          },
+          {
+            "headline": "Delta Q2 earnings top estimates, reinstates full-year guidance as fuel prices bite",
+            "source": "Yahoo",
+            "published_at": "2026-07-09T17:58:15+00:00",
+            "url": "https://finnhub.io/api/news?id=91cc7a88246ebde9560a30571e4eb2e357291b2469c9cb6eb6bac2ccdf277e97"
+          },
+          {
+            "headline": "Delta Q2 earnings preview: What to watch",
+            "source": "Yahoo",
+            "published_at": "2026-07-09T17:58:15+00:00",
+            "url": "https://finnhub.io/api/news?id=8b0860d1fbd9a25df33efc6ab1095e4fb2108c6e19f86d3e00e8bb1295e11106"
+          },
+          {
+            "headline": "LATAM Airlines Group shares are trading higher after Barclays maintained an Overweight rating on the stock and raised its price target from $55 to $60.",
+            "source": "Benzinga",
+            "published_at": "2026-07-09T14:37:24+00:00",
+            "url": "https://finnhub.io/api/news?id=c1ee1d154e7a72f8113fcee8608cf5a7a0ec05e40f07f3819a49fa5ac0363ed1"
+          },
+          {
+            "headline": "American Airlines Group announces webcast of second-quarter 2026 financial results",
+            "source": "Yahoo",
+            "published_at": "2026-07-09T14:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=68306ea57134d63b16c84fa35dfcf84bad1336296844176948d7faae4e8ddf33"
+          },
+          {
+            "headline": "American Airlines Group (AAL) Launches Ontario Service On A Narrative That Sees More Value",
+            "source": "Yahoo",
+            "published_at": "2026-07-09T01:15:18+00:00",
+            "url": "https://finnhub.io/api/news?id=8b7efc23d20eaefaff774fdbc1ef4da3b906bc7d3219820e3a358a85cdc50e90"
+          },
+          {
+            "headline": "American Airlines (AAL) Stock Faces Fresh Pressure As Oil Spike Tests Its Balance Sheet",
+            "source": "Yahoo",
+            "published_at": "2026-07-08T22:16:33+00:00",
+            "url": "https://finnhub.io/api/news?id=bf1de8ddb6d0826c6370839910424c86f8bac831c1e594d0c4de8d4182032431"
+          },
+          {
+            "headline": "American Airlines and United Airlines Stocks Trade Down, What You Need To Know",
+            "source": "Yahoo",
+            "published_at": "2026-07-08T19:38:44+00:00",
+            "url": "https://finnhub.io/api/news?id=2dd0450b657650a9a0ed783d8351d1c5762c885a93f4047d2f80c360b1381c45"
+          },
+          {
+            "headline": "American Airlines Sinks 5%, United Falls 4%, Delta and JetBlue Slip 3% as Crude Oil Jumps",
+            "source": "Yahoo",
+            "published_at": "2026-07-08T16:14:27+00:00",
+            "url": "https://finnhub.io/api/news?id=59c7a047c32eb4832411cb11a5db21d13c8323812dc44ee47f9eae758b10937c"
+          },
+          {
+            "headline": "Republic Airways Holdings Appoints Matthew Koscal As President And CEO, Effective June 15, To Succeed David Grizzle",
+            "source": "Benzinga",
+            "published_at": "2026-07-08T11:43:07+00:00",
+            "url": "https://finnhub.io/api/news?id=5ce22c6b17aa7c622f856881e7f0ba1ebca5a53dffddc274b78078bede3a6cbb"
+          },
+          {
+            "headline": "Why Is American Airlines Stock Falling Wednesday?",
+            "source": "Benzinga",
+            "published_at": "2026-07-08T08:33:46+00:00",
+            "url": "https://finnhub.io/api/news?id=74e4a91d1cf442145501da2da7cca604e2fd2e5f95bad3c303e621e21bc761ad"
+          },
+          {
+            "headline": "JetBlue Takes Biggest Hit Among Airline Stocks as Oil Prices Rise",
+            "source": "Yahoo",
+            "published_at": "2026-07-07T20:04:00+00:00",
+            "url": "https://finnhub.io/api/news?id=e54502a362fee2654f8cab1bf299e43c13a49dfa8f38c484b08dd7a1c247d9c6"
+          },
+          {
+            "headline": "Most active stocks in Tuesday's session",
+            "source": "ChartMill",
+            "published_at": "2026-07-07T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=5df0afbf999a19d7c833bf6e681db4eb9a871138469ce1c44a9ad0f6ff66e543"
+          },
+          {
+            "headline": "Melius Research Downgrades American Airlines Group to Hold, Raises Price Target to $19",
+            "source": "Benzinga",
+            "published_at": "2026-07-07T13:38:05+00:00",
+            "url": "https://finnhub.io/api/news?id=f086b4d2cc48fec7d79eb71b088979adab85412345da964ddc50de8b8eb0ec74"
+          },
+          {
+            "headline": "Cloudflare upgraded, SolarEdge downgraded: Wall Street's top analyst calls",
+            "source": "Yahoo",
+            "published_at": "2026-07-07T13:36:36+00:00",
+            "url": "https://finnhub.io/api/news?id=45f691d221da4f809a60fd81d25821aeec2af33b68bdeb768587d587da8adb18"
+          },
+          {
+            "headline": "Here Are Tuesday’s Best Wall Street Analyst Research Calls: Adobe, American Airlines, Broadcom, First Solar, Meta Platforms, Shopify, Space-X, Ventas, Waste Managment, and More",
+            "source": "Yahoo",
+            "published_at": "2026-07-07T12:00:18+00:00",
+            "url": "https://finnhub.io/api/news?id=48c1a57b715d70a1dbcd864bc75ff450253eab2b66223e37d763ead2ec40d90a"
+          },
+          {
+            "headline": "What's Going on With American Airlines Stock Tuesday?",
+            "source": "Benzinga",
+            "published_at": "2026-07-07T11:06:30+00:00",
+            "url": "https://finnhub.io/api/news?id=0c86c9dc251f1fc169d64b55005043ad6f612c505ae6e80dc5b1877e9b856419"
+          },
+          {
+            "headline": "Susquehanna Maintains Positive on American Airlines Group, Raises Price Target to $25",
+            "source": "Benzinga",
+            "published_at": "2026-07-07T07:15:16+00:00",
+            "url": "https://finnhub.io/api/news?id=df2a1b7bd557667baf95f7f8193cd02553d197bb01ff1eb6ca4e0d4dbad37938"
+          },
+          {
+            "headline": "These stocks are making the most noise in today's session.",
+            "source": "ChartMill",
+            "published_at": "2026-07-06T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=b5c829c74f94c16551ad0f087d3ee3cd1b3cf2c3126e626808ee06e3a96030a8"
+          },
+          {
+            "headline": "Here is why American Airlines Group Inc. (AAL) is among the Best Quality Stocks to Buy and Hold for the Next Decade",
+            "source": "Yahoo",
+            "published_at": "2026-07-06T17:22:11+00:00",
+            "url": "https://finnhub.io/api/news?id=72750978ac31e4aded0a6c483fe331b76235c4de3519b79d33c187bee828f68b"
+          },
+          {
+            "headline": "BofA sees Delta, United entering a rare airline sweet spot",
+            "source": "Yahoo",
+            "published_at": "2026-07-04T19:13:00+00:00",
+            "url": "https://finnhub.io/api/news?id=a1fb3030d69f87280393168da7e19029cb74e2b472e9eaa29ba47e1ce2b1affe"
+          },
+          {
+            "headline": "American Airlines (AAL) Stock Moves -1.27%: What You Should Know",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T22:15:02+00:00",
+            "url": "https://finnhub.io/api/news?id=581ce8042872a6b27cf7868733af424fc67b35bf65e74ad91c20239c2976d39d"
+          },
+          {
+            "headline": "Morgan Stanley resets American Airlines stock price target amid jet fuel surge",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T19:47:00+00:00",
+            "url": "https://finnhub.io/api/news?id=aac7a8ed2db9c250fdd6179c7f5bc54f461efb7fff98e4774946dc0c404f895a"
+          },
+          {
+            "headline": "Airlines Get a Wall Street Lift as Goldman, TD Cowen Raise Targets on Delta, United, Southwest, American",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T16:48:48+00:00",
+            "url": "https://finnhub.io/api/news?id=54d7af3efbdcb8136973c1b620bd2bf702a2bc3ccecfcfb8f634c9d658cc8a0e"
+          },
+          {
+            "headline": "Stocks Climb as Fed Rate Hike Fears Ease on a Weak Jobs Report",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T14:05:21+00:00",
+            "url": "https://finnhub.io/api/news?id=ef43faac7197fb45f09cb3313f9b21be7d31dea3fa040f0e330f0dae86076ca3"
+          },
+          {
+            "headline": "BMO Capital Maintains Market Perform on American Airlines Group, Raises Price Target to $19.5",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T12:34:22+00:00",
+            "url": "https://finnhub.io/api/news?id=7d0f334cb252db8d6b8fe3b6839db690a33155517fe7bb361ef16f9667fdaf5c"
+          },
+          {
+            "headline": "TD Cowen Maintains Buy on American Airlines Group, Raises Price Target to $24",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T10:13:19+00:00",
+            "url": "https://finnhub.io/api/news?id=653b745e1d88bc1cf984c17fb52116a2d559fa8ca71fd303677df24cf4b876f1"
+          },
+          {
+            "headline": "2 Cash-Producing Stocks with Competitive Advantages and 1 That Underwhelm",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T09:24:24+00:00",
+            "url": "https://finnhub.io/api/news?id=5cd834b88f232ac22e6bfe56db74fa9dad9ed558c4a36af94044010564f52770"
+          },
+          {
+            "headline": "Trump's America250 Celebrations to Close Reagan National Airport for Nearly 15 Hours (UPDATED)",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T08:04:22+00:00",
+            "url": "https://finnhub.io/api/news?id=bdef6b1b1881d24cfe9a3e8e9d06dbed407c1a7f1bf83c5d164ffb97da4eb1f3"
+          },
+          {
+            "headline": "Goldman Sachs Maintains Sell on American Airlines Group, Raises Price Target to $15",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T06:03:04+00:00",
+            "url": "https://finnhub.io/api/news?id=1a72df90755779727396670b238660838ee4596852d210114fc024d154e3afeb"
+          },
+          {
+            "headline": "Why Did PANW, AAL, MRNA Surge To 52-Week Highs?",
+            "source": "Yahoo",
+            "published_at": "2026-07-02T04:18:19+00:00",
+            "url": "https://finnhub.io/api/news?id=ce17c9b20616cb8ef7fb4c956cf8e01b2a5840726dcd42cb21f3b2815fa23a4d"
+          },
+          {
+            "headline": "Check out the stocks that are attracting the most attention and driving market activity.",
+            "source": "ChartMill",
+            "published_at": "2026-07-01T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=f68c82dd92b003dcd4b1d135ef7b23675aa3ef26d1800c07742cb1f22d894029"
+          },
+          {
+            "headline": "Higher Airfares Are Sticking After Spring Price Hikes, Analyst Says",
+            "source": "Benzinga",
+            "published_at": "2026-07-01T13:48:19+00:00",
+            "url": "https://finnhub.io/api/news?id=882eec741e07b5c9ea552ba0e2c20172eb0c1bbc69963586aa766f3a4521acbc"
+          },
+          {
+            "headline": "Bernstein Maintains Market Outperform on American Airlines Group, Raises Price Target to $23",
+            "source": "Benzinga",
+            "published_at": "2026-07-01T11:24:16+00:00",
+            "url": "https://finnhub.io/api/news?id=345ea3494963eab528ff149e0bbeb43c18bea7651e696f2548c8b3b4c08fc3d6"
+          },
+          {
+            "headline": "B of A Securities Maintains Neutral on American Airlines Group, Raises Price Target to $19",
+            "source": "Benzinga",
+            "published_at": "2026-07-01T10:35:11+00:00",
+            "url": "https://finnhub.io/api/news?id=d8949c1ebd5f60df629de6375b1d5fc21d5d43936fc92c842b3b40a8d7551854"
+          },
+          {
+            "headline": "FAA Moves to Bring Civilian Supersonic Flights Back Over US, Sean Duffy Hails Move as Step Toward 'Golden Age of Travel'",
+            "source": "Benzinga",
+            "published_at": "2026-07-01T03:52:18+00:00",
+            "url": "https://finnhub.io/api/news?id=20d2410dacd8e0e3fcc4cc13ac750e459e2574e0dc87d1ea59f9a3d6a21b0912"
+          },
+          {
+            "headline": "Curious about the most active stocks on Tuesday?",
+            "source": "ChartMill",
+            "published_at": "2026-06-30T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=38e87f03205de86d58f65b0139f592c2376c3ed810ab4772fe01a34a429d3ee1"
+          },
+          {
+            "headline": "Wells Fargo Maintains Equal-Weight on American Airlines Group, Raises Price Target to $17",
+            "source": "Benzinga",
+            "published_at": "2026-06-30T11:14:38+00:00",
+            "url": "https://finnhub.io/api/news?id=2873f6dba5e34347bfff1b10cd1f57e0a729cda1e469350528dee65d4d71076d"
+          },
+          {
+            "headline": "Most active stocks in Monday's session",
+            "source": "ChartMill",
+            "published_at": "2026-06-29T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=71b7ee35df0ff690b0c678730aced652a74f6c197c8df620724be8720e9c66be"
+          },
+          {
+            "headline": "Major Banks Poised for Strong Quarterly Results, Outlook, Deutsche Bank Says",
+            "source": "Yahoo",
+            "published_at": "2026-06-29T16:52:42+00:00",
+            "url": "https://finnhub.io/api/news?id=0dc8d250ff3fe4ab3bc53b740a7e3f8e182a017264edd31c96cee80ca2c00ead"
+          },
+          {
+            "headline": "Bask Bank Offers FDIC-Insured Accounts with Cash Interest or AAdvantage Miles",
+            "source": "Yahoo",
+            "published_at": "2026-06-29T13:07:35+00:00",
+            "url": "https://finnhub.io/api/news?id=7ead148cc3af46820f3f5780a021d4055b0a8abf134cca8feedec0b0465599de"
+          },
+          {
+            "headline": "Airline Stocks Spent 6 Years Below Covid Highs: Hormuz Snapped That Trend In Two Months",
+            "source": "Benzinga",
+            "published_at": "2026-06-29T09:31:18+00:00",
+            "url": "https://finnhub.io/api/news?id=fd44b8ef8b8d4421a8f4c372fa6933bebb12c21945c15bc08f45edff19646db7"
+          },
+          {
+            "headline": "Benzinga's 'Stock Whisper' Index: 5 Stocks Investors Secretly Monitor But Don't Talk About Yet",
+            "source": "Benzinga",
+            "published_at": "2026-06-28T12:15:32+00:00",
+            "url": "https://finnhub.io/api/news?id=6d72a1d482b7e8a07796e27072452911c5702527acb850cfd8288fa145cd0495"
+          },
+          {
+            "headline": "American Airlines (AAL) Gains 8% Over 30 Days, Can it Move Higher?",
+            "source": "Yahoo",
+            "published_at": "2026-06-27T22:13:38+00:00",
+            "url": "https://finnhub.io/api/news?id=b545cac1c533d0dbc2790cd2f8162854bb412af6efeea21d1b33c3aafb222850"
+          },
+          {
+            "headline": "BofA Raises PT on American Airlines (AAL) – Here’s Why",
+            "source": "Yahoo",
+            "published_at": "2026-06-27T19:22:06+00:00",
+            "url": "https://finnhub.io/api/news?id=5573fb8d5ba8b119fd45e67af3075c3ea7aaae74d91d784d8b5203e0cff295dd"
+          },
+          {
+            "headline": "American Airlines (AAL) Brings Starlink To 500 Planes And Signs Google Fuel Deal",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T23:07:27+00:00",
+            "url": "https://finnhub.io/api/news?id=427656317649a9aab82e8947aff2608b5aea782750ad13cd131834dbb75906ab"
+          },
+          {
+            "headline": "American Airlines (AAL) Gains As Market Dips: What You Should Know",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T22:15:03+00:00",
+            "url": "https://finnhub.io/api/news?id=324cf5851b76a1393439313b76df7943de0123ca20980f802b7d66ae9024a03a"
+          },
+          {
+            "headline": "American Airlines (AAL) Stock After 58% Yearly Gain Is The Valuation Still Reasonable",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T21:09:31+00:00",
+            "url": "https://finnhub.io/api/news?id=fb09117eb1644aa6331a95ff0e3de6627878a0e58e806dbe2ad789c4702c591e"
+          },
+          {
+            "headline": "3 Reasons to Avoid AAL and 1 Stock to Buy Instead",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T19:52:25+00:00",
+            "url": "https://finnhub.io/api/news?id=c9cd1a85cfd8e3c753fe002b2774e096c5b61438c0a0c2884428cfa3bd9af10d"
+          },
+          {
+            "headline": "Airline Earnings Are Set for Takeoff. The Stocks May Get Left Behind.",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T18:25:00+00:00",
+            "url": "https://finnhub.io/api/news?id=fe79b9c0e58a5b30ddaf945e09c4f4819e7b9ef9efe26661a2ae8824650c34f9"
+          },
+          {
+            "headline": "Airlines Earnings Should Take Off. The Stocks May Get Left Behind.",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T18:25:00+00:00",
+            "url": "https://finnhub.io/api/news?id=4f60eb299c4f05634dbdf22166d7ddd64cdd2f2e6e216b4a4b0eab91817a5d73"
+          },
+          {
+            "headline": "Citigroup Maintains Buy on American Airlines Group, Raises Price Target to $22",
+            "source": "Benzinga",
+            "published_at": "2026-06-26T14:04:11+00:00",
+            "url": "https://finnhub.io/api/news?id=34983ae625400eec572bf90e06531f331c9bc9bd72fa30088af0c75233dde690"
+          },
+          {
+            "headline": "United Is About To Join American Airlines In An Exclusive Bullish Club Linked To Elon Musk",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T11:31:07+00:00",
+            "url": "https://finnhub.io/api/news?id=c8b2979465a04445dbdf2119f95ba96897ca5616788c210510901fa05a3e0eaf"
+          },
+          {
+            "headline": "World shares skid as traders sell to lock in profits after recent rallies driven by AI",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T04:32:04+00:00",
+            "url": "https://finnhub.io/api/news?id=dfb59a8b05316cb043b2eccfbff864354b7d108ac1d00c772fc431ff4920b371"
+          },
+          {
+            "headline": "Why Did MU, AAL, AMAT Stocks Surge To 52-Week Highs?",
+            "source": "Yahoo",
+            "published_at": "2026-06-26T03:44:31+00:00",
+            "url": "https://finnhub.io/api/news?id=efae09e1d473c42a9919bc7b880133057ab3338a170f374e110ae8209a3794c2"
+          },
+          {
+            "headline": "Evercore ISI Group Maintains In-Line on American Airlines Group, Raises Price Target to $17",
+            "source": "Benzinga",
+            "published_at": "2026-06-25T09:45:49+00:00",
+            "url": "https://finnhub.io/api/news?id=db14e579594375ebb216fc9f2a8c46dfdbfa13b1a8c0df4d8ecf2728dcf69075"
+          },
+          {
+            "headline": "This High-Yield Bond Investor Favors High-Quality Issuers, Like United, American Airlines",
+            "source": "Yahoo",
+            "published_at": "2026-06-25T06:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=624b1dfb54956ddf174f58bff38eaeb02c700125a713f32344267879905202c0"
+          },
+          {
+            "headline": "Why Is American Airlines (AAL) Stock Soaring Today",
+            "source": "Yahoo",
+            "published_at": "2026-06-25T03:04:25+00:00",
+            "url": "https://finnhub.io/api/news?id=b98c44d3a8c2abfe04a6b1b686e13f49358ab2ebbd5a51fa4c16724ba01648cc"
+          },
+          {
+            "headline": "US Equity Markets Mixed as Crude Oil Prices, Government Bond Yields Fall",
+            "source": "Yahoo",
+            "published_at": "2026-06-24T20:10:46+00:00",
+            "url": "https://finnhub.io/api/news?id=958d4d7a452daca665f2176cadd36428ccfb7c61fba755487d1cdbb48c043f02"
+          },
+          {
+            "headline": "AAL, UAL, ALK, JBLU And Other Airline Stocks Are Flying Higher Today — Crude Prices Fall To Multi-Week Lows",
+            "source": "Yahoo",
+            "published_at": "2026-06-24T19:23:27+00:00",
+            "url": "https://finnhub.io/api/news?id=a78cae478a3e2e540d49d806b72ac6bff4f4fa527dca1b910b0b7b31677b4fa6"
+          },
+          {
+            "headline": "Which stocks are most active on Wednesday?",
+            "source": "ChartMill",
+            "published_at": "2026-06-24T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=55e770d01bca68254ba98d9a421de82ca1bc2e1e116a738ae6431e25236809d7"
+          },
+          {
+            "headline": "American Airlines Jumps 7%, United Climbs 6%, JetBlue Rises 5% as Falling Fuel Costs Lift Airline Stocks",
+            "source": "Yahoo",
+            "published_at": "2026-06-24T17:38:31+00:00",
+            "url": "https://finnhub.io/api/news?id=9ff8fdfa40e9bbd78a38e40260ef21a55200c7df7db63837dfa4e0a8eacc0d0f"
+          },
+          {
+            "headline": "Stock Of The Day: Is American Airlines Breaking Out?",
+            "source": "Benzinga",
+            "published_at": "2026-06-24T16:07:17+00:00",
+            "url": "https://finnhub.io/api/news?id=66310b1e9ec4dcf5afe6ed66c33f4a5fc541d5d77146f5ba131e9c17b636f77b"
+          },
+          {
+            "headline": "Q1 2026 Average Air Fare Increases 4.7% From Q4 2025",
+            "source": "Benzinga",
+            "published_at": "2026-06-24T14:24:48+00:00",
+            "url": "https://finnhub.io/api/news?id=85c469c2ff12619d190651f963099bacd7dde26a992b3f0f50c0602f15fd1a9e"
+          },
+          {
+            "headline": "Jefferies Maintains Hold on American Airlines Group, Raises Price Target to $16",
+            "source": "Benzinga",
+            "published_at": "2026-06-24T14:14:02+00:00",
+            "url": "https://finnhub.io/api/news?id=369f73d1c1cab04068101cc9a5c74daaa4dfad8b135ddb307dacd6f2f2579f18"
+          },
+          {
+            "headline": "10 Industrials Stocks Whale Activity In Today’s Session",
+            "source": "Benzinga",
+            "published_at": "2026-06-24T13:35:28+00:00",
+            "url": "https://finnhub.io/api/news?id=9793bc39844351c2ac66fc617f1c10f7e75e39414500b0c796d0f08b1ec3e69b"
+          },
+          {
+            "headline": "Elon Musk Says Starlink Is Coming To American Airlines 'Next Year' In Major Push To Upgrade In-Flight Internet",
+            "source": "Benzinga",
+            "published_at": "2026-06-24T00:04:59+00:00",
+            "url": "https://finnhub.io/api/news?id=131694ad55c0b3d1170c9fefa802c2c917b9fd99eac4495c10ad2ea0658df103"
+          },
+          {
+            "headline": "Stock Market Today, June 23: American Airlines Rallies After Jet-Fuel Price Drop Spurs Technical Breakout",
+            "source": "Yahoo",
+            "published_at": "2026-06-23T21:16:23+00:00",
+            "url": "https://finnhub.io/api/news?id=f92371cbc208dbdbd74c79f33815193d404605858d308ef0ea00d26e7962c6df"
+          },
+          {
+            "headline": "US Airlines Seen Setting Q3 Profit Guidance Above Consensus, UBS Says",
+            "source": "Yahoo",
+            "published_at": "2026-06-23T19:38:29+00:00",
+            "url": "https://finnhub.io/api/news?id=5d385d41ed9b31a5a59475477c243aaad02c38bfc732af4e125362c5261af843"
+          },
+          {
+            "headline": "Tuesday's session: most active stocks",
+            "source": "ChartMill",
+            "published_at": "2026-06-23T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=f319f077e5dae0baad2573b409419e7ca7adc0560fcacf4abb498045e9c82a52"
+          },
+          {
+            "headline": "Cheaper Jet Fuel, Golden Cross And A Breakout: Is American Airlines Stock Ready For Takeoff?",
+            "source": "Benzinga",
+            "published_at": "2026-06-23T12:23:55+00:00",
+            "url": "https://finnhub.io/api/news?id=c3c5030219856d8546f61a1d9c0f6e79be360e491adc0572dc706bc0cc1170e1"
+          },
+          {
+            "headline": "American Airlines To Offer Premium Seats At Its Retrofitted Airbus A319, A320",
+            "source": "Benzinga",
+            "published_at": "2026-06-23T11:26:58+00:00",
+            "url": "https://finnhub.io/api/news?id=4187be5d5c2b5dc256047a37395f323e3476521bb4b79a026b817a444262c4f0"
+          },
+          {
+            "headline": "UBS Maintains Buy on American Airlines Group, Raises Price Target to $21",
+            "source": "Benzinga",
+            "published_at": "2026-06-23T09:11:06+00:00",
+            "url": "https://finnhub.io/api/news?id=cd320fcaa16286be158acda0dfee53c95dbc0bc290ec3ef66c60967a8011e9ea"
+          },
+          {
+            "headline": "3 Unpopular Stocks We Steer Clear Of",
+            "source": "Yahoo",
+            "published_at": "2026-06-23T08:00:46+00:00",
+            "url": "https://finnhub.io/api/news?id=3894e1da02476a460ec59c16baa47f50b709aedab6ef843b3da4a4cda4c1f413"
+          },
+          {
+            "headline": "These stocks are the most active in today's session",
+            "source": "ChartMill",
+            "published_at": "2026-06-22T18:00:00+00:00",
+            "url": "https://finnhub.io/api/news?id=573121300d045245035d5b046315e3e91474ba20430727653a8e707162838267"
+          },
+          {
+            "headline": "Airlines Gain on Pricing as 'Capacity Discipline' Becomes Key Into Summer, BofA Says",
+            "source": "Yahoo",
+            "published_at": "2026-06-22T15:51:05+00:00",
+            "url": "https://finnhub.io/api/news?id=1e3cb6ea0bfa885efebca3fc5ef29c9982c0a0331d6337ef0c649b28a2cdd035"
+          },
+          {
+            "headline": "Jet Fuel Prices Are Crashing. These Airline Stocks Could Benefit Most",
+            "source": "Yahoo",
+            "published_at": "2026-06-22T12:59:25+00:00",
+            "url": "https://finnhub.io/api/news?id=4438c8e64d9487d2489d8c565185ac8d2ffe67fb104a2cc1c70cd2c2c9c982c7"
+          },
+          {
+            "headline": "B of A Securities Maintains Neutral on American Airlines Group, Raises Price Target to $16",
+            "source": "Benzinga",
+            "published_at": "2026-06-22T10:35:46+00:00",
+            "url": "https://finnhub.io/api/news?id=2bd1a7127fd4fb2d426ca9d8e40262bce77198da082dff1753096d39daa80d1e"
+          },
+          {
+            "headline": "Stocks Sharply Higher as US-Iran Peace Deal Eases Inflation Risks",
+            "source": "Yahoo",
+            "published_at": "2026-06-18T20:34:23+00:00",
+            "url": "https://finnhub.io/api/news?id=0553f224dfed08d97c7f9cae8d542032879de9c09d4cdc8aefcddf98b6e6a0cd"
+          },
+          {
+            "headline": "Stocks Supported as Geopolitical Risks Recede",
+            "source": "Yahoo",
+            "published_at": "2026-06-18T15:17:09+00:00",
+            "url": "https://finnhub.io/api/news?id=8942e5f15818450d5db639b983a936a08da825c83495fdecc6af2f9c82ab47ea"
+          },
+          {
+            "headline": "Stocks Rally as President Trump Signs a Preliminary Deal to End the US-Iran War",
+            "source": "Yahoo",
+            "published_at": "2026-06-18T14:18:58+00:00",
+            "url": "https://finnhub.io/api/news?id=50ec65e98d6546db27eaad1418bf7071d1c87690c7fb5e51fb13d2252e7059a6"
+          },
+          {
+            "headline": "Why Is American Airlines Stock Surging On Thursday?",
+            "source": "Benzinga",
+            "published_at": "2026-06-18T10:57:21+00:00",
+            "url": "https://finnhub.io/api/news?id=4739c4b527058110e4c50772768b22178ff01d6f7196b181142c178205c07260"
+          },
+          {
+            "headline": "'A House Judiciary Subcommittee Will Hold A June 24 Hearing To Examine U.S. Airline Competition And Regulation Following Spirit Airlines' Collapse' - Devdiscourse",
+            "source": "Benzinga",
+            "published_at": "2026-06-17T15:49:54+00:00",
+            "url": "https://finnhub.io/api/news?id=6238c1f94cd6f655b68aacc8b2d6746a3304e2b8ac5700bdf97c9ece2113e835"
+          },
+          {
+            "headline": "American Airlines (AAL) Faces A Key Leadership Shift As Stephen L. Johnson Retires",
+            "source": "Yahoo",
+            "published_at": "2026-06-17T06:11:26+00:00",
+            "url": "https://finnhub.io/api/news?id=c10bcd47ef46fd0f135bcaca44c3146e874982cbdbd50881f1617a7398484a7f"
+          }
+        ],
+        "metadata": {
+          "source": "finnhub",
+          "fetched_at": "2026-07-17T01:38:51.054734+00:00",
+          "status": "ok"
+        }
+      },
+      "sec_filings": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "sec_edgar",
+          "fetched_at": "2026-07-17T01:38:51.057383+00:00",
+          "status": "missing"
+        }
+      },
+      "generated_at": "2026-07-17T01:38:51.057442+00:00"
+    },
+    {
+      "ticker": "AAOI",
+      "exchange": "NASDAQ",
+      "price_market": {
+        "last_price": 100.23999786376953,
+        "open": 105.05000305175781,
+        "high": 107.11000061035156,
+        "low": 97.9000015258789,
+        "close": 100.23999786376953,
+        "volume": 9816328,
+        "market_cap": 8043534792.662956,
+        "shares_outstanding": 80242767,
+        "beta": null,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:51.519522+00:00",
+          "status": "ok"
+        }
+      },
+      "fundamental": {
+        "revenue": 507000000,
+        "net_income": -43337000,
+        "eps": -0.65,
+        "pe_ratio": null,
+        "debt_to_equity": 25.356,
+        "current_ratio": 3.826,
+        "roe": -0.06126,
+        "operating_margin": -0.08595,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:51.736308+00:00",
+          "status": "ok"
+        }
+      },
+      "institutional_ownership": {
+        "percentage": 0.68856,
+        "metadata": {
+          "source": "yahoo_finance",
+          "fetched_at": "2026-07-17T01:38:51.837342+00:00",
+          "status": "ok"
+        }
+      },
+      "news": {
+        "count": 21,
+        "items": [
+          {
+            "headline": "10 Information Technology Stocks Whale Activity In Today’s Session",
+            "source": "Benzinga",
+            "published_at": "2026-07-16T13:35:22+00:00",
+            "url": "https://finnhub.io/api/news?id=407b15e53b2dd01f53f0322e400cd40dd5b46c5f3f68991005e52da2c01b67b1"
+          },
+          {
+            "headline": "12 Information Technology Stocks Moving In Wednesday's Intraday Session",
+            "source": "Benzinga",
+            "published_at": "2026-07-15T13:05:41+00:00",
+            "url": "https://finnhub.io/api/news?id=a48a6eab78162d728a3f21398682ca4ca4518fbeb9a6cfcffb4640a23b40a693"
+          },
+          {
+            "headline": "Memory-Chip Selloff Drags Nasdaq 100 Lower, SanDisk Sinks 13%: Stock Market Today",
+            "source": "Benzinga",
+            "published_at": "2026-07-15T13:01:58+00:00",
+            "url": "https://finnhub.io/api/news?id=0c5824542e5eb9f8557b40ad7da733dd7a3e38cf68147cd465617ec3bb268d4d"
+          },
+          {
+            "headline": "Applied Optoelectronics: Hypergrowth Trapped Inside An Unrealistic Stock Price",
+            "source": "SeekingAlpha",
+            "published_at": "2026-07-15T10:54:07+00:00",
+            "url": "https://finnhub.io/api/news?id=89e6a48d7e849f8eaba5fb7ac8f1be9b02184a5ea8317c5188b869cf329bfe23"
+          },
+          {
+            "headline": "Goldman Sachs Posts Upbeat Q2 Earnings, Joins SK Hynix, Tower Semiconductor And Other Big Stocks Moving Higher On Tuesday",
+            "source": "Benzinga",
+            "published_at": "2026-07-14T12:38:37+00:00",
+            "url": "https://finnhub.io/api/news?id=b5201d1cffb003c3d65922694b1792756dc404f2d8309675c0f5da5a11d297fc"
+          },
+          {
+            "headline": "Applied Optoelectronics Stock Rises on Texas AI Optics Expansion",
+            "source": "Benzinga",
+            "published_at": "2026-07-14T12:04:10+00:00",
+            "url": "https://finnhub.io/api/news?id=0f28d93fe9a882447e27640393ed8d1a8a8367d56125ed5eb32f5d66e7b14270"
+          },
+          {
+            "headline": "Applied Optoelectronics' Worst Fears Return - I'm Still Buying",
+            "source": "SeekingAlpha",
+            "published_at": "2026-07-14T08:18:08+00:00",
+            "url": "https://finnhub.io/api/news?id=3a5a008ddfca8b6fcbf9dbadb15fce6dc6a4345f18fc96fbafbf8a3d96864ddf"
+          },
+          {
+            "headline": "Applied Optoelectronics Begins Construction On Two Adjacent Properties In Pearland, Texas, Adding Nearly 400K Square Feet Of Manufacturing Capacity",
+            "source": "Benzinga",
+            "published_at": "2026-07-14T07:02:20+00:00",
+            "url": "https://finnhub.io/api/news?id=48a2cfb89dc901173601f2e02264eb176b44900a160f8ab7c3b28920134e05d1"
+          },
+          {
+            "headline": "5 Growth Stocks I Bought In July",
+            "source": "SeekingAlpha",
+            "published_at": "2026-07-13T06:44:11+00:00",
+            "url": "https://finnhub.io/api/news?id=c36eda8ffb9af537d413696e64ac52cf564a2611691ec6f031e7122d82b35365"
+          },
+          {
+            "headline": "The AI Optical Selloff Is A Gift - 3 Stocks I'm Buying",
+            "source": "SeekingAlpha",
+            "published_at": "2026-07-13T03:59:53+00:00",
+            "url": "https://finnhub.io/api/news?id=699b399ce5dc0bdfbba3cbb0045dc96626ae0c4291c2f858f3730131473a4090"
+          },
+          {
+            "headline": "This AI Stock Beat Nvidia by 200%—Then Zuckerberg Sparked a 17% Sell-Off",
+            "source": "Benzinga",
+            "published_at": "2026-07-03T11:31:08+00:00",
+            "url": "https://finnhub.io/api/news?id=e3a3babad131d6b4a9772f163940789e73fca40c8781189baf0ab1fbbecfcc50"
+          },
+          {
+            "headline": "$1000 Invested In Applied Optoelectronics 5 Years Ago Would Be Worth This Much Today",
+            "source": "Benzinga",
+            "published_at": "2026-07-03T11:15:39+00:00",
+            "url": "https://finnhub.io/api/news?id=b66aebac5373670f664fb7739008965dd92fcf4dc515be69da97baee256377a8"
+          },
+          {
+            "headline": "Dow Jones Hits Record High as Chip Bloodbath Sinks Nasdaq 100: Stock Market Today",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T12:56:22+00:00",
+            "url": "https://finnhub.io/api/news?id=f9dcb503fefd60269c149e9f76bae28991b4905519c4b88be1bdf0e96cf47400"
+          },
+          {
+            "headline": "Applied Optoelectronics Stock Plummets 15% Thursday as Investors Rotate Out of Unprofitable Tech",
+            "source": "Benzinga",
+            "published_at": "2026-07-02T12:43:20+00:00",
+            "url": "https://finnhub.io/api/news?id=f339ee1feab71b5153a4b1412de04166f440fc2b4c0393cc15f0ea765f66df45"
+          },
+          {
+            "headline": "Applied Optoelectronics: Capacity, Demand, And A Likely Path To Billions",
+            "source": "SeekingAlpha",
+            "published_at": "2026-06-28T10:41:45+00:00",
+            "url": "https://finnhub.io/api/news?id=fd8938a667c40ddafc94bd1e04b18709c71feeacf6b6b32fdf45d9ebb81913a2"
+          },
+          {
+            "headline": "ON Semiconductor, SanDisk And Other Big Stocks Moving Lower In Friday’s Pre-Market Session",
+            "source": "Benzinga",
+            "published_at": "2026-06-26T08:03:03+00:00",
+            "url": "https://finnhub.io/api/news?id=8591c07932e73c5da7d41267ba0f4acfcbbedd3041066fab20642576a9aa2c7f"
+          },
+          {
+            "headline": "Applied Optoelectronics Shares Are Sliding Tuesday: What's Going On?",
+            "source": "Benzinga",
+            "published_at": "2026-06-23T10:38:43+00:00",
+            "url": "https://finnhub.io/api/news?id=a1881a8dd2c8bcf499733a92505896aa29922b0b18730b1abb772523a44ca495"
+          },
+          {
+            "headline": "ClassOne Technology Receives Order From Applied Optoelectronics For Multiple Solstice S8 Single-Wafer Wet Processing Systems",
+            "source": "Benzinga",
+            "published_at": "2026-06-23T08:02:07+00:00",
+            "url": "https://finnhub.io/api/news?id=074e05357def132128688c33a6ed97275318c0d8cf961244166febbbc3422f85"
+          },
+          {
+            "headline": "Unprofitable Companies Are 'Outperforming The Market,' Says Market Commentator: Investors 'Rewarding' AI Exposure Over Profitability",
+            "source": "Benzinga",
+            "published_at": "2026-06-22T00:52:49+00:00",
+            "url": "https://finnhub.io/api/news?id=55585bb0ddbd455aa5afb2cbc3b626504d00cdd3bf925e5620357771618a0a65"
+          },
+          {
+            "headline": "10 Information Technology Stocks With Whale Alerts In Today's Session",
+            "source": "Benzinga",
+            "published_at": "2026-06-18T13:35:26+00:00",
+            "url": "https://finnhub.io/api/news?id=b9811fa6b9f9b65f69558642136594ac0dca6adaef1fd66513976bfa00d6e65e"
+          },
+          {
+            "headline": "Applied Optoelectronics Stock Pauses Wednesday: What's Going On?",
+            "source": "Benzinga",
+            "published_at": "2026-06-17T11:34:50+00:00",
+            "url": "https://finnhub.io/api/news?id=25846d61435edb8ea592fd2f4b55ee268601e7fc7dcd1aa3b0c9177686865724"
+          }
+        ],
+        "metadata": {
+          "source": "finnhub",
+          "fetched_at": "2026-07-17T01:38:52.327049+00:00",
+          "status": "ok"
+        }
+      },
+      "sec_filings": {
+        "count": 0,
+        "items": [],
+        "metadata": {
+          "source": "sec_edgar",
+          "fetched_at": "2026-07-17T01:38:52.335403+00:00",
+          "status": "missing"
+        }
+      },
+      "generated_at": "2026-07-17T01:38:52.335459+00:00"
+    }
+  ]
+}

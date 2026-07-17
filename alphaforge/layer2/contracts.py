@@ -64,38 +64,62 @@ class SourceMetadata:
 
 
 @dataclass
+class PriceBar:
+    """Satu bar OHLCV."""
+    date: str  # ISO date
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+
+
+@dataclass
 class PriceMarketData:
-    last_price: float | None
-    open: float | None
-    high: float | None
-    low: float | None
-    close: float | None
-    volume: int | None
-    market_cap: float | None
-    shares_outstanding: int | None
-    beta: float | None
     metadata: SourceMetadata
+    last_price: float | None = None
+    open: float | None = None
+    high: float | None = None
+    low: float | None = None
+    close: float | None = None
+    volume: int | None = None
+    market_cap: float | None = None
+    shares_outstanding: int | None = None
+    beta: float | None = None
+    high_52w: float | None = None
+    low_52w: float | None = None
+    price_history: list[PriceBar] = field(default_factory=list)  # 1-year daily OHLCV
 
 
 @dataclass
 class FundamentalData:
     """Ringkasan fundamental dari Yahoo Finance."""
-    revenue: float | None
-    net_income: float | None
-    eps: float | None
-    pe_ratio: float | None
-    debt_to_equity: float | None
-    current_ratio: float | None
-    roe: float | None
-    operating_margin: float | None
     metadata: SourceMetadata
+    revenue: float | None = None
+    net_income: float | None = None
+    eps: float | None = None
+    pe_ratio: float | None = None
+    debt_to_equity: float | None = None
+    current_ratio: float | None = None
+    quick_ratio: float | None = None
+    roe: float | None = None
+    roa: float | None = None
+    operating_margin: float | None = None
+    gross_margin: float | None = None
+    free_cash_flow: float | None = None
+    dividend_yield: float | None = None
+    payout_ratio: float | None = None
+    book_value_per_share: float | None = None
+    asset_turnover: float | None = None
+    inventory_turnover: float | None = None
+    interest_coverage: float | None = None
 
 
 @dataclass
 class InstitutionalOwnership:
     """Kepemilikan institusional."""
-    percentage: float | None  # persentase agregat dari Yahoo
     metadata: SourceMetadata
+    percentage: float | None = None  # persentase agregat dari Yahoo
 
 
 @dataclass

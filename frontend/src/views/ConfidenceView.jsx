@@ -2,6 +2,7 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
+import HBarChart from '../components/HBarChart'
 import Bar from '../components/Bar'
 import { ratingClass } from '../format'
 
@@ -50,9 +51,29 @@ export default function ConfidenceView({ onSelectTicker }) {
     },
   ]
 
+  const ratingDist = { high: 0, medium: 0, low: 0 }
+  scores.forEach((s) => { ratingDist[s.confidence_rating] = (ratingDist[s.confidence_rating] || 0) + 1 })
+  const ratingChart = [
+    { label: 'High', count: ratingDist.high, color: 'var(--good)' },
+    { label: 'Medium', count: ratingDist.medium, color: 'var(--warn)' },
+    { label: 'Low', count: ratingDist.low, color: 'var(--bad)' },
+  ]
+
+  const avgCategory = (key) => scores.reduce((s, x) => s + x[key], 0) / (scores.length || 1)
+  const categoryChart = [
+    { label: 'Price', count: Math.round(avgCategory('price_data_confidence')), color: 'var(--accent)' },
+    { label: 'Fundamentals', count: Math.round(avgCategory('fundamental_data_confidence')), color: 'var(--accent)' },
+    { label: 'Ownership', count: Math.round(avgCategory('ownership_data_confidence')), color: 'var(--accent)' },
+    { label: 'Governance', count: Math.round(avgCategory('governance_data_confidence')), color: 'var(--accent)' },
+  ]
+
   return (
     <>
       <StatCards stats={stats} />
+      <div className="chart-row">
+        <HBarChart title="Distribusi Rating Confidence" data={ratingChart} />
+        <HBarChart title="Rata-rata Confidence per Kategori" data={categoryChart} />
+      </div>
       <DataTable columns={columns} rows={scores} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )

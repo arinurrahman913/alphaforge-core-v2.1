@@ -2,6 +2,7 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
+import HBarChart from '../components/HBarChart'
 import { ratingClass } from '../format'
 
 export default function ReasoningView({ onSelectTicker }) {
@@ -57,9 +58,28 @@ export default function ReasoningView({ onSelectTicker }) {
     },
   ]
 
+  const divDist = { low: 0, medium: 0, high: 0 }
+  outs.forEach((o) => { divDist[o.divergence_level] = (divDist[o.divergence_level] || 0) + 1 })
+  const divChart = [
+    { label: 'Low', count: divDist.low, color: 'var(--good)' },
+    { label: 'Medium', count: divDist.medium, color: 'var(--warn)' },
+    { label: 'High', count: divDist.high, color: 'var(--bad)' },
+  ]
+
+  const lensAvg = (key) => outs.reduce((s, o) => s + (o[key]?.conviction_score || 0), 0) / (outs.length || 1)
+  const lensChart = [
+    { label: 'Quality', count: Math.round(lensAvg('quality_output')), color: 'var(--accent2)' },
+    { label: 'Speculative', count: Math.round(lensAvg('speculative_output')), color: 'var(--accent2)' },
+    { label: 'Multibagger', count: Math.round(lensAvg('multibagger_output')), color: 'var(--accent2)' },
+  ]
+
   return (
     <>
       <StatCards stats={stats} />
+      <div className="chart-row">
+        <HBarChart title="Distribusi Divergence" data={divChart} />
+        <HBarChart title="Rata-rata Conviction per Lensa" data={lensChart} />
+      </div>
       <DataTable columns={columns} rows={outs} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )

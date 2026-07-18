@@ -2,6 +2,7 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
+import HBarChart from '../components/HBarChart'
 import Bar from '../components/Bar'
 import { ratingClass } from '../format'
 
@@ -39,9 +40,20 @@ export default function AggregatorView({ onSelectTicker }) {
 
   const sortedByConviction = [...recs].sort((a, b) => b.conviction - a.conviction)
 
+  const distChart = [
+    { label: 'Strong Buy', count: dist.strong_buy || 0, color: 'var(--good)' },
+    { label: 'Buy', count: dist.buy || 0, color: 'var(--good)' },
+    { label: 'Hold', count: dist.hold || 0, color: 'var(--dim)' },
+    { label: 'Sell', count: dist.sell || 0, color: 'var(--bad)' },
+    { label: 'Strong Sell', count: dist.strong_sell || 0, color: 'var(--bad)' },
+  ]
+
   return (
     <>
       <StatCards stats={stats} />
+      <div className="chart-row">
+        <HBarChart title="Distribusi Rekomendasi" data={distChart} />
+      </div>
       <DataTable columns={columns} rows={sortedByConviction} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )

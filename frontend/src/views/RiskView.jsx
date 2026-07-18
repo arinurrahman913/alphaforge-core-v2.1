@@ -2,6 +2,7 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
+import HBarChart from '../components/HBarChart'
 import Bar from '../components/Bar'
 
 export default function RiskView({ onSelectTicker }) {
@@ -46,9 +47,30 @@ export default function RiskView({ onSelectTicker }) {
     },
   ]
 
+  const ratingDist = { low: 0, medium: 0, high: 0, critical: 0 }
+  assessments.forEach((a) => { ratingDist[a.risk_rating] = (ratingDist[a.risk_rating] || 0) + 1 })
+  const ratingChart = [
+    { label: 'Low', count: ratingDist.low, color: 'var(--good)' },
+    { label: 'Medium', count: ratingDist.medium, color: 'var(--warn)' },
+    { label: 'High', count: ratingDist.high, color: 'var(--bad)' },
+    { label: 'Critical', count: ratingDist.critical, color: 'var(--bad)' },
+  ]
+
+  const avgCategory = (key) => assessments.reduce((s, a) => s + a[key], 0) / (assessments.length || 1)
+  const categoryChart = [
+    { label: 'Governance', count: Math.round(avgCategory('governance_risk_score')), color: 'var(--accent2)' },
+    { label: 'Financial', count: Math.round(avgCategory('financial_risk_score')), color: 'var(--accent2)' },
+    { label: 'Momentum', count: Math.round(avgCategory('momentum_risk_score')), color: 'var(--accent2)' },
+    { label: 'Valuation', count: Math.round(avgCategory('valuation_risk_score')), color: 'var(--accent2)' },
+  ]
+
   return (
     <>
       <StatCards stats={stats} />
+      <div className="chart-row">
+        <HBarChart title="Distribusi Rating Risiko" data={ratingChart} />
+        <HBarChart title="Rata-rata Skor per Kategori" data={categoryChart} />
+      </div>
       <DataTable columns={columns} rows={assessments} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )

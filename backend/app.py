@@ -8,11 +8,15 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 
 from flask import Flask, jsonify, send_from_directory
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from alphaforge.layer2.sources.live_quote import fetch_live_quote  # noqa: E402
 DATA_DIR = ROOT / "dashboard" / "data"
 FRONTEND_DIST = ROOT / "frontend" / "dist"
 
@@ -85,6 +89,15 @@ def get_ticker_detail(ticker: str):
         "aggregator": TICKER_INDEX["aggregator"].get(ticker),
         "historical": TICKER_INDEX["historical"].get(ticker),
     })
+
+
+@app.get("/api/ticker/<ticker>/live")
+def get_ticker_live_quote(ticker: str):
+    """Level 3 freshness: fetches the current quote from Yahoo Finance right
+    now (fast_info only, no history download), not the pipeline snapshot.
+    Best-effort — times out and returns {"stale": true} rather than blocking
+    the request if Yahoo is slow/unreachable."""
+    return jsonify(fetch_live_quote(ticker))
 
 
 @app.get("/")

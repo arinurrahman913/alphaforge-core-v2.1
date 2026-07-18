@@ -5,6 +5,7 @@ import { fmtPct, ratingClass } from '../format'
 export default function TickerModal({ ticker, onClose }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
+  const [live, setLive] = useState(null) // null = loading, {stale:true} = failed, else fresh quote
 
   useEffect(() => {
     let cancelled = false
@@ -24,6 +25,24 @@ export default function TickerModal({ ticker, onClose }) {
   }, [ticker])
 
   useEffect(() => {
+    let cancelled = false
+    setLive(null)
+    // Independent from the main fetch above — this one can be slow (live
+    // Yahoo lookup) or fail without blocking the rest of the modal.
+    api
+      .liveQuote(ticker)
+      .then((d) => {
+        if (!cancelled) setLive(d)
+      })
+      .catch((e) => {
+        if (!cancelled) setLive({ stale: true, error: String(e) })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [ticker])
+
+  useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape') onClose()
     }
@@ -35,7 +54,10 @@ export default function TickerModal({ ticker, onClose }) {
     <div className="modal" onClick={(e) => e.target.classList.contains('modal') && onClose()}>
       <div className="modal-box">
         <div className="modal-head">
-          <h2>{ticker}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <h2>{ticker}</h2>
+            <LiveQuoteBadge live={live} />
+          </div>
           <button className="x" onClick={onClose}>
             &times;
           </button>
@@ -47,6 +69,21 @@ export default function TickerModal({ ticker, onClose }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function LiveQuoteBadge({ live }) {
+  if (!live) {
+    return <span className="pill neutral">live …</span>
+  }
+  if (live.stale || live.last_price === undefined || live.last_price === null) {
+    return <span className="pill neutral" title={live.error || 'live quote unavailable'}>live n/a</span>
+  }
+  const tone = live.change_pct >= 0 ? 'ok' : 'bad'
+  return (
+    <span className={`pill ${tone}`} title={`fetched ${live.fetched_at}`}>
+      ${live.last_price.toFixed(2)} {fmtPct(live.change_pct)}
+    </span>
   )
 }
 

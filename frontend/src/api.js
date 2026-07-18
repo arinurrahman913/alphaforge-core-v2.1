@@ -22,4 +22,5 @@ export const api = {
   aggregator: () => getJSON('/api/aggregator'),
   historical: () => getJSON('/api/historical'),
   ticker: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}`),
+  liveQuote: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}/live`),
 }

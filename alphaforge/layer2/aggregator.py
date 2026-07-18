@@ -62,7 +62,15 @@ def aggregate_recommendation(
         conviction = (final_score - 60) / 15 * 15 + 65
     elif final_score >= 40:
         stance = "hold"
-        conviction = 50
+        # Was a flat 50 for the entire 40-60 band, so ~70% of tickers (the
+        # ones landing in "hold", the widest band) showed an identical
+        # conviction regardless of how decisively neutral they actually
+        # were. Mirror the buy/sell bands instead: conviction is lowest
+        # (50) at the dead center (final_score=50, truly undecided) and
+        # rises toward 65 at either edge — continuous with buy's 65 at
+        # final_score=60 and sell's 65 at final_score=40.
+        distance_from_center = abs(final_score - 50)  # 0..10
+        conviction = 50 + (distance_from_center / 10) * 15
     elif final_score >= 25:
         stance = "sell"
         conviction = (40 - final_score) / 15 * 15 + 65

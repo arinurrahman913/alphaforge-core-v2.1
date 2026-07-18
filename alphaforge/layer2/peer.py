@@ -96,7 +96,8 @@ def calculate_metric_comparison(
 
 def build_peer_comparison(
     target_profile: KnowledgeProfile,
-    peer_profiles: list[KnowledgeProfile]
+    peer_profiles: list[KnowledgeProfile],
+    basis: str = "sector"
 ) -> PeerComparisonResult:
     """Bangun Peer Comparison untuk satu ticker terhadap peer group-nya.
 
@@ -165,7 +166,7 @@ def build_peer_comparison(
         roe_comparison=roe_comp,
         debt_to_equity_comparison=dte_comp,
         generated_at=datetime.now(timezone.utc).isoformat(),
-        peer_group_basis="screening_universe"
+        peer_group_basis=basis
     )
 
 
@@ -186,13 +187,20 @@ def run_peer_comparison(profiles: list[KnowledgeProfile]) -> list[PeerComparison
 
         try:
             sector = profile.sector or "Unknown"
-            peer_group = sectors.get(sector, [])
+            sector_group = sectors.get(sector, [])
 
-            if len(peer_group) < 2:
-                print(f"  Warning: {profile.ticker} sector '{sector}' punya <2 peers, skip", file=sys.stderr)
-                continue
+            if len(sector_group) >= 2:
+                peer_group, basis = sector_group, "sector"
+            else:
+                # Sektor tidak diketahui atau kepesertaannya terlalu kecil di
+                # universe ini untuk perbandingan bermakna (mis. cuma 1
+                # ticker di sektor itu) — dulu ticker ini di-skip total dari
+                # Peer. Sekarang fallback ke seluruh screening universe
+                # supaya tetap dapat hasil, dengan basis yang jujur di label.
+                print(f"  Info: {profile.ticker} sector '{sector}' punya <2 peers, fallback ke screening_universe", file=sys.stderr)
+                peer_group, basis = profiles, "screening_universe"
 
-            comparison = build_peer_comparison(profile, peer_group)
+            comparison = build_peer_comparison(profile, peer_group, basis=basis)
             results.append(comparison)
         except Exception as e:
             print(f"Error for {profile.ticker}: {e}", file=sys.stderr)

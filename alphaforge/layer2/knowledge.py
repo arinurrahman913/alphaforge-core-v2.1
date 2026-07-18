@@ -36,7 +36,7 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     # 1. Identitas & Klasifikasi
     screening_flags = candidate.soft_flags if candidate else []
     size_category = infer_size_category(evidence.price_market.market_cap, screening_flags)
-    sector = None  # TODO: map dari industry/company type jika ada di Evidence
+    sector = evidence.fundamental.sector
 
     # #1: TREN CALCULATION — Parse price_history
     price_history = evidence.price_market.price_history or []

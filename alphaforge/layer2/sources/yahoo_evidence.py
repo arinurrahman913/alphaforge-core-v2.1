@@ -122,7 +122,9 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
             book_value_per_share=cached.get("book_value_per_share"),
             asset_turnover=cached.get("asset_turnover"),
             inventory_turnover=cached.get("inventory_turnover"),
-            interest_coverage=cached.get("interest_coverage")
+            interest_coverage=cached.get("interest_coverage"),
+            sector=cached.get("sector"),
+            industry=cached.get("industry")
         )
 
     try:
@@ -154,7 +156,9 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
             book_value_per_share=info.get("bookValue"),
             asset_turnover=info.get("assetTurnover"),
             inventory_turnover=info.get("inventoryTurnover"),
-            interest_coverage=info.get("interestCoverage")
+            interest_coverage=info.get("interestCoverage"),
+            sector=info.get("sector"),
+            industry=info.get("industry")
         )
 
         # Cache
@@ -177,6 +181,8 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
             "asset_turnover": data.asset_turnover,
             "inventory_turnover": data.inventory_turnover,
             "interest_coverage": data.interest_coverage,
+            "sector": data.sector,
+            "industry": data.industry,
             "_metadata": {"source": metadata.source, "fetched_at": metadata.fetched_at, "status": metadata.status}
         }
         cache_set("fundamental_data", ticker, to_cache)

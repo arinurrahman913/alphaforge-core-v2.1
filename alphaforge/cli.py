@@ -182,27 +182,17 @@ def main() -> None:
                 price_history=price_bars
             )
 
+            # Built from **fund_dict instead of listing every field by name — the
+            # previous version required a manual edit here every time a field
+            # was added to FundamentalData, and twice already (quarterly_data,
+            # then sector/industry) that edit was forgotten, silently dropping
+            # real pipeline data before it reached Knowledge. metadata and
+            # quarterly_data still need explicit nested reconstruction; every
+            # other (scalar) field on FundamentalData is picked up automatically.
             fund_dict = pkg_dict["fundamental"]
             fundamental = FundamentalData(
+                **{k: v for k, v in fund_dict.items() if k not in ("metadata", "quarterly_data")},
                 metadata=SourceMetadata(**fund_dict["metadata"]),
-                revenue=fund_dict.get("revenue"),
-                net_income=fund_dict.get("net_income"),
-                eps=fund_dict.get("eps"),
-                pe_ratio=fund_dict.get("pe_ratio"),
-                debt_to_equity=fund_dict.get("debt_to_equity"),
-                current_ratio=fund_dict.get("current_ratio"),
-                quick_ratio=fund_dict.get("quick_ratio"),
-                roe=fund_dict.get("roe"),
-                roa=fund_dict.get("roa"),
-                operating_margin=fund_dict.get("operating_margin"),
-                gross_margin=fund_dict.get("gross_margin"),
-                free_cash_flow=fund_dict.get("free_cash_flow"),
-                dividend_yield=fund_dict.get("dividend_yield"),
-                payout_ratio=fund_dict.get("payout_ratio"),
-                book_value_per_share=fund_dict.get("book_value_per_share"),
-                asset_turnover=fund_dict.get("asset_turnover"),
-                inventory_turnover=fund_dict.get("inventory_turnover"),
-                interest_coverage=fund_dict.get("interest_coverage"),
                 quarterly_data=[
                     QuarterlyFundamental(**q) for q in fund_dict.get("quarterly_data") or []
                 ]

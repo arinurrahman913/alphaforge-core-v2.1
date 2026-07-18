@@ -1,12 +1,12 @@
 {
   "evidence_count": 47,
   "knowledge_generated": 47,
-  "generated_at": "2026-07-17T06:16:41.210200+00:00",
+  "generated_at": "2026-07-18T17:52:16.506718+00:00",
   "profiles": [
     {
       "ticker": "AACO",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -81,7 +81,7 @@
         "return_1y": 1.1144848830058036,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 0.1808406278031612,
+        "volatility_daily": 0.17945705416054378,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -106,7 +106,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:41.210200+00:00",
+        "evidence_date": "2026-07-18T17:52:16.506718+00:00",
         "method_version": "1.1",
         "fields_completed": 5,
         "fields_expected": 50,
@@ -114,14 +114,14 @@
           "sec_edgar",
           "yahoo_finance"
         ],
-        "data_quality_notes": "Limited price history (65 bars) | Revenue missing | FCF missing | No news data"
+        "data_quality_notes": "Limited price history (66 bars) | Revenue missing | FCF missing | No news data"
       }
     },
     {
       "ticker": "AAL",
       "exchange": "NASDAQ",
-      "sector": null,
-      "size_category": "large",
+      "sector": "Industrials",
+      "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
       ],
@@ -190,25 +190,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 25.301209802914197,
+        "return_1y": 19.74419878627984,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.0359021886903665,
+        "volatility_daily": 3.046881103506268,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.71467,
+        "institutional_pct": 0.71370006,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 50.322582,
+        "pe_ratio_trailing": 48.32258,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.1842627514988493,
+        "ps_ratio": 0.1769394785645458,
         "ev_ebitda": null,
         "pb_ratio": -6.164,
-        "fcf_yield": 8.346168603147223
+        "fcf_yield": 8.691604630948477
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -218,7 +218,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:45.615266+00:00",
+        "evidence_date": "2026-07-18T17:52:21.121714+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -232,7 +232,7 @@
     {
       "ticker": "AAOI",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -302,25 +302,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 240.7205900877646,
+        "return_1y": 257.701734767942,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 8.882420762220557,
+        "volatility_daily": 8.879946637149198,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.68856,
+        "institutional_pct": 0.68873,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 15.86496014331944,
+        "ps_ratio": 16.208406434571575,
         "ev_ebitda": null,
         "pb_ratio": 14.005,
-        "fcf_yield": -5.539644888543855
+        "fcf_yield": -5.422263176806533
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -330,7 +330,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:48.234229+00:00",
+        "evidence_date": "2026-07-18T17:52:24.918058+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -344,7 +344,7 @@
     {
       "ticker": "AAON",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Industrials",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -414,25 +414,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 43.067912312633375,
+        "return_1y": 42.19620254273809,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.9536859230071264,
+        "volatility_daily": 3.954594213732325,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.87732005,
+        "institutional_pct": 0.87716,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 79.16084,
+        "pe_ratio_trailing": 78.46479,
         "pe_ratio_forward": null,
-        "ps_ratio": 5.734475228967054,
+        "ps_ratio": 5.644304211452481,
         "ev_ebitda": null,
         "pb_ratio": 11.413,
-        "fcf_yield": -2.3201570739037742
+        "fcf_yield": -2.3572229222900183
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -442,7 +442,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:50.683434+00:00",
+        "evidence_date": "2026-07-18T17:52:28.384642+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -456,7 +456,7 @@
     {
       "ticker": "AAPL",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -526,25 +526,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 59.30965152439749,
+        "return_1y": 58.66276325419365,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5393605447412584,
+        "volatility_daily": 1.539200442058775,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.65745,
+        "institutional_pct": 0.66203004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 40.395153,
+        "pe_ratio_trailing": 40.502426,
         "pe_ratio_forward": null,
-        "ps_ratio": 10.842385572758829,
+        "ps_ratio": 10.858001407713767,
         "ev_ebitda": null,
         "pb_ratio": 7.26,
-        "fcf_yield": 2.065306817574041
+        "fcf_yield": 2.062336520446281
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -554,7 +554,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:51.664888+00:00",
+        "evidence_date": "2026-07-18T17:52:32.605277+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -568,7 +568,7 @@
     {
       "ticker": "AARD",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -639,15 +639,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -47.07357940203823,
+        "return_1y": -49.5697057553589,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 7.795482052267717,
+        "volatility_daily": 7.807712889607018,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.56234,
+        "institutional_pct": 0.56235003,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -657,7 +657,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 3.987,
-        "fcf_yield": -24.859735638194323
+        "fcf_yield": -26.85360428460406
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -667,7 +667,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:53.205043+00:00",
+        "evidence_date": "2026-07-18T17:52:34.800997+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -681,7 +681,7 @@
     {
       "ticker": "ABAT",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -752,25 +752,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 2.542380672253542,
+        "return_1y": -1.666674945089223,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 8.139964158910693,
+        "volatility_daily": 8.141440391827636,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.36321,
+        "institutional_pct": 0.36328,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 20.272219673706417,
+        "ps_ratio": 19.769601154961073,
         "ev_ebitda": null,
         "pb_ratio": 0.852,
-        "fcf_yield": -0.17581453296123656
+        "fcf_yield": -0.18028440766625586
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -780,7 +780,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:55.082638+00:00",
+        "evidence_date": "2026-07-18T17:52:37.622296+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -794,7 +794,7 @@
     {
       "ticker": "ABCL",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -865,25 +865,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 57.94871017385849,
+        "return_1y": 44.308038505877605,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.98581284539134,
+        "volatility_daily": 4.90860197867579,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.42571,
+        "institutional_pct": 0.42676997,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 23.749019976308112,
+        "ps_ratio": 24.924906099656436,
         "ev_ebitda": null,
         "pb_ratio": 3.086,
-        "fcf_yield": -6.062330435917837
+        "fcf_yield": -5.776326941812547
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -893,7 +893,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:56.913057+00:00",
+        "evidence_date": "2026-07-18T17:52:40.038026+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -907,7 +907,7 @@
     {
       "ticker": "ABEO",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -978,10 +978,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 5.88235082584886,
+        "return_1y": 6.221545340194,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.2526858250178385,
+        "volatility_daily": 3.252482307461453,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -991,12 +991,12 @@
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.389474,
+        "pe_ratio_trailing": 7.368421,
         "pe_ratio_forward": null,
-        "ps_ratio": 27.51760039841155,
+        "ps_ratio": 27.439202751031637,
         "ev_ebitda": null,
         "pb_ratio": 2.549,
-        "fcf_yield": -14.1436931109793
+        "fcf_yield": -14.18410362418645
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1006,7 +1006,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:16:59.050707+00:00",
+        "evidence_date": "2026-07-18T17:52:43.283872+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1020,7 +1020,7 @@
     {
       "ticker": "ABNB",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Consumer Cyclical",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -1090,25 +1090,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 6.101938129062187,
+        "return_1y": 4.765321920596913,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.8933283784031012,
+        "volatility_daily": 1.8950328994363506,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.8836,
+        "institutional_pct": 0.89329004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 36.493828,
+        "pe_ratio_trailing": 36.133663,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.936034552599595,
+        "ps_ratio": 6.850624312910053,
         "ev_ebitda": null,
         "pb_ratio": 12.834,
-        "fcf_yield": 3.6377097507968346
+        "fcf_yield": 3.683062940162514
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1118,7 +1118,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:00.867538+00:00",
+        "evidence_date": "2026-07-18T17:52:45.767873+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1132,7 +1132,7 @@
     {
       "ticker": "ABOS",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -1203,10 +1203,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 46.62162488703309,
+        "return_1y": 50.0,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.473546469354807,
+        "volatility_daily": 5.477328768607732,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -1221,7 +1221,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 1.211,
-        "fcf_yield": -43.02364947425285
+        "fcf_yield": -41.49392117403229
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1231,7 +1231,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:02.630762+00:00",
+        "evidence_date": "2026-07-18T17:52:48.517347+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1245,7 +1245,7 @@
     {
       "ticker": "ABSI",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -1316,25 +1316,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 185.7638616390813,
+        "return_1y": 165.86539681258802,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.695676759636704,
+        "volatility_daily": 6.67789491726565,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.73009,
+        "institutional_pct": 0.73015,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 759.3489450134431,
+        "ps_ratio": 765.3462827664596,
         "ev_ebitda": null,
         "pb_ratio": 1.107,
-        "fcf_yield": -2.974926642411303
+        "fcf_yield": -2.9516147896372926
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1344,7 +1344,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:04.728435+00:00",
+        "evidence_date": "2026-07-18T17:52:50.981698+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1358,7 +1358,7 @@
     {
       "ticker": "ABTC",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -1429,22 +1429,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -94.52631575123111,
+        "return_1y": -94.2433861828355,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 7.007597876969428,
+        "volatility_daily": 7.002235153082106,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.23055,
+        "institutional_pct": 0.23056,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.6964893880445084,
+        "ps_ratio": 1.6902751471716388,
         "ev_ebitda": null,
         "pb_ratio": 9.84,
         "fcf_yield": null
@@ -1457,7 +1457,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:06.800333+00:00",
+        "evidence_date": "2026-07-18T17:52:53.666731+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -1471,7 +1471,7 @@
     {
       "ticker": "ABUS",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -1542,25 +1542,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 50.9554016802435,
+        "return_1y": 45.686893803646086,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.9287844656918955,
+        "volatility_daily": 2.9394992296506826,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.71919996,
+        "institutional_pct": 0.71919,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 5.710843,
+        "pe_ratio_trailing": 5.493976,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.890849796620463,
+        "ps_ratio": 4.705121491487234,
         "ev_ebitda": null,
         "pb_ratio": 1.321,
-        "fcf_yield": -9.655436598485597
+        "fcf_yield": -10.03657189499231
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1570,7 +1570,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:10.393047+00:00",
+        "evidence_date": "2026-07-18T17:52:56.767955+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1584,7 +1584,7 @@
     {
       "ticker": "ABVC",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -1656,15 +1656,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -66.2011155325845,
+        "return_1y": -62.68656610194437,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.569751041947679,
+        "volatility_daily": 5.560641203996039,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.031400003,
+        "institutional_pct": 0.03142,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -1674,7 +1674,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.43,
-        "fcf_yield": 3.6754714125526498
+        "fcf_yield": 3.557856439517451
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1684,7 +1684,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:12.482863+00:00",
+        "evidence_date": "2026-07-18T17:52:59.749161+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1698,7 +1698,7 @@
     {
       "ticker": "ACAD",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -1768,25 +1768,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 13.658536709145984,
+        "return_1y": 13.475181682147952,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.3334385367820745,
+        "volatility_daily": 2.3334702149924373,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.98908997,
+        "institutional_pct": 0.98910004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 11.597284,
+        "pe_ratio_trailing": 11.583711,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.007098846886459,
+        "ps_ratio": 4.002408715093067,
         "ev_ebitda": null,
         "pb_ratio": 7.295,
-        "fcf_yield": 3.5121102544898655
+        "fcf_yield": 3.516225841162552
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1796,7 +1796,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:14.547169+00:00",
+        "evidence_date": "2026-07-18T17:53:02.899884+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1810,7 +1810,7 @@
     {
       "ticker": "ACB",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -1881,25 +1881,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -43.29670735048117,
+        "return_1y": -41.94260501916875,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.060583890273841,
+        "volatility_daily": 4.0626710177618115,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.097040005,
+        "institutional_pct": 0.09702,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.49848479518288813,
+        "ps_ratio": 0.5081453903668488,
         "ev_ebitda": null,
         "pb_ratio": 6.1843886,
-        "fcf_yield": 5.622666819757626
+        "fcf_yield": 5.515771610178431
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1909,7 +1909,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:16.294814+00:00",
+        "evidence_date": "2026-07-18T17:53:05.102889+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1923,7 +1923,7 @@
     {
       "ticker": "ACDC",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Energy",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -1994,15 +1994,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -40.66748949072142,
+        "return_1y": -39.47036198435217,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.756381057595912,
+        "volatility_daily": 5.755056910731594,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.16695999,
+        "institutional_pct": 0.16691999,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -2022,7 +2022,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:18.146005+00:00",
+        "evidence_date": "2026-07-18T17:53:07.549416+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2036,7 +2036,7 @@
     {
       "ticker": "ACET",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -2108,10 +2108,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -34.96835408417428,
+        "return_1y": -33.22368431371995,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.710145001505222,
+        "volatility_daily": 4.704770298264671,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -2126,7 +2126,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 13.029,
-        "fcf_yield": -65.56690166996238
+        "fcf_yield": -66.37437892010927
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2136,7 +2136,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:20.443734+00:00",
+        "evidence_date": "2026-07-18T17:53:11.103307+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2150,7 +2150,7 @@
     {
       "ticker": "ACGL",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -2220,25 +2220,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 12.83554791717366,
+        "return_1y": 14.71420512113294,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.3122501938781501,
+        "volatility_daily": 1.3143707173779153,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.94857,
+        "institutional_pct": 0.94877,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.6953845,
+        "pe_ratio_trailing": 7.7961535,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.767352769448901,
+        "ps_ratio": 1.7904957901602554,
         "ev_ebitda": null,
         "pb_ratio": 66.454,
-        "fcf_yield": 15.094941894785785
+        "fcf_yield": 14.89983249836746
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2248,7 +2248,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:24.042246+00:00",
+        "evidence_date": "2026-07-18T17:53:17.513337+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2262,7 +2262,7 @@
     {
       "ticker": "ACHC",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -2332,25 +2332,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 47.60649949346785,
+        "return_1y": 57.390510401097494,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.195393277471931,
+        "volatility_daily": 4.190536476972697,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.4639599,
+        "institutional_pct": 1.46357,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.9169241216003238,
+        "ps_ratio": 0.941204451673477,
         "ev_ebitda": null,
         "pb_ratio": 21.576,
-        "fcf_yield": -7.017645602061933
+        "fcf_yield": -6.836610810682102
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2360,7 +2360,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:28.145056+00:00",
+        "evidence_date": "2026-07-18T17:53:21.033487+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2374,7 +2374,7 @@
     {
       "ticker": "ACHV",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -2445,15 +2445,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 116.72727411443537,
+        "return_1y": 133.9552173412148,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.730096374129016,
+        "volatility_daily": 5.734662654211308,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.63632,
+        "institutional_pct": 0.63623,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -2463,7 +2463,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.201,
-        "fcf_yield": -4.404218812630023
+        "fcf_yield": -4.186466406879276
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2473,7 +2473,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:30.862681+00:00",
+        "evidence_date": "2026-07-18T17:53:24.102871+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2487,7 +2487,7 @@
     {
       "ticker": "ACIC",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -2558,25 +2558,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 1.143778751434316,
+        "return_1y": 0.8990402583068543,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.9859265702085669,
+        "volatility_daily": 1.9864390454547984,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.37008,
+        "institutional_pct": 0.36938,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 4.845794,
+        "pe_ratio_trailing": 4.7897196,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.5026331137704991,
+        "ps_ratio": 1.4852448974079464,
         "ev_ebitda": null,
         "pb_ratio": 6.948,
-        "fcf_yield": -3.5852562811870747
+        "fcf_yield": -3.6272299732302384
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2586,7 +2586,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:33.889563+00:00",
+        "evidence_date": "2026-07-18T17:53:27.879241+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2600,7 +2600,7 @@
     {
       "ticker": "ACIU",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -2672,10 +2672,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 5.314016283183232,
+        "return_1y": 6.28019896779725,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.919167156518105,
+        "volatility_daily": 4.919404328078295,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -2687,7 +2687,7 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 59.93149539009157,
+        "ps_ratio": 60.48132508183202,
         "ev_ebitda": null,
         "pb_ratio": 0.3956352,
         "fcf_yield": null
@@ -2700,7 +2700,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:35.843713+00:00",
+        "evidence_date": "2026-07-18T17:53:30.215545+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -2714,7 +2714,7 @@
     {
       "ticker": "ACIW",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -2784,25 +2784,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 28.38073783255583,
+        "return_1y": 28.07675231450067,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.1587474295215174,
+        "volatility_daily": 2.159194905667865,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.02596,
+        "institutional_pct": 1.02564,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 28.759804,
+        "pe_ratio_trailing": 29.328283,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.3303167522259147,
+        "ps_ratio": 3.29625871520465,
         "ev_ebitda": null,
         "pb_ratio": 14.804,
-        "fcf_yield": 4.386686970468003
+        "fcf_yield": 4.432011673456804
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2812,7 +2812,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:38.728286+00:00",
+        "evidence_date": "2026-07-18T17:53:33.882294+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2826,7 +2826,7 @@
     {
       "ticker": "ACLS",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -2896,25 +2896,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 94.82662594811393,
+        "return_1y": 92.24915435321151,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.050218877083313,
+        "volatility_daily": 4.052533354620899,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.07471,
+        "institutional_pct": 1.07318,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 45.093853,
+        "pe_ratio_trailing": 42.36646,
         "pe_ratio_forward": null,
-        "ps_ratio": 5.065357575348872,
+        "ps_ratio": 4.959208334400099,
         "ev_ebitda": null,
         "pb_ratio": 33.991,
-        "fcf_yield": 1.146785059003065
+        "fcf_yield": 1.1713313888477248
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2924,7 +2924,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:41.359717+00:00",
+        "evidence_date": "2026-07-18T17:53:37.501288+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2938,7 +2938,7 @@
     {
       "ticker": "ACMR",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -3008,25 +3008,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 178.44368944878764,
+        "return_1y": 178.98935632246443,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.337457741751187,
+        "volatility_daily": 5.337332855876871,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.72310996,
+        "institutional_pct": 0.72327006,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 70.66386,
+        "pe_ratio_trailing": 64.06107,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.0521402416018475,
+        "ps_ratio": 6.039905103011302,
         "ev_ebitda": null,
         "pb_ratio": 23.885,
-        "fcf_yield": -2.450695588342764
+        "fcf_yield": -2.455660004116724
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3036,7 +3036,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:43.958369+00:00",
+        "evidence_date": "2026-07-18T17:53:40.249535+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -3050,7 +3050,7 @@
     {
       "ticker": "ACNB",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -3121,22 +3121,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 48.31936686649027,
+        "return_1y": 46.184424084325066,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.539086079403339,
+        "volatility_daily": 1.5460741620192997,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.40952,
+        "institutional_pct": 0.40997002,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 12.220906,
+        "pe_ratio_trailing": 12.212122,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.9830930962040747,
+        "ps_ratio": 3.8860229868004437,
         "ev_ebitda": null,
         "pb_ratio": 41.156,
         "fcf_yield": null
@@ -3149,7 +3149,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:48.281557+00:00",
+        "evidence_date": "2026-07-18T17:53:45.197154+00:00",
         "method_version": "1.1",
         "fields_completed": 6,
         "fields_expected": 50,
@@ -3163,7 +3163,7 @@
     {
       "ticker": "ACNT",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Basic Materials",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -3234,10 +3234,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 16.937351343345757,
+        "return_1y": 18.98832301905523,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.1943093952540855,
+        "volatility_daily": 2.1948218759899625,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3249,10 +3249,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.7858630167227514,
+        "ps_ratio": 1.805942173560799,
         "ev_ebitda": null,
         "pb_ratio": 8.862,
-        "fcf_yield": 19.894857122781296
+        "fcf_yield": 19.67365848071668
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3262,7 +3262,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:51.546578+00:00",
+        "evidence_date": "2026-07-18T17:53:48.246183+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3276,7 +3276,7 @@
     {
       "ticker": "ACOG",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -3348,10 +3348,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -18.69522873139221,
+        "return_1y": -14.914912965522428,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.33403582036294,
+        "volatility_daily": 4.332009662866202,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3363,10 +3363,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 16.79507986768563,
+        "ps_ratio": 17.09678710819415,
         "ev_ebitda": null,
         "pb_ratio": 2.639,
-        "fcf_yield": -11.918993374755418
+        "fcf_yield": -11.708658732463869
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3376,7 +3376,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:53.524640+00:00",
+        "evidence_date": "2026-07-18T17:53:50.647466+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3390,7 +3390,7 @@
     {
       "ticker": "ACRS",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -3461,25 +3461,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 237.1069195592975,
+        "return_1y": 252.79501725906158,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.076790702983984,
+        "volatility_daily": 6.085971085171362,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.79639,
+        "institutional_pct": 0.79651,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 89.47022151871795,
+        "ps_ratio": 94.81172205391901,
         "ev_ebitda": null,
         "pb_ratio": 1.029,
-        "fcf_yield": -4.302830658158172
+        "fcf_yield": -4.06041788718919
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3489,7 +3489,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:56.046361+00:00",
+        "evidence_date": "2026-07-18T17:53:53.543608+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3503,7 +3503,7 @@
     {
       "ticker": "ACRV",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -3575,15 +3575,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 32.5757523076705,
+        "return_1y": 29.629627340288035,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.88521680704358,
+        "volatility_daily": 5.8838954369160135,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.47375,
+        "institutional_pct": 0.47377998,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -3603,7 +3603,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:17:58.307911+00:00",
+        "evidence_date": "2026-07-18T17:53:55.816540+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3617,7 +3617,7 @@
     {
       "ticker": "ACT",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Financial Services",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -3687,25 +3687,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 35.577510857597424,
+        "return_1y": 36.42321052013357,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.3920245011527124,
+        "volatility_daily": 1.3911210727210541,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.23096001,
+        "institutional_pct": 0.23091999,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 9.718163,
+        "pe_ratio_trailing": 10.069264,
         "pe_ratio_forward": null,
-        "ps_ratio": 5.235927688896387,
+        "ps_ratio": 5.232553436657334,
         "ev_ebitda": null,
         "pb_ratio": 38.088,
-        "fcf_yield": 9.091910178102745
+        "fcf_yield": 9.09777316615382
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3715,7 +3715,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:00.646654+00:00",
+        "evidence_date": "2026-07-18T17:53:58.430377+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -3729,7 +3729,7 @@
     {
       "ticker": "ACTG",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -3800,25 +3800,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 18.88297344492591,
+        "return_1y": 22.70270009037353,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.485625224967367,
+        "volatility_daily": 2.4850126008418028,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.88615996,
+        "institutional_pct": 0.88569,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 2.00769785414662,
+        "ps_ratio": 2.0391383912900043,
         "ev_ebitda": null,
         "pb_ratio": 5.472,
-        "fcf_yield": 8.027701928480214
+        "fcf_yield": 7.903926484039325
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3828,7 +3828,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:04.320158+00:00",
+        "evidence_date": "2026-07-18T17:54:01.894324+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3842,7 +3842,7 @@
     {
       "ticker": "ACTU",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -3914,15 +3914,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -73.48242961777161,
+        "return_1y": -75.0,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.995200664180002,
+        "volatility_daily": 6.031131188678597,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.58198,
+        "institutional_pct": 0.58199,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -3932,7 +3932,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.16,
-        "fcf_yield": -29.811860867848356
+        "fcf_yield": -34.366448666032014
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3942,7 +3942,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:06.277072+00:00",
+        "evidence_date": "2026-07-18T17:54:04.163850+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -3956,7 +3956,7 @@
     {
       "ticker": "ADAG",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
         "micro_cap",
@@ -4027,10 +4027,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 111.83430783985156,
+        "return_1y": 105.14285223824638,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.240453979230247,
+        "volatility_daily": 6.237451157691608,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4042,10 +4042,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 30.835993143839033,
+        "ps_ratio": 30.92212712259181,
         "ev_ebitda": null,
         "pb_ratio": 0.746,
-        "fcf_yield": -4.333560977499432
+        "fcf_yield": -4.321489788228398
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4055,7 +4055,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:08.330112+00:00",
+        "evidence_date": "2026-07-18T17:54:06.763889+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4069,7 +4069,7 @@
     {
       "ticker": "ADAM",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Real Estate",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -4140,22 +4140,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 56.361290942382894,
+        "return_1y": 52.51912479706553,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.0412572813534897,
+        "volatility_daily": 2.0487955430217974,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.56245,
+        "institutional_pct": 0.56261003,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.8803425,
+        "pe_ratio_trailing": 7.6752133,
         "pe_ratio_forward": null,
-        "ps_ratio": 2.561879201060197,
+        "ps_ratio": 2.4951923412686665,
         "ev_ebitda": null,
         "pb_ratio": 10.193,
         "fcf_yield": null
@@ -4168,7 +4168,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:11.292627+00:00",
+        "evidence_date": "2026-07-18T17:54:10.662337+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -4182,7 +4182,7 @@
     {
       "ticker": "ADBE",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -4252,25 +4252,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -35.78660397870257,
+        "return_1y": -35.14038260810947,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.2703462569561887,
+        "volatility_daily": 2.2711801926208994,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.88113,
+        "institutional_pct": 0.89024,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 12.851447,
+        "pe_ratio_trailing": 13.564895,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.712029667211732,
+        "ps_ratio": 3.742633324904474,
         "ev_ebitda": null,
         "pb_ratio": 28.867,
-        "fcf_yield": 9.855458704835169
+        "fcf_yield": 9.774870237191086
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4280,7 +4280,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:15.326035+00:00",
+        "evidence_date": "2026-07-18T17:54:14.233584+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4294,7 +4294,7 @@
     {
       "ticker": "ADEA",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -4364,10 +4364,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 85.35847039723164,
+        "return_1y": 85.75902682495276,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.010488984427593,
+        "volatility_daily": 4.010402450047281,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4377,12 +4377,12 @@
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 25.392157,
+        "pe_ratio_trailing": 23.284403,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.210622090540864,
+        "ps_ratio": 6.07888860742908,
         "ev_ebitda": null,
         "pb_ratio": 4.232,
-        "fcf_yield": 5.996694983961106
+        "fcf_yield": 6.126647277614049
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4392,7 +4392,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:17.710373+00:00",
+        "evidence_date": "2026-07-18T17:54:17.229994+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4406,7 +4406,7 @@
     {
       "ticker": "ADI",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -4476,25 +4476,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 60.03573888207093,
+        "return_1y": 57.28703749171352,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.2049609682978044,
+        "volatility_daily": 2.2071670120735973,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.93361,
+        "institutional_pct": 0.94635004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 58.09618,
+        "pe_ratio_trailing": 55.857143,
         "pe_ratio_forward": null,
-        "ps_ratio": 14.548541506633354,
+        "ps_ratio": 14.350879942014187,
         "ev_ebitda": null,
         "pb_ratio": 69.273,
-        "fcf_yield": 2.08736387054148
+        "fcf_yield": 2.1161141360476967
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4504,7 +4504,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:21.294274+00:00",
+        "evidence_date": "2026-07-18T17:54:21.599766+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4518,7 +4518,7 @@
     {
       "ticker": "ADMA",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -4588,25 +4588,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -49.91472232408965,
+        "return_1y": -47.937834569822755,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.4186155149412953,
+        "volatility_daily": 3.406277058830636,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.93837,
+        "institutional_pct": 0.93588996,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 12.768117,
+        "pe_ratio_trailing": 12.808824,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.004828182428454,
+        "ps_ratio": 3.9593702565614115,
         "ev_ebitda": null,
         "pb_ratio": 1.68,
-        "fcf_yield": 2.857809770254514
+        "fcf_yield": 2.8906205700182026
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4616,7 +4616,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:24.294058+00:00",
+        "evidence_date": "2026-07-18T17:54:24.927666+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4630,7 +4630,7 @@
     {
       "ticker": "ADP",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -4700,25 +4700,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -12.72019003775984,
+        "return_1y": -13.0640782733143,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.6240089732891851,
+        "volatility_daily": 1.624265080727891,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.90589994,
+        "institutional_pct": 0.91936994,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 23.09271,
+        "pe_ratio_trailing": 23.812033,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.747867143786282,
+        "ps_ratio": 4.723994689790268,
         "ev_ebitda": null,
         "pb_ratio": 15.851,
-        "fcf_yield": 4.631026271318085
+        "fcf_yield": 4.654428914393723
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4728,7 +4728,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:27.372326+00:00",
+        "evidence_date": "2026-07-18T17:54:29.276424+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4742,7 +4742,7 @@
     {
       "ticker": "ADPT",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -4812,25 +4812,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 110.47619410923548,
+        "return_1y": 120.59672106771133,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.348263338682048,
+        "volatility_daily": 4.352343640397013,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.96602,
+        "institutional_pct": 0.96296,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 11.973247175815445,
+        "ps_ratio": 12.417503232863108,
         "ev_ebitda": null,
         "pb_ratio": 1.355,
-        "fcf_yield": 0.45526465746703604
+        "fcf_yield": 0.4389768355235561
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4840,7 +4840,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:29.655457+00:00",
+        "evidence_date": "2026-07-18T17:54:32.408580+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4854,7 +4854,7 @@
     {
       "ticker": "ADSK",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "large",
       "screening_flags": [
         "recent_ipo"
@@ -4924,25 +4924,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -25.70509486656864,
+        "return_1y": -26.48890448747,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.1341845323050395,
+        "volatility_daily": 2.131713089615632,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.97334,
+        "institutional_pct": 0.98277,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 30.485954,
+        "pe_ratio_trailing": 31.829447,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.105127059911157,
+        "ps_ratio": 6.14141042010512,
         "ev_ebitda": null,
         "pb_ratio": 15.114,
-        "fcf_yield": 6.678857982623984
+        "fcf_yield": 6.639399390331478
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4952,7 +4952,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:33.053426+00:00",
+        "evidence_date": "2026-07-18T17:54:36.312654+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4966,7 +4966,7 @@
     {
       "ticker": "ADTN",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Technology",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -5037,10 +5037,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 22.489534771552613,
+        "return_1y": 23.80446129055143,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.230565296976071,
+        "volatility_daily": 4.229349135163069,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -5052,10 +5052,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.8452422635958062,
+        "ps_ratio": 0.8409113592125179,
         "ev_ebitda": null,
         "pb_ratio": 1.707,
-        "fcf_yield": 4.846926046411127
+        "fcf_yield": 4.871888931059913
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -5065,7 +5065,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:38.370606+00:00",
+        "evidence_date": "2026-07-18T17:54:41.043206+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5079,7 +5079,7 @@
     {
       "ticker": "ADUR",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
         "small_cap",
@@ -5124,8 +5124,8 @@
           "fcf_q1": null,
           "fcf_q2": null,
           "fcf_q3": null,
-          "fcf_q4": -11859975,
-          "fcf_margin_q4": -4903.32856504986
+          "fcf_q4": -8855211,
+          "fcf_margin_q4": -3661.0540111462074
         },
         "capex_info": {
           "capex_nominal_q1": null,
@@ -5150,10 +5150,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 7.3949591819365414,
+        "return_1y": 13.047214656951468,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.1733186514823455,
+        "volatility_daily": 5.1745367872958035,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -5165,10 +5165,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1872.7238306222391,
+        "ps_ratio": 1929.872731416588,
         "ev_ebitda": null,
         "pb_ratio": 0.84727335,
-        "fcf_yield": -2.618287055930003
+        "fcf_yield": -1.8970442721675627
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -5178,7 +5178,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:40.274225+00:00",
+        "evidence_date": "2026-07-18T17:54:43.068129+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5192,7 +5192,7 @@
     {
       "ticker": "ADUS",
       "exchange": "NASDAQ",
-      "sector": null,
+      "sector": "Healthcare",
       "size_category": "mid",
       "screening_flags": [
         "recent_ipo"
@@ -5262,25 +5262,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 3.7651537619612263,
+        "return_1y": 6.998036017186561,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.9446223674812024,
+        "volatility_daily": 1.9387049725158267,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.0564,
+        "institutional_pct": 1.05718,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 20.325,
+        "pe_ratio_trailing": 21.12915,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.46670558004618,
+        "ps_ratio": 1.4757258702654286,
         "ev_ebitda": null,
         "pb_ratio": 61.046,
-        "fcf_yield": 4.843169975545561
+        "fcf_yield": 4.813566375282923
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -5290,7 +5290,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-17T06:18:42.978291+00:00",
+        "evidence_date": "2026-07-18T17:54:46.778260+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,

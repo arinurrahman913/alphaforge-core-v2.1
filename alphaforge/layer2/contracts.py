@@ -126,6 +126,8 @@ class FundamentalData:
     asset_turnover: float | None = None
     inventory_turnover: float | None = None
     interest_coverage: float | None = None
+    sector: str | None = None
+    industry: str | None = None
     quarterly_data: list[QuarterlyFundamental] = field(default_factory=list)  # Last 8 quarters dari EDGAR
 
 

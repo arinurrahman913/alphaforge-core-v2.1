@@ -8,3 +8,4 @@ dashboard/data/*.json
 .env
 frontend/node_modules/
 .tools/
+logs/

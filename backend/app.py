@@ -1,8 +1,17 @@
 """Flask API + static server for the AlphaForge dashboard.
 
-Read-only: serves whatever the pipeline (alphaforge/cli.py) has already
-written to dashboard/data/*.json, plus the built React app in
-frontend/dist. Does not trigger Screening/Evidence/etc itself.
+Read-only: serves whatever the pipeline has already written to
+dashboard/data/*.json, plus the built React app in frontend/dist. Does not
+trigger Screening/Evidence/etc itself — that's scripts/refresh_layer1.py
+(every ~2h) and scripts/refresh_full_pipeline.py (daily), run by Windows
+Task Scheduler independently of whether this Flask process is even running.
+
+Each stage file is reloaded lazily based on mtime (_get_stage below)
+instead of being read once at import time — so once a scheduled refresh
+script finishes writing new data, the next request picks it up automatically,
+no restart needed. The stage files themselves are written atomically
+(tmp file + os.replace) by the refresh scripts, so this never observes a
+half-written file mid-reload.
 """
 from __future__ import annotations
 
@@ -17,6 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from alphaforge.layer2.sources.live_quote import fetch_live_quote  # noqa: E402
+
 DATA_DIR = ROOT / "dashboard" / "data"
 FRONTEND_DIST = ROOT / "frontend" / "dist"
 
@@ -33,38 +43,29 @@ STAGE_FILES = {
     "historical": "historical_timeline.json",
 }
 
+# name -> (mtime at last load, parsed JSON). Populated lazily on first request.
+_stage_cache: dict[str, tuple[float, dict]] = {}
 
-def _load_stage(name: str) -> dict:
+
+def _get_stage(name: str) -> dict:
     path = DATA_DIR / STAGE_FILES[name]
     if not path.exists():
         return {}
+
+    mtime = path.stat().st_mtime
+    cached = _stage_cache.get(name)
+    if cached is not None and cached[0] == mtime:
+        return cached[1]
+
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    _stage_cache[name] = (mtime, data)
+    return data
 
 
-def load_all_stages() -> dict[str, dict]:
-    return {name: _load_stage(name) for name in STAGE_FILES}
+def _index_by_ticker(items: list[dict]) -> dict[str, dict]:
+    return {item["ticker"]: item for item in items if "ticker" in item}
 
-
-def build_ticker_indexes(stages: dict[str, dict]) -> dict[str, dict]:
-    """Index each stage's per-ticker list by ticker for O(1) lookup in /api/ticker/<ticker>."""
-    def index_by_ticker(items: list[dict]) -> dict[str, dict]:
-        return {item["ticker"]: item for item in items if "ticker" in item}
-
-    return {
-        "evidence": index_by_ticker(stages["evidence"].get("packages", [])),
-        "knowledge": index_by_ticker(stages["knowledge"].get("profiles", [])),
-        "confidence": index_by_ticker(stages["confidence"].get("scores", [])),
-        "risk": index_by_ticker(stages["risk"].get("assessments", [])),
-        "reasoning": index_by_ticker(stages["reasoning"].get("reasoning_outputs", [])),
-        "aggregator": index_by_ticker(stages["aggregator"].get("recommendations", [])),
-        # historical_timeline.json is already a dict keyed by ticker.
-        "historical": stages["historical"],
-    }
-
-
-STAGES = load_all_stages()
-TICKER_INDEX = build_ticker_indexes(STAGES)
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIST), static_url_path="")
 
@@ -73,21 +74,29 @@ app = Flask(__name__, static_folder=str(FRONTEND_DIST), static_url_path="")
 def get_stage(stage: str):
     if stage not in STAGE_FILES:
         return jsonify({"error": f"unknown stage '{stage}'"}), 404
-    return jsonify(STAGES[stage])
+    return jsonify(_get_stage(stage))
 
 
 @app.get("/api/ticker/<ticker>")
 def get_ticker_detail(ticker: str):
     ticker = ticker.upper()
+    evidence = _index_by_ticker(_get_stage("evidence").get("packages", []))
+    knowledge = _index_by_ticker(_get_stage("knowledge").get("profiles", []))
+    confidence = _index_by_ticker(_get_stage("confidence").get("scores", []))
+    risk = _index_by_ticker(_get_stage("risk").get("assessments", []))
+    reasoning = _index_by_ticker(_get_stage("reasoning").get("reasoning_outputs", []))
+    aggregator = _index_by_ticker(_get_stage("aggregator").get("recommendations", []))
+    historical = _get_stage("historical")
+
     return jsonify({
         "ticker": ticker,
-        "evidence": TICKER_INDEX["evidence"].get(ticker),
-        "knowledge": TICKER_INDEX["knowledge"].get(ticker),
-        "confidence": TICKER_INDEX["confidence"].get(ticker),
-        "risk": TICKER_INDEX["risk"].get(ticker),
-        "reasoning": TICKER_INDEX["reasoning"].get(ticker),
-        "aggregator": TICKER_INDEX["aggregator"].get(ticker),
-        "historical": TICKER_INDEX["historical"].get(ticker),
+        "evidence": evidence.get(ticker),
+        "knowledge": knowledge.get(ticker),
+        "confidence": confidence.get(ticker),
+        "risk": risk.get(ticker),
+        "reasoning": reasoning.get(ticker),
+        "aggregator": aggregator.get(ticker),
+        "historical": historical.get(ticker),
     })
 
 

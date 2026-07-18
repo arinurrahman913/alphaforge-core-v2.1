@@ -17,8 +17,10 @@ def compute() -> ComponentReading:
     except Exception as exc:
         return missing(NAME, "direct", f"Yahoo futures gagal ditarik: {exc}")
 
+    # Sama seperti currency_dxy.py: days=30 di yahoo.pct_change() adalah 30
+    # hari bursa (~42 hari kalender), bukan 30 hari kalender persis.
     narrative = (
-        f"Emas {gold:,.0f} ({gold_chg:+.1f}% 30h), WTI {wti:,.2f} ({wti_chg:+.1f}% 30h)."
+        f"Emas {gold:,.0f} ({gold_chg:+.1f}% 30h bursa), WTI {wti:,.2f} ({wti_chg:+.1f}% 30h bursa)."
     )
 
     return ComponentReading(

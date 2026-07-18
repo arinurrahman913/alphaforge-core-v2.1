@@ -1,13 +1,14 @@
 """02_LAYER1_SPECS/06_MARKET_BREADTH.md — kind=derived, komponen leaf.
 
 Universe = hasil Screening sendiri (D-05), bukan S&P 500 — lihat spec.
-Screening/cache harga belum diimplementasikan di repo ini, jadi komponen
-ini sengaja `status=missing` daripada memicu ribuan panggilan Yahoo sendiri
-(larangan eksplisit di spec: "bukan memicu ribuan call sendiri").
-
-Begitu `03_LAYER2_SPECS/01_SCREENING.md` + cache harga (`04_DATA_SOURCES/
-05_RATE_LIMIT_CACHING_STRATEGY.md`) ada, panggil `compute(price_cache=...)`
-dengan cache itu.
+Screening (03_LAYER2_SPECS/01_SCREENING.md) sudah diimplementasikan dan
+dipanggil oleh CLI lewat flag `layer1 --with-screening`, yang membangun
+`price_cache` dan meneruskannya ke `compute(price_cache=...)` di bawah
+(lihat alphaforge/cli.py + pipeline.py). Kalau `compute()` dipanggil tanpa
+price_cache (mis. `layer1` tanpa flag itu), komponen ini sengaja
+`status=missing` daripada memicu ribuan panggilan Yahoo sendiri (larangan
+eksplisit di spec: "bukan memicu ribuan call sendiri") — itu bukan berarti
+Screening belum ada, cuma belum diminta untuk run ini.
 """
 from __future__ import annotations
 

@@ -16,7 +16,11 @@ def compute() -> ComponentReading:
         return missing(NAME, "direct", f"Yahoo DX-Y.NYB gagal ditarik: {exc}")
 
     direction = "menguat" if chg_30d > 0 else "melemah"
-    narrative = f"DXY {current:.2f}, {direction} {abs(chg_30d):.1f}% dalam 30 hari."
+    # yahoo.pct_change(days=30) mundur 30 baris data harian (hari bursa), bukan
+    # 30 hari kalender (~42 hari kalender karena weekend/libur) — narasi
+    # sebelumnya bilang "30 hari" begitu saja, menyiratkan presisi kalender
+    # yang sebenarnya tidak ada.
+    narrative = f"DXY {current:.2f}, {direction} {abs(chg_30d):.1f}% dalam 30 hari bursa."
 
     return ComponentReading(
         name=NAME,

@@ -1,9 +1,20 @@
 """Orkestrasi Layer 1 — DAG di 01_ARCHITECTURE/02_LAYER1_MARKET_CONTEXT.md §5:
-11 komponen leaf paralel, lalu market_sentiment (satu-satunya composite)."""
+11 komponen leaf paralel, lalu market_sentiment (satu-satunya composite).
+
+Explainability overhaul (2026-07): komponen cuma mengisi evidence/rule/
+thresholds/raw_score sendiri-sendiri (lihat masing-masing file di
+components/); modul ini yang mengisi data_freshness/confidence/
+contribution/conflicts secara terpusat setelah semua komponen selesai,
+supaya formulanya konsisten dan cuma didefinisikan sekali, bukan diulang
+12 kali. Juga menghitung LayerScore (skor kondisi pasar 0-100, beda dari
+Confidence yang mengukur kualitas data) dan reasoning Confidence yang
+lebih detail.
+"""
 from __future__ import annotations
 
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from datetime import date
 
 from .components import (
     business_cycle_stage,
@@ -19,7 +30,10 @@ from .components import (
     yield_curve,
 )
 from .components import market_sentiment as market_sentiment_mod
-from .contracts import Confidence, ContextSummary, MarketContextPackage, now_iso
+from .contracts import (
+    ComponentReading, Confidence, Contribution, ContextSummary, LayerScore,
+    MarketContextPackage, ScoreContribution, now_iso,
+)
 
 LEAF_COMPONENTS = {
     "business_cycle_stage": business_cycle_stage.compute,
@@ -36,9 +50,189 @@ LEAF_COMPONENTS = {
 }
 
 CONTEXT_SUMMARY_METHOD_VERSION = "1.0.0"
+LAYER_SCORE_METHOD_VERSION = "1.0.0"
+
+# Bobot kontribusi ke LayerScore final, jumlah = 1.0. market_sentiment
+# dikasih bobot kecil karena secara struktur sudah composite dari
+# volatility_index + market_breadth (dua-duanya sudah ditimbang sendiri
+# di atas) — bobot besar di sini akan menghitung sinyal yang sama 2x.
+WEIGHTS = {
+    "market_regime": 0.15,
+    "business_cycle_stage": 0.12,
+    "yield_curve": 0.10,
+    "volatility_index": 0.10,
+    "market_breadth": 0.10,
+    "liquidity_conditions": 0.10,
+    "sector_rotation": 0.08,
+    "money_flow": 0.07,
+    "currency_dxy": 0.07,
+    "commodity_signals": 0.05,
+    "macro_calendar": 0.03,
+    "market_sentiment": 0.03,
+}
+
+# Cadence (hari) dipakai buat klasifikasi data_freshness: fresh ≤1.5×cadence,
+# acceptable ≤3×cadence, selain itu stale. macro_calendar dikecualikan
+# (forward-looking, bukan data yang "menua").
+CADENCE_DAYS = {
+    "yield_curve": 1,
+    "volatility_index": 1,
+    "currency_dxy": 1,
+    "commodity_signals": 1,
+    "market_regime": 1,
+    "sector_rotation": 1,
+    "money_flow": 1,
+    "market_breadth": 1,
+    "market_sentiment": 1,
+    "liquidity_conditions": 7,   # berbasis WALCL (mingguan), lebih sering dari M2SL (bulanan)
+    "business_cycle_stage": 30,  # berbasis INDPRO (bulanan), paling sering dari GDP (kuartalan)
+}
 
 
-def _build_context_summary(components: dict) -> ContextSummary:
+def _freshness_anchor_date(reading: ComponentReading) -> date | None:
+    """Tanggal evidence paling baru dari komponen — dipakai sebagai acuan
+    freshness. Kalau ada beberapa evidence dengan cadence beda (mis.
+    liquidity_conditions: WALCL mingguan + M2SL bulanan), ambil yang paling
+    baru — otomatis jatuh ke seri yang lebih sering update tanpa perlu
+    hardcode per komponen."""
+    dates = []
+    for e in reading.evidence:
+        try:
+            dates.append(date.fromisoformat(str(e.as_of)))
+        except (ValueError, TypeError):
+            continue
+    return max(dates) if dates else None
+
+
+def _classify_freshness(name: str, reading: ComponentReading, today: date) -> str | None:
+    if reading.status == "missing":
+        return None  # tidak ada reading sama sekali, "stale" akan menyesatkan (implikasinya ada tapi basi)
+    if name == "macro_calendar":
+        return "fresh"  # forward-looking, bukan data yang menua
+    anchor = _freshness_anchor_date(reading)
+    cadence = CADENCE_DAYS.get(name, 1)
+    if anchor is None:
+        return "stale"
+    age_days = (today - anchor).days
+    if age_days <= cadence * 1.5:
+        return "fresh"
+    if age_days <= cadence * 3:
+        return "acceptable"
+    return "stale"
+
+
+def _compute_confidence(reading: ComponentReading, freshness: str | None) -> float | None:
+    """Confidence 0-100 khusus komponen ini — formula seragam, bukan
+    diulang per komponen: mulai 100, -15 kalau freshness acceptable,
+    -40 kalau stale, -25 kalau status degraded, floor 0."""
+    if reading.status == "missing":
+        return None
+    confidence = 100.0
+    if freshness == "acceptable":
+        confidence -= 15.0
+    elif freshness == "stale":
+        confidence -= 40.0
+    if reading.status == "degraded":
+        confidence -= 25.0
+    return max(0.0, confidence)
+
+
+def _apply_contribution(name: str, reading: ComponentReading) -> None:
+    if reading.status != "ok" or reading.raw_score is None:
+        reading.contribution = None
+        return
+    weight = WEIGHTS.get(name, 0.0)
+    reading.contribution = Contribution(score=reading.raw_score, weight=weight, weighted=reading.raw_score * weight)
+
+
+def _detect_conflicts(components: dict[str, ComponentReading]) -> list[str]:
+    """Beberapa rule konflik yang ditulis manual (bukan generic engine —
+    12 komponen tidak butuh satu). Tiap konflik dicatat di kedua komponen
+    yang terlibat (reading.conflicts), plus dikumpulkan buat reasoning
+    Confidence di _build_context_summary."""
+    conflicts_found: list[str] = []
+
+    def flag(a: str, b: str, msg: str) -> None:
+        conflicts_found.append(msg)
+        if a in components:
+            components[a].conflicts.append(msg)
+        if b in components:
+            components[b].conflicts.append(msg)
+
+    dxy = components.get("currency_dxy")
+    liquidity = components.get("liquidity_conditions")
+    if dxy and liquidity and dxy.status == "ok" and liquidity.status == "ok":
+        dxy_strengthening = dxy.value["change_30d_pct"] > 1.0
+        liquidity_easing = not liquidity.value["tightening"]
+        if dxy_strengthening and liquidity_easing:
+            flag("currency_dxy", "liquidity_conditions",
+                 "Dolar menguat di tengah likuiditas yang longgar (Fed tidak tightening) — sinyal campuran untuk aset berisiko.")
+
+    commodity = components.get("commodity_signals")
+    if dxy and commodity and dxy.status == "ok" and commodity.status == "ok":
+        dxy_strengthening = dxy.value["change_30d_pct"] > 1.0
+        gold_rising = commodity.value["gold_change_30d_pct"] > 1.0
+        if dxy_strengthening and gold_rising:
+            flag("currency_dxy", "commodity_signals",
+                 "Dolar dan emas naik bersamaan — biasanya berlawanan arah, sinyal permintaan safe-haven yang kuat meski dolar kuat.")
+
+    regime = components.get("market_regime")
+    yc = components.get("yield_curve")
+    if regime and yc and regime.status == "ok" and yc.status == "ok":
+        if regime.value["regime"] == "bull" and yc.value["shape"] == "inverted":
+            flag("market_regime", "yield_curve",
+                 "Regime pasar bull tapi yield curve inverted — klasik divergensi peringatan pra-resesi.")
+
+    bcs = components.get("business_cycle_stage")
+    if regime and bcs and regime.status == "ok" and bcs.status == "ok":
+        if regime.value["regime"] == "bull" and bcs.value["stage"] in ("late-cycle", "recession"):
+            flag("market_regime", "business_cycle_stage",
+                 f"Regime pasar bull tapi siklus bisnis {bcs.value['stage']} — harga belum mencerminkan perlambatan makro.")
+
+    return conflicts_found
+
+
+def _build_layer_score(components: dict[str, ComponentReading]) -> LayerScore:
+    included = []
+    excluded = []
+    for name in WEIGHTS:
+        reading = components.get(name)
+        if reading and reading.status == "ok" and reading.contribution:
+            included.append((name, reading.contribution))
+        else:
+            excluded.append(name)
+
+    total_weight = sum(c.weight for _, c in included)
+    if total_weight > 0:
+        # Renormalisasi: bobot komponen yang tidak ok tidak diam-diam
+        # menyeret skor ke default, cuma didistribusikan ulang ke yang ada.
+        final_score = sum(c.weighted for _, c in included) / total_weight
+    else:
+        final_score = 50.0  # tidak ada komponen ok sama sekali — netral, bukan 0
+
+    contributions = [
+        ScoreContribution(component=name, score=c.score, weight=c.weight, weighted=c.weighted)
+        for name, c in included
+    ]
+
+    if excluded:
+        reasoning = (
+            f"Rata-rata tertimbang dari {len(included)}/{len(WEIGHTS)} komponen berstatus ok "
+            f"(bobot dinormalisasi ulang ke {total_weight:.2f}). Dikecualikan: {', '.join(excluded)}."
+        )
+    else:
+        reasoning = f"Rata-rata tertimbang dari semua {len(included)} komponen, semua berstatus ok."
+
+    return LayerScore(
+        final_score=round(final_score, 1),
+        formula_version=LAYER_SCORE_METHOD_VERSION,
+        contributions=contributions,
+        excluded=excluded,
+        reasoning=reasoning,
+    )
+
+
+def _build_context_summary(components: dict, conflicts_found: list[str]) -> ContextSummary:
     degraded = [name for name, r in components.items() if r.status in ("degraded", "missing")]
     n_ok = len(components) - len(degraded)
 
@@ -67,16 +261,34 @@ def _build_context_summary(components: dict) -> ContextSummary:
     else:
         band = "low"
 
+    freshness_tally: dict[str, int] = {}
+    for r in components.values():
+        if r.data_freshness:
+            freshness_tally[r.data_freshness] = freshness_tally.get(r.data_freshness, 0) + 1
+
+    reasons = [f"{n_ok}/{len(components)} komponen aktif (status ok)"]
+    if degraded:
+        reasons.append(f"{len(degraded)} komponen degraded/missing: {', '.join(degraded)}")
+    if freshness_tally:
+        freshness_parts = ", ".join(f"{count} {label}" for label, count in freshness_tally.items())
+        reasons.append(f"Data freshness: {freshness_parts}")
+    if conflicts_found:
+        reasons.append(f"{len(conflicts_found)} konflik terdeteksi: {'; '.join(conflicts_found)}")
+    else:
+        reasons.append("Tidak ada konflik antar-indikator terdeteksi")
+    reasons.append("Evidence lengkap untuk semua komponen berstatus ok" if n_ok else "Evidence terbatas — sebagian besar komponen tidak aktif")
+
     return ContextSummary(
         method_version=CONTEXT_SUMMARY_METHOD_VERSION,
         narrative=narrative,
-        confidence=Confidence(score=n_ok / len(components) * 100.0, band=band, limiters=degraded),
+        confidence=Confidence(score=n_ok / len(components) * 100.0, band=band, limiters=degraded, reasons=reasons),
         components_degraded=degraded,
     )
 
 
 def build_market_context_package(price_cache: dict | None = None, session_id: str | None = None) -> MarketContextPackage:
     session_id = session_id or f"session-{uuid.uuid4().hex[:12]}"
+    today = date.today()
 
     components: dict = {}
     with ThreadPoolExecutor(max_workers=len(LEAF_COMPONENTS)) as pool:
@@ -92,11 +304,22 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
         breadth_reading=components["market_breadth"],
     )
 
-    context_summary = _build_context_summary(components)
+    # Post-processing terpusat: freshness -> confidence -> contribution,
+    # urutannya penting karena confidence butuh freshness duluan.
+    for name, reading in components.items():
+        freshness = _classify_freshness(name, reading, today)
+        reading.data_freshness = freshness
+        reading.confidence = _compute_confidence(reading, freshness)
+        _apply_contribution(name, reading)
+
+    conflicts_found = _detect_conflicts(components)
+    layer_score = _build_layer_score(components)
+    context_summary = _build_context_summary(components, conflicts_found)
 
     return MarketContextPackage(
         session_id=session_id,
         components=components,
         context_summary=context_summary,
+        layer_score=layer_score,
         generated_at=now_iso(),
     )

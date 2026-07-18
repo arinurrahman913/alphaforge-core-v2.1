@@ -10,10 +10,12 @@ from __future__ import annotations
 
 from ..contracts import ComponentReading
 from ..sources import fred
-from ._util import missing, source
+from ._util import ev, missing, source, th
 
 NAME = "business_cycle_stage"
 METHOD_VERSION = "1.0.0"
+
+RAW_SCORE = {"early-cycle": 90.0, "mid-cycle": 65.0, "late-cycle": 35.0, "recession": 10.0}
 
 
 def compute() -> ComponentReading:
@@ -46,6 +48,11 @@ def compute() -> ComponentReading:
         f"(proksi PMI, {indpro_date}), pengangguran {unrate_now:.1f}% "
         f"({'naik' if unrate_rising else 'stabil/turun'} vs 6 bulan lalu) → {stage}."
     )
+    rule = (
+        "GDP QoQ < 0 & unemployment naik → recession; "
+        "GDP QoQ > 2.5% & INDPRO YoY > 0 & unemployment tidak naik → early-cycle; "
+        "INDPRO YoY ≤ 0 & unemployment naik → late-cycle; selain itu → mid-cycle"
+    )
 
     return ComponentReading(
         name=NAME,
@@ -63,4 +70,16 @@ def compute() -> ComponentReading:
         note="PMI diganti Industrial Production YoY (INDPRO) — ISM PMI tidak gratis di FRED.",
         narrative=narrative,
         narrative_version="1.0.0",
+        evidence=[
+            ev("gdp_qoq_pct", gdp_qoq, gdp_date, "FRED A191RL1Q225SBEA (real GDP QoQ SAAR)"),
+            ev("indpro_yoy_pct", indpro_yoy, indpro_date, "FRED INDPRO (YoY, proksi PMI)"),
+            ev("unemployment_rate", unrate_now, unrate_date, "FRED UNRATE"),
+            ev("unemployment_rising", unrate_rising, unrate_date, "FRED UNRATE (vs 6 bulan lalu)"),
+        ],
+        rule=rule,
+        thresholds=[
+            th("early-cycle butuh GDP QoQ di atas ini", ">", 2.5),
+            th("unemployment dianggap naik jika delta 6bln di atas ini", ">", 0.2),
+        ],
+        raw_score=RAW_SCORE[stage],
     )

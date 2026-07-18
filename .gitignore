@@ -6,3 +6,4 @@ venv/
 dashboard/data/*.json
 .cache/
 .env
+frontend/node_modules/

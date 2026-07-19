@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
-import HBarChart from '../components/HBarChart'
+import VBarChart from '../components/VBarChart'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
 import StatDetailModal from '../components/StatDetailModal'
 import Sparkline, { InputBar } from '../components/Sparkline'
@@ -31,10 +31,23 @@ export default function Layer1View() {
     { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%`, icon: 'shield', accent: '#22D3EE', onClick: () => setStatDetail('confidence') },
   ]
 
+  const SHORT_LABEL = {
+    yield_curve: 'yield',
+    business_cycle_stage: 'cycle',
+    market_regime: 'regime',
+    liquidity_conditions: 'liquidity',
+    market_breadth: 'breadth',
+    volatility_index: 'vix',
+    commodity_signals: 'commodity',
+    sector_rotation: 'sector',
+    money_flow: 'flow',
+    currency_dxy: 'dxy',
+    macro_calendar: 'calendar',
+  }
   const contribChart = layerScore
     ? [...layerScore.contributions]
         .sort((a, b) => b.weighted - a.weighted)
-        .map((c) => ({ label: c.component, count: Math.round(c.weighted * 10) / 10, color: 'linear-gradient(90deg,#e8b84b,#f5cf6f)' }))
+        .map((c) => ({ label: SHORT_LABEL[c.component] || c.component, full: c.component, count: Math.round(c.weighted * 10) / 10 }))
     : []
 
   const reasons = data.context_summary?.confidence?.reasons || []
@@ -45,7 +58,7 @@ export default function Layer1View() {
 
       {layerScore && contribChart.length > 0 && (
         <div className="chart-row">
-          <HBarChart title={`Kontribusi ke Layer Score (${layerScore.reasoning})`} data={contribChart} />
+          <VBarChart title={`Kontribusi ke Layer Score (${layerScore.reasoning})`} data={contribChart} />
         </div>
       )}
 

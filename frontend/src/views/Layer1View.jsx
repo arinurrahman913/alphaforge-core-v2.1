@@ -4,6 +4,7 @@ import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import HBarChart from '../components/HBarChart'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
+import StatDetailModal from '../components/StatDetailModal'
 import Sparkline, { InputBar } from '../components/Sparkline'
 import Icon from '../components/Icon'
 import { describeComponent, deltaArrow, componentIcon } from '../layer1meta'
@@ -11,6 +12,7 @@ import { describeComponent, deltaArrow, componentIcon } from '../layer1meta'
 export default function Layer1View() {
   const { data, error } = useStageData(api.layer1)
   const [selected, setSelected] = useState(null)
+  const [statDetail, setStatDetail] = useState(null)
 
   if (error) return <div className="empty">Gagal memuat data/layer1_context.json: {error}</div>
   if (!data) return <div className="loading">Memuat…</div>
@@ -22,11 +24,11 @@ export default function Layer1View() {
   const layerScore = data.layer_score
 
   const stats = [
-    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—', icon: 'gauge', accent: '#e8b84b' },
-    { label: 'Komponen', value: entries.length, icon: 'layers', accent: '#818CF8' },
-    { label: 'OK', value: ok, tone: 'good', icon: 'check', accent: '#4ADE80' },
-    { label: 'Degraded', value: deg, tone: deg ? 'warn' : undefined, icon: 'alert', accent: '#FBBF7A' },
-    { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%`, icon: 'shield', accent: '#22D3EE' },
+    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—', icon: 'gauge', accent: '#e8b84b', onClick: () => setStatDetail('score') },
+    { label: 'Komponen', value: entries.length, icon: 'layers', accent: '#818CF8', onClick: () => setStatDetail('components') },
+    { label: 'OK', value: ok, tone: 'good', icon: 'check', accent: '#4ADE80', onClick: () => setStatDetail('ok') },
+    { label: 'Degraded', value: deg, tone: deg ? 'warn' : undefined, icon: 'alert', accent: '#FBBF7A', onClick: () => setStatDetail('degraded') },
+    { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%`, icon: 'shield', accent: '#22D3EE', onClick: () => setStatDetail('confidence') },
   ]
 
   const contribChart = layerScore
@@ -118,6 +120,7 @@ export default function Layer1View() {
       </div>
 
       {selected && <Layer1ComponentModal component={selected} onClose={() => setSelected(null)} />}
+      {statDetail && <StatDetailModal which={statDetail} data={data} onClose={() => setStatDetail(null)} />}
     </>
   )
 }

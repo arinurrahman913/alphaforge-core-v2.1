@@ -1,12 +1,19 @@
 import Icon from './Icon'
 
-// stats: [{ label, value, tone?, icon?, accent? }]
+// stats: [{ label, value, tone?, icon?, accent?, onClick? }]
 // tone: 'good' | 'warn' | 'bad' | undefined ; icon: Icon name ; accent: css color for icon badge
+// onClick: kalau ada, tile jadi bisa diklik (buka rincian) + tampil hint
 export default function StatCards({ stats }) {
   return (
     <div className="stats">
       {stats.map((s) => (
-        <div className="stat" key={s.label}>
+        <div
+          className={`stat${s.onClick ? ' stat-click' : ''}`}
+          key={s.label}
+          onClick={s.onClick}
+          role={s.onClick ? 'button' : undefined}
+          tabIndex={s.onClick ? 0 : undefined}
+        >
           {s.icon && (
             <span className="stat-ic" style={s.accent ? { color: s.accent, background: `${s.accent}1f` } : undefined}>
               <Icon name={s.icon} size={17} />
@@ -14,6 +21,7 @@ export default function StatCards({ stats }) {
           )}
           <div className="stat-label">{s.label}</div>
           <div className={`stat-value${s.tone ? ' ' + s.tone : ''}`}>{s.value}</div>
+          {s.onClick && <div className="stat-hint">Lihat perhitungan ›</div>}
         </div>
       ))}
     </div>

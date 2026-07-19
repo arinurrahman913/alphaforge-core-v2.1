@@ -36,6 +36,11 @@ Setelah itu **otomatis**: backend, CLI, dan scheduled task membaca `.env` sendir
 
 ## 3. Menjalankan Dashboard
 
+### Cara termudah: dobel-klik `start-dashboard.bat`
+Setelah laptop dimatikan/restart, server dashboard ikut mati — dashboard tidak akan terbuka sampai dijalankan lagi. **Dobel-klik `start-dashboard.bat`** di root repo: backend nyala + browser otomatis kebuka di `http://localhost:5000` (mode produksi, cukup 1 proses). Biarkan jendela "AlphaForge Backend" terbuka selama dipakai; tutup jendela itu untuk mematikan. Refresh data cukup lewat tombol **Generate** di dashboard.
+
+### Mode dev (2 terminal) — kalau sedang ngoprek kode
+
 Butuh **2 terminal**: backend (API) + frontend (UI).
 
 ### Terminal 1 — Backend (Flask, port 5000)

@@ -1,0 +1,13 @@
+{
+  "_readme": "Salin file ini jadi 'sentiment_manual.json' (di folder yang sama) untuk melengkapi market_sentiment dengan AAII Investor Sentiment Survey. AAII tidak punya API resmi gratis, jadi datanya diisi manual dari https://www.aaii.com/sentimentsurvey (dirilis tiap Kamis, gratis tanpa login). File 'sentiment_manual.json' sudah di-gitignore (data ini spesifik-mesin, tidak perlu di-commit).",
+
+  "aaii": {
+    "bullish_pct": 41.0,
+    "bearish_pct": 29.0,
+    "as_of": "2026-07-17"
+  },
+
+  "_put_call_override_optional": "put/call ratio sudah otomatis dari CNN Fear & Greed — override di bawah ini HANYA kalau CNN putus dan kamu mau isi manual dari https://www.cboe.com/us/options/market_statistics/",
+  "put_call_score": null,
+  "put_call_as_of": null
+}

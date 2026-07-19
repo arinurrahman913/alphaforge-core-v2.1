@@ -152,7 +152,17 @@ Tiap kartu Layer 1 dibaca begini:
 ### 5.5 Membaca contoh nyata
 - `yield_curve +0.37pp · Normal` → spread 10Y–2Y positif, kurva normal (tidak inverted → sinyal resesi rendah).
 - `volatility_index 18.8 VIX · ▼ Di bawah avg 5th` → pasar relatif tenang.
-- `market_sentiment 58/100 · degraded` → hanya 2/4 input tersedia (AAII & put/call belum ada) — baca dengan hati-hati.
+- `market_sentiment 50/100 · ok` → 3/4 input tersedia (vix, breadth, put/call otomatis). Tambah AAII manual (lihat 5.7) untuk 4/4.
+
+### 5.7 Melengkapi market_sentiment jadi 4/4 (opsional — AAII manual)
+`market_sentiment` otomatis `ok` begitu ≥3 dari 4 input tersedia (vix + breadth + put/call — put/call ditarik otomatis dari CNN Fear & Greed, best-effort, endpoint tidak resmi). Input ke-4, **AAII Investor Sentiment Survey**, tidak punya API gratis — isi manual:
+
+1. Buka https://www.aaii.com/sentimentsurvey (dirilis tiap Kamis, gratis)
+2. Salin `dashboard/data/sentiment_manual.json.example` → `dashboard/data/sentiment_manual.json`
+3. Isi `bullish_pct`, `bearish_pct`, `as_of` dari survei terbaru
+4. Generate ulang Layer 1 (tombol Generate atau `python scripts/refresh_layer1.py`)
+
+File `sentiment_manual.json` sudah di-gitignore (spesifik-mesin, tidak ter-commit). Data kadaluarsa (>30 hari) otomatis diabaikan.
 
 ### 5.6 Screening (Layer 2)
 Ticker dikelompokkan per **tier market cap**: Mega (>$100B) → Large → Mid → Small → Micro (<$300M). Tiap tabel menampilkan jumlah + detail (harga, avg $volume, flags). **Klik baris** → detail per ticker. Bagian "Hard Excluded" = ticker yang gagal filter (mis. likuiditas terlalu rendah).
@@ -175,7 +185,7 @@ Ticker dikelompokkan per **tier market cap**: Mega (>$100B) → Large → Mid �
 
 - **REAL**: semua hero value, delta, mini-stats, narasi, skor → dari **FRED API** + **Yahoo Finance**, per waktu generate.
 - **DEKORATIF**: garis sparkline di kartu (mengikuti arah saja, bukan time-series 30-hari asli).
-- **Proksi** (tercatat di data): `business_cycle` pakai Industrial Production (bukan ISM PMI); `money_flow` proksi volume+harga; `market_breadth` universe Screening sendiri (bukan S&P 500); `market_sentiment` degraded (2/4 input).
+- **Proksi** (tercatat di data): `business_cycle` pakai Industrial Production (bukan ISM PMI); `money_flow` proksi volume+harga; `market_breadth` universe Screening sendiri (bukan S&P 500); `market_sentiment` put/call dari endpoint CNN tidak resmi (bisa putus sewaktu-waktu → komponen otomatis degrade jujur), AAII perlu diisi manual (§5.7).
 - **Snapshot**, bukan live-stream — update hanya saat pipeline dijalankan ulang.
 
 ---

@@ -1,120 +1,8 @@
 {
-  "knowledge_count": 47,
-  "peer_comparisons_generated": 47,
-  "generated_at": "2026-07-18T17:58:20.963836+00:00",
+  "knowledge_count": 46,
+  "peer_comparisons_generated": 46,
+  "generated_at": "2026-07-18T20:37:36.095270+00:00",
   "comparisons": [
-    {
-      "ticker": "AACO",
-      "exchange": "NASDAQ",
-      "peer_group": {
-        "ticker": "AACO",
-        "sector": "Financial Services",
-        "industry": null,
-        "peer_tickers": [
-          "ABTC",
-          "ACGL",
-          "ACIC",
-          "ACNB",
-          "ACT"
-        ],
-        "group_size": 5,
-        "peer_failures": []
-      },
-      "generated_at": "2026-07-18T17:58:20.963836+00:00",
-      "peer_group_basis": "sector",
-      "pe_ratio_comparison": {
-        "metric_name": "pe_ratio",
-        "ticker_value": null,
-        "peer_group_median": 8.93270875,
-        "peer_group_min": 4.7897196,
-        "peer_group_max": 12.212122,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "ps_ratio_comparison": {
-        "metric_name": "ps_ratio",
-        "ticker_value": null,
-        "peer_group_median": 1.7904957901602554,
-        "peer_group_min": 1.4852448974079464,
-        "peer_group_max": 5.232553436657334,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "pb_ratio_comparison": {
-        "metric_name": "pb_ratio",
-        "ticker_value": 7.146,
-        "peer_group_median": 38.088,
-        "peer_group_min": 6.948,
-        "peer_group_max": 66.454,
-        "peer_group_count": 5,
-        "percentile": 20.0,
-        "status": "ok"
-      },
-      "fcf_yield_comparison": {
-        "metric_name": "fcf_yield",
-        "ticker_value": null,
-        "peer_group_median": 9.09777316615382,
-        "peer_group_min": -3.6272299732302384,
-        "peer_group_max": 14.89983249836746,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "gross_margin_comparison": {
-        "metric_name": "gross_margin",
-        "ticker_value": null,
-        "peer_group_median": null,
-        "peer_group_min": null,
-        "peer_group_max": null,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "operating_margin_comparison": {
-        "metric_name": "operating_margin",
-        "ticker_value": null,
-        "peer_group_median": 35.86010333595417,
-        "peer_group_min": 35.86010333595417,
-        "peer_group_max": 35.86010333595417,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "net_margin_comparison": {
-        "metric_name": "net_margin",
-        "ticker_value": 0.0,
-        "peer_group_median": 23.158593231585932,
-        "peer_group_min": -1.9027699,
-        "peer_group_max": 27.131429929117335,
-        "peer_group_count": 5,
-        "percentile": 20.0,
-        "status": "ok"
-      },
-      "revenue_growth_comparison": null,
-      "roe_comparison": {
-        "metric_name": "roe",
-        "ticker_value": null,
-        "peer_group_median": 0.36938,
-        "peer_group_min": 0.23056,
-        "peer_group_max": 0.94877,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      },
-      "roa_comparison": null,
-      "debt_to_equity_comparison": {
-        "metric_name": "debt_to_equity",
-        "ticker_value": null,
-        "peer_group_median": 21.538,
-        "peer_group_min": 11.282,
-        "peer_group_max": 45.979,
-        "peer_group_count": 5,
-        "percentile": null,
-        "status": "ok"
-      }
-    },
     {
       "ticker": "AAL",
       "exchange": "NASDAQ",
@@ -131,7 +19,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.964434+00:00",
+      "generated_at": "2026-07-18T20:37:36.095270+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -239,7 +127,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.964619+00:00",
+      "generated_at": "2026-07-18T20:37:36.095433+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -350,7 +238,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965014+00:00",
+      "generated_at": "2026-07-18T20:37:36.095525+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -467,7 +355,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965187+00:00",
+      "generated_at": "2026-07-18T20:37:36.095633+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -594,7 +482,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965365+00:00",
+      "generated_at": "2026-07-18T20:37:36.095777+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -705,7 +593,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965467+00:00",
+      "generated_at": "2026-07-18T20:37:36.104183+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -832,7 +720,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965620+00:00",
+      "generated_at": "2026-07-18T20:37:36.104412+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -959,7 +847,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.965759+00:00",
+      "generated_at": "2026-07-18T20:37:36.104554+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1062,7 +950,6 @@
         "sector": "Consumer Cyclical",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "AAL",
           "AAOI",
           "AAON",
@@ -1109,10 +996,10 @@
           "ADUR",
           "ADUS"
         ],
-        "group_size": 46,
+        "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966118+00:00",
+      "generated_at": "2026-07-18T20:37:36.105376+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1120,7 +1007,7 @@
         "peer_group_median": 21.12915,
         "peer_group_min": 4.7897196,
         "peer_group_max": 78.46479,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 71.42857142857143,
         "status": "ok"
       },
@@ -1130,18 +1017,18 @@
         "peer_group_median": 4.841601512095183,
         "peer_group_min": 0.1769394785645458,
         "peer_group_max": 1929.872731416588,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 65.78947368421053,
         "status": "ok"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 12.834,
-        "peer_group_median": 6.1843886,
+        "peer_group_median": 5.8281943,
         "peer_group_min": 0.16,
         "peer_group_max": 69.273,
-        "peer_group_count": 46,
-        "percentile": 68.88888888888889,
+        "peer_group_count": 45,
+        "percentile": 68.18181818181817,
         "status": "ok"
       },
       "fcf_yield_comparison": {
@@ -1150,7 +1037,7 @@
         "peer_group_median": 0.4389768355235561,
         "peer_group_min": -66.37437892010927,
         "peer_group_max": 19.67365848071668,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 65.85365853658537,
         "status": "ok"
       },
@@ -1160,7 +1047,7 @@
         "peer_group_median": 40.50192002251754,
         "peer_group_min": 9.444723743216336,
         "peer_group_max": 100.0,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -1170,7 +1057,7 @@
         "peer_group_median": 0.9668206561193733,
         "peer_group_min": -14346.976744186046,
         "peer_group_max": 94.29563547447049,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 53.57142857142857,
         "status": "ok"
       },
@@ -1180,7 +1067,7 @@
         "peer_group_median": 0.44512,
         "peer_group_min": -13766.976744186048,
         "peer_group_max": 94.73499101191341,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 61.53846153846154,
         "status": "ok"
       },
@@ -1188,10 +1075,10 @@
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.696225015,
+        "peer_group_median": 0.70372003,
         "peer_group_min": 0.02406,
         "peer_group_max": 1.46357,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -1202,7 +1089,7 @@
         "peer_group_median": 18.205,
         "peer_group_min": 0.196,
         "peer_group_max": 765.203,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 60.97560975609756,
         "status": "ok"
       }
@@ -1239,7 +1126,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966255+00:00",
+      "generated_at": "2026-07-18T20:37:36.105536+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1366,7 +1253,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966385+00:00",
+      "generated_at": "2026-07-18T20:37:36.105675+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1469,16 +1356,15 @@
         "sector": "Financial Services",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "ACGL",
           "ACIC",
           "ACNB",
           "ACT"
         ],
-        "group_size": 5,
+        "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966468+00:00",
+      "generated_at": "2026-07-18T20:37:36.105760+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1486,9 +1372,9 @@
         "peer_group_median": 8.93270875,
         "peer_group_min": 4.7897196,
         "peer_group_max": 12.212122,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "ps_ratio_comparison": {
         "metric_name": "ps_ratio",
@@ -1496,19 +1382,19 @@
         "peer_group_median": 2.8382593884803495,
         "peer_group_min": 1.4852448974079464,
         "peer_group_max": 5.232553436657334,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 25.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 9.84,
-        "peer_group_median": 38.088,
+        "peer_group_median": 39.622,
         "peer_group_min": 6.948,
         "peer_group_max": 66.454,
-        "peer_group_count": 5,
-        "percentile": 40.0,
-        "status": "ok"
+        "peer_group_count": 4,
+        "percentile": 25.0,
+        "status": "low_sample_size"
       },
       "fcf_yield_comparison": {
         "metric_name": "fcf_yield",
@@ -1516,9 +1402,9 @@
         "peer_group_median": 9.09777316615382,
         "peer_group_min": -3.6272299732302384,
         "peer_group_max": 14.89983249836746,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "gross_margin_comparison": {
         "metric_name": "gross_margin",
@@ -1526,9 +1412,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "operating_margin_comparison": {
         "metric_name": "operating_margin",
@@ -1536,9 +1422,9 @@
         "peer_group_median": 35.86010333595417,
         "peer_group_min": 35.86010333595417,
         "peer_group_max": 35.86010333595417,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "net_margin_comparison": {
         "metric_name": "net_margin",
@@ -1546,20 +1432,20 @@
         "peer_group_median": 25.095807904122744,
         "peer_group_min": 0.72339,
         "peer_group_max": 27.131429929117335,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "revenue_growth_comparison": null,
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.36938,
-        "peer_group_min": 0.08061,
+        "peer_group_median": 0.38967501,
+        "peer_group_min": 0.23091999,
         "peer_group_max": 0.94877,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "roa_comparison": null,
       "debt_to_equity_comparison": {
@@ -1568,9 +1454,9 @@
         "peer_group_median": 13.939,
         "peer_group_min": 11.282,
         "peer_group_max": 45.979,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 66.66666666666666,
-        "status": "ok"
+        "status": "low_sample_size"
       }
     },
     {
@@ -1605,7 +1491,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966594+00:00",
+      "generated_at": "2026-07-18T20:37:36.105897+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1732,7 +1618,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966723+00:00",
+      "generated_at": "2026-07-18T20:37:36.106023+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1859,7 +1745,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966852+00:00",
+      "generated_at": "2026-07-18T20:37:36.106163+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1986,7 +1872,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.966975+00:00",
+      "generated_at": "2026-07-18T20:37:36.106307+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2089,7 +1975,6 @@
         "sector": "Energy",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "AAL",
           "AAOI",
           "AAON",
@@ -2136,10 +2021,10 @@
           "ADUR",
           "ADUS"
         ],
-        "group_size": 46,
+        "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.967588+00:00",
+      "generated_at": "2026-07-18T20:37:36.106814+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2147,7 +2032,7 @@
         "peer_group_median": 22.2067765,
         "peer_group_min": 4.7897196,
         "peer_group_max": 78.46479,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -2157,18 +2042,18 @@
         "peer_group_median": 5.095880885528716,
         "peer_group_min": 0.1769394785645458,
         "peer_group_max": 1929.872731416588,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 2.631578947368421,
         "status": "ok"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 3.412,
-        "peer_group_median": 6.948,
+        "peer_group_median": 6.5661943,
         "peer_group_min": 0.16,
         "peer_group_max": 69.273,
-        "peer_group_count": 46,
-        "percentile": 40.0,
+        "peer_group_count": 45,
+        "percentile": 40.909090909090914,
         "status": "ok"
       },
       "fcf_yield_comparison": {
@@ -2177,7 +2062,7 @@
         "peer_group_median": 0.4389768355235561,
         "peer_group_min": -66.37437892010927,
         "peer_group_max": 19.67365848071668,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 97.5609756097561,
         "status": "ok"
       },
@@ -2187,7 +2072,7 @@
         "peer_group_median": 40.50192002251754,
         "peer_group_min": 9.444723743216336,
         "peer_group_max": 100.0,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -2197,7 +2082,7 @@
         "peer_group_median": 2.7198513352500315,
         "peer_group_min": -14346.976744186046,
         "peer_group_max": 94.29563547447049,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 35.714285714285715,
         "status": "ok"
       },
@@ -2207,7 +2092,7 @@
         "peer_group_median": 0.49529320633878776,
         "peer_group_min": -13766.976744186048,
         "peer_group_max": 94.73499101191341,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 25.64102564102564,
         "status": "ok"
       },
@@ -2215,10 +2100,10 @@
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.708710045,
+        "peer_group_median": 0.71370006,
         "peer_group_min": 0.02406,
         "peer_group_max": 1.46357,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -2229,7 +2114,7 @@
         "peer_group_median": 18.205,
         "peer_group_min": 0.196,
         "peer_group_max": 765.203,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 97.5609756097561,
         "status": "ok"
       }
@@ -2266,7 +2151,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.967747+00:00",
+      "generated_at": "2026-07-18T20:37:36.107011+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2369,16 +2254,15 @@
         "sector": "Financial Services",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "ABTC",
           "ACIC",
           "ACNB",
           "ACT"
         ],
-        "group_size": 5,
+        "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.967827+00:00",
+      "generated_at": "2026-07-18T20:37:36.107109+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2386,9 +2270,9 @@
         "peer_group_median": 10.069264,
         "peer_group_min": 4.7897196,
         "peer_group_max": 12.212122,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 33.33333333333333,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "ps_ratio_comparison": {
         "metric_name": "ps_ratio",
@@ -2396,19 +2280,19 @@
         "peer_group_median": 2.7881490669860414,
         "peer_group_min": 1.4852448974079464,
         "peer_group_max": 5.232553436657334,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 50.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 66.454,
-        "peer_group_median": 9.84,
+        "peer_group_median": 23.964,
         "peer_group_min": 6.948,
         "peer_group_max": 41.156,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "fcf_yield_comparison": {
         "metric_name": "fcf_yield",
@@ -2416,9 +2300,9 @@
         "peer_group_median": 2.7352715964617906,
         "peer_group_min": -3.6272299732302384,
         "peer_group_max": 9.09777316615382,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "gross_margin_comparison": {
         "metric_name": "gross_margin",
@@ -2426,9 +2310,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "operating_margin_comparison": {
         "metric_name": "operating_margin",
@@ -2436,9 +2320,9 @@
         "peer_group_median": 35.86010333595417,
         "peer_group_min": 35.86010333595417,
         "peer_group_max": 35.86010333595417,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "net_margin_comparison": {
         "metric_name": "net_margin",
@@ -2446,20 +2330,20 @@
         "peer_group_median": 13.878206288329777,
         "peer_group_min": -1.9027699,
         "peer_group_max": 27.131429929117335,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 50.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "revenue_growth_comparison": null,
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.23091999,
-        "peer_group_min": 0.08061,
+        "peer_group_median": 0.300149995,
+        "peer_group_min": 0.23056,
         "peer_group_max": 0.40997002,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "roa_comparison": null,
       "debt_to_equity_comparison": {
@@ -2468,9 +2352,9 @@
         "peer_group_median": 29.137,
         "peer_group_min": 13.939,
         "peer_group_max": 45.979,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       }
     },
     {
@@ -2505,7 +2389,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.967952+00:00",
+      "generated_at": "2026-07-18T20:37:36.107243+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2632,7 +2516,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968070+00:00",
+      "generated_at": "2026-07-18T20:37:36.107366+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2735,16 +2619,15 @@
         "sector": "Financial Services",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "ABTC",
           "ACGL",
           "ACNB",
           "ACT"
         ],
-        "group_size": 5,
+        "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968164+00:00",
+      "generated_at": "2026-07-18T20:37:36.107452+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2752,9 +2635,9 @@
         "peer_group_median": 10.069264,
         "peer_group_min": 7.7961535,
         "peer_group_max": 12.212122,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "ps_ratio_comparison": {
         "metric_name": "ps_ratio",
@@ -2762,19 +2645,19 @@
         "peer_group_median": 2.8382593884803495,
         "peer_group_min": 1.6902751471716388,
         "peer_group_max": 5.232553436657334,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 6.948,
-        "peer_group_median": 38.088,
-        "peer_group_min": 7.146,
+        "peer_group_median": 39.622,
+        "peer_group_min": 9.84,
         "peer_group_max": 66.454,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "fcf_yield_comparison": {
         "metric_name": "fcf_yield",
@@ -2782,9 +2665,9 @@
         "peer_group_median": 11.99880283226064,
         "peer_group_min": 9.09777316615382,
         "peer_group_max": 14.89983249836746,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 0.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "gross_margin_comparison": {
         "metric_name": "gross_margin",
@@ -2792,9 +2675,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "operating_margin_comparison": {
         "metric_name": "operating_margin",
@@ -2802,9 +2685,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "net_margin_comparison": {
         "metric_name": "net_margin",
@@ -2812,20 +2695,20 @@
         "peer_group_median": 11.940991615792965,
         "peer_group_min": -1.9027699,
         "peer_group_max": 27.131429929117335,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 75.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "revenue_growth_comparison": null,
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.23091999,
-        "peer_group_min": 0.08061,
+        "peer_group_median": 0.320445005,
+        "peer_group_min": 0.23056,
         "peer_group_max": 0.94877,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "roa_comparison": null,
       "debt_to_equity_comparison": {
@@ -2834,9 +2717,9 @@
         "peer_group_median": 13.939,
         "peer_group_min": 11.282,
         "peer_group_max": 29.137,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       }
     },
     {
@@ -2871,7 +2754,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968355+00:00",
+      "generated_at": "2026-07-18T20:37:36.107578+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2988,7 +2871,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968501+00:00",
+      "generated_at": "2026-07-18T20:37:36.107692+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3105,7 +2988,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968664+00:00",
+      "generated_at": "2026-07-18T20:37:36.107788+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3222,7 +3105,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968842+00:00",
+      "generated_at": "2026-07-18T20:37:36.107892+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3325,16 +3208,15 @@
         "sector": "Financial Services",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "ABTC",
           "ACGL",
           "ACIC",
           "ACT"
         ],
-        "group_size": 5,
+        "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.968947+00:00",
+      "generated_at": "2026-07-18T20:37:36.107962+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3342,9 +3224,9 @@
         "peer_group_median": 7.7961535,
         "peer_group_min": 4.7897196,
         "peer_group_max": 10.069264,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "ps_ratio_comparison": {
         "metric_name": "ps_ratio",
@@ -3352,19 +3234,19 @@
         "peer_group_median": 1.7403854686659472,
         "peer_group_min": 1.4852448974079464,
         "peer_group_max": 5.232553436657334,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 75.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 41.156,
-        "peer_group_median": 9.84,
+        "peer_group_median": 23.964,
         "peer_group_min": 6.948,
         "peer_group_max": 66.454,
-        "peer_group_count": 5,
-        "percentile": 80.0,
-        "status": "ok"
+        "peer_group_count": 4,
+        "percentile": 75.0,
+        "status": "low_sample_size"
       },
       "fcf_yield_comparison": {
         "metric_name": "fcf_yield",
@@ -3372,9 +3254,9 @@
         "peer_group_median": 9.09777316615382,
         "peer_group_min": -3.6272299732302384,
         "peer_group_max": 14.89983249836746,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "gross_margin_comparison": {
         "metric_name": "gross_margin",
@@ -3382,9 +3264,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "operating_margin_comparison": {
         "metric_name": "operating_margin",
@@ -3392,9 +3274,9 @@
         "peer_group_median": 35.86010333595417,
         "peer_group_min": 35.86010333595417,
         "peer_group_max": 35.86010333595417,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "net_margin_comparison": {
         "metric_name": "net_margin",
@@ -3402,20 +3284,20 @@
         "peer_group_median": 11.940991615792965,
         "peer_group_min": -1.9027699,
         "peer_group_max": 27.033022576659555,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "revenue_growth_comparison": null,
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.23091999,
-        "peer_group_min": 0.08061,
+        "peer_group_median": 0.300149995,
+        "peer_group_min": 0.23056,
         "peer_group_max": 0.94877,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "roa_comparison": null,
       "debt_to_equity_comparison": {
@@ -3424,9 +3306,9 @@
         "peer_group_median": 21.538,
         "peer_group_min": 11.282,
         "peer_group_max": 45.979,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       }
     },
     {
@@ -3437,7 +3319,6 @@
         "sector": "Basic Materials",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "AAL",
           "AAOI",
           "AAON",
@@ -3484,10 +3365,10 @@
           "ADUR",
           "ADUS"
         ],
-        "group_size": 46,
+        "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969244+00:00",
+      "generated_at": "2026-07-18T20:37:36.108258+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3495,7 +3376,7 @@
         "peer_group_median": 22.2067765,
         "peer_group_min": 4.7897196,
         "peer_group_max": 78.46479,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -3505,18 +3386,18 @@
         "peer_group_median": 5.095880885528716,
         "peer_group_min": 0.1769394785645458,
         "peer_group_max": 1929.872731416588,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 23.684210526315788,
         "status": "ok"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 8.862,
-        "peer_group_median": 6.1843886,
+        "peer_group_median": 5.8281943,
         "peer_group_min": 0.16,
         "peer_group_max": 69.273,
-        "peer_group_count": 46,
-        "percentile": 60.0,
+        "peer_group_count": 45,
+        "percentile": 59.09090909090909,
         "status": "ok"
       },
       "fcf_yield_comparison": {
@@ -3525,7 +3406,7 @@
         "peer_group_median": 0.4389768355235561,
         "peer_group_min": -66.37437892010927,
         "peer_group_max": 17.95934675086347,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 100.0,
         "status": "ok"
       },
@@ -3535,7 +3416,7 @@
         "peer_group_median": 43.43625121650993,
         "peer_group_min": 9.444723743216336,
         "peer_group_max": 100.0,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 7.142857142857142,
         "status": "ok"
       },
@@ -3545,7 +3426,7 @@
         "peer_group_median": 2.7198513352500315,
         "peer_group_min": -14346.976744186046,
         "peer_group_max": 94.29563547447049,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 32.142857142857146,
         "status": "ok"
       },
@@ -3555,7 +3436,7 @@
         "peer_group_median": 0.49529320633878776,
         "peer_group_min": -13766.976744186048,
         "peer_group_max": 94.73499101191341,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 30.76923076923077,
         "status": "ok"
       },
@@ -3563,10 +3444,10 @@
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.696225015,
+        "peer_group_median": 0.70372003,
         "peer_group_min": 0.02406,
         "peer_group_max": 1.46357,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -3577,7 +3458,7 @@
         "peer_group_median": 21.29,
         "peer_group_min": 0.196,
         "peer_group_max": 765.203,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 43.90243902439025,
         "status": "ok"
       }
@@ -3614,7 +3495,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969359+00:00",
+      "generated_at": "2026-07-18T20:37:36.108374+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3741,7 +3622,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969476+00:00",
+      "generated_at": "2026-07-18T20:37:36.108488+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3868,7 +3749,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969585+00:00",
+      "generated_at": "2026-07-18T20:37:36.108597+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3971,16 +3852,15 @@
         "sector": "Financial Services",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "ABTC",
           "ACGL",
           "ACIC",
           "ACNB"
         ],
-        "group_size": 5,
+        "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969668+00:00",
+      "generated_at": "2026-07-18T20:37:36.108670+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3988,9 +3868,9 @@
         "peer_group_median": 7.7961535,
         "peer_group_min": 4.7897196,
         "peer_group_max": 12.212122,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 66.66666666666666,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "ps_ratio_comparison": {
         "metric_name": "ps_ratio",
@@ -3998,19 +3878,19 @@
         "peer_group_median": 1.7403854686659472,
         "peer_group_min": 1.4852448974079464,
         "peer_group_max": 3.8860229868004437,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 100.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 38.088,
-        "peer_group_median": 9.84,
+        "peer_group_median": 25.497999999999998,
         "peer_group_min": 6.948,
         "peer_group_max": 66.454,
-        "peer_group_count": 5,
-        "percentile": 60.0,
-        "status": "ok"
+        "peer_group_count": 4,
+        "percentile": 50.0,
+        "status": "low_sample_size"
       },
       "fcf_yield_comparison": {
         "metric_name": "fcf_yield",
@@ -4018,9 +3898,9 @@
         "peer_group_median": 5.63630126256861,
         "peer_group_min": -3.6272299732302384,
         "peer_group_max": 14.89983249836746,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 50.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "gross_margin_comparison": {
         "metric_name": "gross_margin",
@@ -4028,9 +3908,9 @@
         "peer_group_median": null,
         "peer_group_min": null,
         "peer_group_max": null,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "operating_margin_comparison": {
         "metric_name": "operating_margin",
@@ -4038,9 +3918,9 @@
         "peer_group_median": 35.86010333595417,
         "peer_group_min": 35.86010333595417,
         "peer_group_max": 35.86010333595417,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "net_margin_comparison": {
         "metric_name": "net_margin",
@@ -4048,20 +3928,20 @@
         "peer_group_median": 25.095807904122744,
         "peer_group_min": -1.9027699,
         "peer_group_max": 27.131429929117335,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 25.0,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "revenue_growth_comparison": null,
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.36938,
-        "peer_group_min": 0.08061,
+        "peer_group_median": 0.38967501,
+        "peer_group_min": 0.23056,
         "peer_group_max": 0.94877,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": null,
-        "status": "ok"
+        "status": "low_sample_size"
       },
       "roa_comparison": null,
       "debt_to_equity_comparison": {
@@ -4070,9 +3950,9 @@
         "peer_group_median": 29.137,
         "peer_group_min": 11.282,
         "peer_group_max": 45.979,
-        "peer_group_count": 5,
+        "peer_group_count": 4,
         "percentile": 33.33333333333333,
-        "status": "ok"
+        "status": "low_sample_size"
       }
     },
     {
@@ -4091,7 +3971,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969751+00:00",
+      "generated_at": "2026-07-18T20:37:36.108745+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4218,7 +4098,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969853+00:00",
+      "generated_at": "2026-07-18T20:37:36.108852+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4345,7 +4225,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.969965+00:00",
+      "generated_at": "2026-07-18T20:37:36.108965+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4448,7 +4328,6 @@
         "sector": "Real Estate",
         "industry": null,
         "peer_tickers": [
-          "AACO",
           "AAL",
           "AAOI",
           "AAON",
@@ -4495,10 +4374,10 @@
           "ADUR",
           "ADUS"
         ],
-        "group_size": 46,
+        "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.970181+00:00",
+      "generated_at": "2026-07-18T20:37:36.109177+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4506,7 +4385,7 @@
         "peer_group_median": 23.284403,
         "peer_group_min": 4.7897196,
         "peer_group_max": 78.46479,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 14.285714285714285,
         "status": "ok"
       },
@@ -4516,18 +4395,18 @@
         "peer_group_median": 5.095880885528716,
         "peer_group_min": 0.1769394785645458,
         "peer_group_max": 1929.872731416588,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 28.947368421052634,
         "status": "ok"
       },
       "pb_ratio_comparison": {
         "metric_name": "pb_ratio",
         "ticker_value": 10.193,
-        "peer_group_median": 6.1843886,
+        "peer_group_median": 5.8281943,
         "peer_group_min": 0.16,
         "peer_group_max": 69.273,
-        "peer_group_count": 46,
-        "percentile": 64.44444444444444,
+        "peer_group_count": 45,
+        "percentile": 63.63636363636363,
         "status": "ok"
       },
       "fcf_yield_comparison": {
@@ -4536,7 +4415,7 @@
         "peer_group_median": 0.8051541121856405,
         "peer_group_min": -66.37437892010927,
         "peer_group_max": 19.67365848071668,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -4546,7 +4425,7 @@
         "peer_group_median": 40.50192002251754,
         "peer_group_min": 9.444723743216336,
         "peer_group_max": 100.0,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -4556,7 +4435,7 @@
         "peer_group_median": 2.228350915458988,
         "peer_group_min": -14346.976744186046,
         "peer_group_max": 94.29563547447049,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -4566,7 +4445,7 @@
         "peer_group_median": 0.49529320633878776,
         "peer_group_min": -13766.976744186048,
         "peer_group_max": 94.73499101191341,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 48.717948717948715,
         "status": "ok"
       },
@@ -4574,10 +4453,10 @@
       "roe_comparison": {
         "metric_name": "roe",
         "ticker_value": null,
-        "peer_group_median": 0.708710045,
+        "peer_group_median": 0.71370006,
         "peer_group_min": 0.02406,
         "peer_group_max": 1.46357,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": null,
         "status": "ok"
       },
@@ -4588,7 +4467,7 @@
         "peer_group_median": 18.205,
         "peer_group_min": 0.196,
         "peer_group_max": 154.256,
-        "peer_group_count": 46,
+        "peer_group_count": 45,
         "percentile": 100.0,
         "status": "ok"
       }
@@ -4615,7 +4494,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.970287+00:00",
+      "generated_at": "2026-07-18T20:37:36.109279+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4732,7 +4611,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.978823+00:00",
+      "generated_at": "2026-07-18T20:37:36.109375+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4849,7 +4728,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979022+00:00",
+      "generated_at": "2026-07-18T20:37:36.109473+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4976,7 +4855,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979197+00:00",
+      "generated_at": "2026-07-18T20:37:36.109593+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5093,7 +4972,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979322+00:00",
+      "generated_at": "2026-07-18T20:37:36.109686+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5220,7 +5099,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979482+00:00",
+      "generated_at": "2026-07-18T20:37:36.109802+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5337,7 +5216,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979753+00:00",
+      "generated_at": "2026-07-18T20:37:36.109903+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5454,7 +5333,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.979891+00:00",
+      "generated_at": "2026-07-18T20:37:36.109998+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5565,7 +5444,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.980007+00:00",
+      "generated_at": "2026-07-18T20:37:36.110069+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5692,7 +5571,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-18T17:58:20.980181+00:00",
+      "generated_at": "2026-07-18T20:37:36.110189+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",

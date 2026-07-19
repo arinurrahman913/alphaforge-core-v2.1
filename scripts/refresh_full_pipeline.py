@@ -43,6 +43,14 @@ DATA_DIR = ROOT / "dashboard" / "data"
 LOG_DIR = ROOT / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 
+# run_screening(limit=None) scans the ENTIRE cheap-filter survivor list
+# (5000+ tickers as of this writing) — far beyond the ~47-ticker dataset
+# this dashboard has been built and tested against all session. Matches
+# the `--limit 60` convention used throughout (scans 60 candidates from
+# the cheap-filtered list, ~47 typically pass the harder filters).
+# Override via SCREENING_LIMIT env var if the target universe size changes.
+SCREENING_LIMIT = int(os.environ.get("SCREENING_LIMIT", "60"))
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -65,7 +73,7 @@ def main() -> int:
     log.info("Full pipeline refresh started")
 
     try:
-        screening_result, price_cache = run_screening()
+        screening_result, price_cache = run_screening(limit=SCREENING_LIMIT)
         log.info(f"Screening: {len(screening_result.passed)} passed / {screening_result.universe_scanned} scanned")
 
         evidence_packages = run_evidence(screening_result)

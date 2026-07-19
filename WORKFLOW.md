@@ -36,7 +36,14 @@ Setelah itu **otomatis**: backend, CLI, dan scheduled task membaca `.env` sendir
 
 ## 3. Menjalankan Dashboard
 
-### Cara termudah: dobel-klik `start-dashboard.bat`
+### Paling otomatis: auto-start saat login (sudah dipasang)
+Backend nyala sendiri (tanpa jendela) tiap login Windows, lewat shortcut di Startup folder yang menjalankan `scripts/start-backend-hidden.vbs`. Jadi cukup buka `http://localhost:5000` kapan saja — tidak perlu klik apa pun.
+
+- **Mematikan sementara**: Task Manager → tab Details → hentikan `pythonw.exe` (yang jalanin backend).
+- **Menonaktifkan auto-start**: hapus shortcut `AlphaForge Dashboard` di Startup folder (tekan `Win+R` → ketik `shell:startup` → Enter → hapus shortcut-nya).
+- **Menyalakan ulang manual**: dobel-klik `scripts/start-backend-hidden.vbs` (hidden) atau `start-dashboard.bat` (dengan jendela).
+
+### Cara manual: dobel-klik `start-dashboard.bat`
 Setelah laptop dimatikan/restart, server dashboard ikut mati — dashboard tidak akan terbuka sampai dijalankan lagi. **Dobel-klik `start-dashboard.bat`** di root repo: backend nyala + browser otomatis kebuka di `http://localhost:5000` (mode produksi, cukup 1 proses). Biarkan jendela "AlphaForge Backend" terbuka selama dipakai; tutup jendela itu untuk mematikan. Refresh data cukup lewat tombol **Generate** di dashboard.
 
 ### Mode dev (2 terminal) — kalau sedang ngoprek kode

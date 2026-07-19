@@ -4,7 +4,7 @@
   "universe_scanned": 60,
   "passed_count": 46,
   "hard_excluded_count": 14,
-  "generated_at": "2026-07-18T20:36:47.775582+00:00",
+  "generated_at": "2026-07-19T09:52:59.628249+00:00",
   "passed": [
     {
       "ticker": "AAL",
@@ -15,6 +15,7 @@
         "recent_ipo"
       ],
       "market_cap": 9907549049.501911,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 2624947061.1784267,
       "last_price": 14.979999542236328,
       "price_history_days": 251
@@ -28,6 +29,7 @@
         "recent_ipo"
       ],
       "market_cap": 8217662062.327789,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 1432578872.5859833,
       "last_price": 102.41000366210938,
       "price_history_days": 251
@@ -41,6 +43,7 @@
         "recent_ipo"
       ],
       "market_cap": 9126602578.21518,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 118198688.51390839,
       "last_price": 111.41999816894531,
       "price_history_days": 251
@@ -54,6 +57,7 @@
         "recent_ipo"
       ],
       "market_cap": 4901758048008.789,
+      "market_cap_tier": "mega_cap",
       "avg_dollar_volume_20d": 20263453156.35559,
       "last_price": 333.739990234375,
       "price_history_days": 251
@@ -64,10 +68,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "market_cap": 128241168.80185032,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 3170808.9332163334,
       "last_price": 5.860000133514404,
       "price_history_days": 251
@@ -78,10 +82,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 321937990.929559,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 10026101.047941446,
       "last_price": 2.359999895095825,
       "price_history_days": 251
@@ -92,10 +96,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 1974251962.341587,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 56185213.66969347,
       "last_price": 6.465000152587891,
       "price_history_days": 251
@@ -106,10 +110,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 398966008.0,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 9708854.170181751,
       "last_price": 7.0,
       "price_history_days": 251
@@ -123,6 +127,7 @@
         "recent_ipo"
       ],
       "market_cap": 86639846123.8134,
+      "market_cap_tier": "large_cap",
       "avg_dollar_volume_20d": 559809202.5139618,
       "last_price": 145.97999572753906,
       "price_history_days": 251
@@ -133,10 +138,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "market_cap": 162512055.0,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 1732311.9820523262,
       "last_price": 2.25,
       "price_history_days": 251
@@ -147,10 +152,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 1405175775.1592197,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 80032104.69792366,
       "last_price": 8.295000076293945,
       "price_history_days": 251
@@ -161,10 +166,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 397120004.1770935,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 14237216.704819154,
       "last_price": 5.440000057220459,
       "price_history_days": 251
@@ -175,10 +180,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 900771946.2968016,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 15056882.394378185,
       "last_price": 4.559999942779541,
       "price_history_days": 251
@@ -189,11 +194,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 32500552.5,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 325274.80150699615,
       "last_price": 1.25,
       "price_history_days": 251
@@ -207,6 +212,7 @@
         "recent_ipo"
       ],
       "market_cap": 4383638337.3213005,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 48283762.32278824,
       "last_price": 25.600000381469727,
       "price_history_days": 251
@@ -217,10 +223,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "market_cap": 162907851.06871605,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 3350306.857277155,
       "last_price": 2.630000114440918,
       "price_history_days": 251
@@ -231,10 +237,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 868419648.9078951,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 7945765.161013603,
       "last_price": 4.800000190734863,
       "price_history_days": 251
@@ -245,11 +251,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 75907675.25017929,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 761480.8528518677,
       "last_price": 8.119999885559082,
       "price_history_days": 251
@@ -263,6 +269,7 @@
         "recent_ipo"
       ],
       "market_cap": 35410634210.6738,
+      "market_cap_tier": "large_cap",
       "avg_dollar_volume_20d": 196620501.12812042,
       "last_price": 101.3499984741211,
       "price_history_days": 251
@@ -276,6 +283,7 @@
         "recent_ipo"
       ],
       "market_cap": 3172862431.5,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 109582273.04888725,
       "last_price": 34.5,
       "price_history_days": 251
@@ -286,10 +294,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 643672285.4319339,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 16949632.050538063,
       "last_price": 6.269999980926514,
       "price_history_days": 251
@@ -300,10 +308,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 496756481.75,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 3705542.5942230225,
       "last_price": 10.25,
       "price_history_days": 251
@@ -314,11 +322,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 223901865.45294213,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 674094.7596025467,
       "last_price": 2.200000047683716,
       "price_history_days": 251
@@ -332,6 +340,7 @@
         "recent_ipo"
       ],
       "market_cap": 5903487338.875351,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 65709923.14130783,
       "last_price": 58.06999969482422,
       "price_history_days": 251
@@ -345,6 +354,7 @@
         "recent_ipo"
       ],
       "market_cap": 4192718172.464554,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 103051732.83882141,
       "last_price": 136.4199981689453,
       "price_history_days": 251
@@ -358,6 +368,7 @@
         "recent_ipo"
       ],
       "market_cap": 5799668022.49675,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 179157881.3250351,
       "last_price": 83.91999816894531,
       "price_history_days": 251
@@ -368,10 +379,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 617318067.5911713,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 5005148.288173676,
       "last_price": 60.45000076293945,
       "price_history_days": 251
@@ -382,10 +393,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "market_cap": 138194307.00521946,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 1459535.631260872,
       "last_price": 15.289999961853027,
       "price_history_days": 251
@@ -396,11 +407,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 185079884.0,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 473220.477976799,
       "last_price": 8.5,
       "price_history_days": 251
@@ -411,10 +422,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 793289678.4251404,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 12425961.97094202,
       "last_price": 5.679999828338623,
       "price_history_days": 251
@@ -425,11 +436,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 74903025.75,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 969985.6045180559,
       "last_price": 1.75,
       "price_history_days": 251
@@ -443,6 +454,7 @@
         "recent_ipo"
       ],
       "market_cap": 6494226721.30415,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 14879688.252372742,
       "last_price": 46.52000045776367,
       "price_history_days": 251
@@ -453,10 +465,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 438514655.595417,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 1256354.0399861336,
       "last_price": 4.539999961853027,
       "price_history_days": 251
@@ -467,11 +479,11 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
       "market_cap": 34453228.24904823,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 741475.9525150061,
       "last_price": 1.440000057220459,
       "price_history_days": 251
@@ -482,10 +494,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "market_cap": 237200606.78894377,
+      "market_cap_tier": "micro_cap",
       "avg_dollar_volume_20d": 1533790.4567289352,
       "last_price": 3.5899999141693115,
       "price_history_days": 251
@@ -496,10 +508,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 806952708.7048492,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 9266918.216032982,
       "last_price": 8.979999542236328,
       "price_history_days": 251
@@ -513,6 +525,7 @@
         "recent_ipo"
       ],
       "market_cap": 94306875000.0,
+      "market_cap_tier": "large_cap",
       "avg_dollar_volume_20d": 1432365147.7912903,
       "last_price": 237.25,
       "price_history_days": 251
@@ -526,6 +539,7 @@
         "recent_ipo"
       ],
       "market_cap": 2799255257.057802,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 53348946.186042026,
       "last_price": 25.3799991607666,
       "price_history_days": 251
@@ -539,6 +553,7 @@
         "recent_ipo"
       ],
       "market_cap": 182832984199.33594,
+      "market_cap_tier": "mega_cap",
       "avg_dollar_volume_20d": 2108494521.0479736,
       "last_price": 375.3599853515625,
       "price_history_days": 251
@@ -552,6 +567,7 @@
         "recent_ipo"
       ],
       "market_cap": 2018740356.4914274,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 30768349.229984283,
       "last_price": 8.710000038146973,
       "price_history_days": 251
@@ -565,6 +581,7 @@
         "recent_ipo"
       ],
       "market_cap": 102040171873.9891,
+      "market_cap_tier": "mega_cap",
       "avg_dollar_volume_20d": 669653205.5864716,
       "last_price": 255.27000427246094,
       "price_history_days": 251
@@ -578,9 +595,10 @@
         "recent_ipo"
       ],
       "market_cap": 3668217476.850418,
-      "avg_dollar_volume_20d": 75497364.03095245,
+      "market_cap_tier": "mid_cap",
+      "avg_dollar_volume_20d": 66180291.09568596,
       "last_price": 22.920000076293945,
-      "price_history_days": 250
+      "price_history_days": 251
     },
     {
       "ticker": "ADSK",
@@ -591,6 +609,7 @@
         "recent_ipo"
       ],
       "market_cap": 46103566844.57834,
+      "market_cap_tier": "large_cap",
       "avg_dollar_volume_20d": 603648617.5428009,
       "last_price": 218.35000610351562,
       "price_history_days": 251
@@ -601,10 +620,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 943627834.101677,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 24903708.60197544,
       "last_price": 11.649999618530273,
       "price_history_days": 251
@@ -615,10 +634,10 @@
       "passed": true,
       "hard_exclude_reason": null,
       "soft_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "market_cap": 466789896.78411865,
+      "market_cap_tier": "small_cap",
       "avg_dollar_volume_20d": 8451345.676188469,
       "last_price": 13.170000076293945,
       "price_history_days": 251
@@ -632,6 +651,7 @@
         "recent_ipo"
       ],
       "market_cap": 2137490084.8635864,
+      "market_cap_tier": "mid_cap",
       "avg_dollar_volume_20d": 29223918.713531494,
       "last_price": 114.5199966430664,
       "price_history_days": 251
@@ -645,6 +665,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 257634.27386283875,
       "last_price": 10.539999961853027,
       "price_history_days": 251
@@ -656,6 +677,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 105664.14782524109,
       "last_price": 9.970000267028809,
       "price_history_days": 77
@@ -667,6 +689,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 137132.94639587402,
       "last_price": 9.979999542236328,
       "price_history_days": 66
@@ -678,6 +701,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 24918.450049757957,
       "last_price": 1.5800000429153442,
       "price_history_days": 251
@@ -689,6 +713,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 93204.0752184391,
       "last_price": 1.0099999904632568,
       "price_history_days": 251
@@ -700,6 +725,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 79067.40044474602,
       "last_price": 1.190000057220459,
       "price_history_days": 251
@@ -711,6 +737,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 55789.699635505676,
       "last_price": 1.8899999856948853,
       "price_history_days": 187
@@ -722,6 +749,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 214992.0989704132,
       "last_price": 20.18000030517578,
       "price_history_days": 251
@@ -733,6 +761,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 164307.87991523743,
       "last_price": 2.5799999237060547,
       "price_history_days": 251
@@ -744,6 +773,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 149421.8498980999,
       "last_price": 1.5499999523162842,
       "price_history_days": 251
@@ -755,6 +785,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 75732.65067577362,
       "last_price": 10.020000457763672,
       "price_history_days": 110
@@ -766,6 +797,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 39066.72986328602,
       "last_price": 0.5299999713897705,
       "price_history_days": 251
@@ -777,6 +809,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 164052.8487288952,
       "last_price": 2.799999952316284,
       "price_history_days": 251
@@ -788,6 +821,7 @@
       "hard_exclude_reason": "avg_dollar_volume_below_minimum",
       "soft_flags": [],
       "market_cap": null,
+      "market_cap_tier": null,
       "avg_dollar_volume_20d": 214202.74988651276,
       "last_price": 12.0,
       "price_history_days": 251

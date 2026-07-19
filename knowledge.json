@@ -1,7 +1,7 @@
 {
   "evidence_count": 46,
   "knowledge_generated": 46,
-  "generated_at": "2026-07-18T20:36:49.376569+00:00",
+  "generated_at": "2026-07-19T09:53:06.480905+00:00",
   "profiles": [
     {
       "ticker": "AAL",
@@ -104,7 +104,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:49.376569+00:00",
+        "evidence_date": "2026-07-19T09:53:06.480905+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -216,7 +216,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:50.562844+00:00",
+        "evidence_date": "2026-07-19T09:53:07.666469+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -300,10 +300,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 42.19618869742181,
+        "return_1y": 42.19620254273809,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.9545939982517746,
+        "volatility_daily": 3.9545940914585347,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -328,7 +328,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:51.704522+00:00",
+        "evidence_date": "2026-07-19T09:53:10.031542+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -415,7 +415,7 @@
         "return_1y": 58.66276325419365,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5392008062628175,
+        "volatility_daily": 1.539200593054285,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -440,7 +440,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:53.048143+00:00",
+        "evidence_date": "2026-07-19T09:53:13.665311+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -457,7 +457,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -553,7 +552,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:53.942767+00:00",
+        "evidence_date": "2026-07-19T09:53:16.383459+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -570,7 +569,6 @@
       "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -666,7 +664,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:55.447665+00:00",
+        "evidence_date": "2026-07-19T09:53:22.041535+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -683,7 +681,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -779,7 +776,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:56.374653+00:00",
+        "evidence_date": "2026-07-19T09:53:23.576303+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -796,7 +793,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -892,7 +888,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:57.412993+00:00",
+        "evidence_date": "2026-07-19T09:53:24.948138+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1004,7 +1000,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:58.259658+00:00",
+        "evidence_date": "2026-07-19T09:53:26.009200+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1021,7 +1017,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1117,7 +1112,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:58.993745+00:00",
+        "evidence_date": "2026-07-19T09:53:26.959306+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1134,7 +1129,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1230,7 +1224,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:36:59.914185+00:00",
+        "evidence_date": "2026-07-19T09:53:28.078581+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1247,7 +1241,6 @@
       "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1343,7 +1336,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:00.940606+00:00",
+        "evidence_date": "2026-07-19T09:53:29.057853+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -1360,7 +1353,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1456,7 +1448,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:01.880055+00:00",
+        "evidence_date": "2026-07-19T09:53:29.999296+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1473,7 +1465,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -1570,7 +1561,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:02.813956+00:00",
+        "evidence_date": "2026-07-19T09:53:30.927385+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1682,7 +1673,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:03.795174+00:00",
+        "evidence_date": "2026-07-19T09:53:31.638378+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1699,7 +1690,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1795,7 +1785,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:04.563100+00:00",
+        "evidence_date": "2026-07-19T09:53:32.427543+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1812,7 +1802,6 @@
       "sector": "Energy",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -1908,7 +1897,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:05.280843+00:00",
+        "evidence_date": "2026-07-19T09:53:33.222236+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1925,7 +1914,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -2022,7 +2010,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:06.147090+00:00",
+        "evidence_date": "2026-07-19T09:53:33.841231+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2134,7 +2122,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:07.492491+00:00",
+        "evidence_date": "2026-07-19T09:53:34.839733+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2246,7 +2234,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:08.546960+00:00",
+        "evidence_date": "2026-07-19T09:53:35.671792+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2263,7 +2251,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -2359,7 +2346,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:09.473996+00:00",
+        "evidence_date": "2026-07-19T09:53:36.433054+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2376,7 +2363,6 @@
       "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -2472,7 +2458,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:11.009474+00:00",
+        "evidence_date": "2026-07-19T09:53:37.274042+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2489,7 +2475,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -2586,7 +2571,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:11.826125+00:00",
+        "evidence_date": "2026-07-19T09:53:38.192216+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -2698,7 +2683,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:13.061160+00:00",
+        "evidence_date": "2026-07-19T09:53:39.340667+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2810,7 +2795,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:14.207320+00:00",
+        "evidence_date": "2026-07-19T09:53:40.198503+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2922,7 +2907,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:15.275519+00:00",
+        "evidence_date": "2026-07-19T09:53:41.085504+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2939,7 +2924,6 @@
       "sector": "Financial Services",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -3010,7 +2994,7 @@
         "return_1y": 46.184424084325066,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5460747608693683,
+        "volatility_daily": 1.5460742579638986,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3035,7 +3019,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:16.545646+00:00",
+        "evidence_date": "2026-07-19T09:53:42.109164+00:00",
         "method_version": "1.1",
         "fields_completed": 6,
         "fields_expected": 50,
@@ -3052,7 +3036,6 @@
       "sector": "Basic Materials",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -3148,7 +3131,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:17.678643+00:00",
+        "evidence_date": "2026-07-19T09:53:43.153112+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3165,7 +3148,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -3262,7 +3244,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:18.412215+00:00",
+        "evidence_date": "2026-07-19T09:53:43.801361+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3279,7 +3261,6 @@
       "sector": "Healthcare",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -3375,7 +3356,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:19.590950+00:00",
+        "evidence_date": "2026-07-19T09:53:44.531697+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3392,7 +3373,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -3489,7 +3469,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:20.472241+00:00",
+        "evidence_date": "2026-07-19T09:53:45.311905+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3573,10 +3553,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 36.42321052013357,
+        "return_1y": 36.42319525864659,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.3911220146897565,
+        "volatility_daily": 1.3911215296500974,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3601,7 +3581,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:21.294274+00:00",
+        "evidence_date": "2026-07-19T09:53:45.948489+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -3618,7 +3598,6 @@
       "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -3714,7 +3693,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:22.361134+00:00",
+        "evidence_date": "2026-07-19T09:53:46.752471+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3731,7 +3710,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo",
         "low_liquidity"
       ],
@@ -3828,7 +3806,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:23.222212+00:00",
+        "evidence_date": "2026-07-19T09:53:47.431896+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -3845,7 +3823,6 @@
       "sector": "Healthcare",
       "size_category": "micro",
       "screening_flags": [
-        "micro_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -3941,7 +3918,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:24.039871+00:00",
+        "evidence_date": "2026-07-19T09:53:47.974148+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3958,7 +3935,6 @@
       "sector": "Real Estate",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -4026,10 +4002,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 52.51913714921166,
+        "return_1y": 52.51912479706553,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.048795291088436,
+        "volatility_daily": 2.0487955134311515,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4054,7 +4030,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:25.257553+00:00",
+        "evidence_date": "2026-07-19T09:53:48.824709+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -4166,7 +4142,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:26.406177+00:00",
+        "evidence_date": "2026-07-19T09:53:49.580686+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4250,10 +4226,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 85.75903979102293,
+        "return_1y": 85.75902682495276,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.010402333519596,
+        "volatility_daily": 4.010402487894461,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4278,7 +4254,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:27.278461+00:00",
+        "evidence_date": "2026-07-19T09:53:50.237346+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4365,7 +4341,7 @@
         "return_1y": 57.28703749171352,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.2071669195953794,
+        "volatility_daily": 2.2071667111365056,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4390,7 +4366,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:28.462066+00:00",
+        "evidence_date": "2026-07-19T09:53:53.153100+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4502,7 +4478,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:29.452778+00:00",
+        "evidence_date": "2026-07-19T09:53:55.297522+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4589,7 +4565,7 @@
         "return_1y": -13.0640782733143,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.6242649546731713,
+        "volatility_daily": 1.6242649326243443,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4614,7 +4590,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:30.812383+00:00",
+        "evidence_date": "2026-07-19T09:53:58.042055+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4701,7 +4677,7 @@
         "return_1y": 120.59672106771133,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.352343640397013,
+        "volatility_daily": 4.330323277707628,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4726,7 +4702,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:31.744931+00:00",
+        "evidence_date": "2026-07-19T09:53:59.879734+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4838,7 +4814,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:32.859626+00:00",
+        "evidence_date": "2026-07-19T09:54:02.554371+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4855,7 +4831,6 @@
       "sector": "Technology",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -4951,7 +4926,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:34.077829+00:00",
+        "evidence_date": "2026-07-19T09:54:05.813923+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4968,7 +4943,6 @@
       "sector": "Industrials",
       "size_category": "small",
       "screening_flags": [
-        "small_cap",
         "recent_ipo"
       ],
       "financial_health": {
@@ -5064,7 +5038,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:35.009204+00:00",
+        "evidence_date": "2026-07-19T09:54:09.305456+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5176,7 +5150,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-18T20:37:36.056774+00:00",
+        "evidence_date": "2026-07-19T09:54:11.702922+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,

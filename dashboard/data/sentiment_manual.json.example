@@ -1,13 +1,14 @@
 {
-  "_readme": "Salin file ini jadi 'sentiment_manual.json' (di folder yang sama) untuk melengkapi market_sentiment dengan AAII Investor Sentiment Survey. AAII tidak punya API resmi gratis, jadi datanya diisi manual dari https://www.aaii.com/sentimentsurvey (dirilis tiap Kamis, gratis tanpa login). File 'sentiment_manual.json' sudah di-gitignore (data ini spesifik-mesin, tidak perlu di-commit).",
+  "_readme": "Salin file ini jadi 'sentiment_manual.json' (di folder yang sama) untuk melengkapi market_sentiment dengan AAII survey & put/call ratio — keduanya tidak punya API resmi gratis, jadi diisi manual. File 'sentiment_manual.json' sudah di-gitignore (data spesifik-mesin, tidak perlu di-commit). Isi salah satu atau keduanya; komponen jadi 'ok' begitu total input tersedia (vix+breadth+manual) mencapai 3/4.",
 
+  "_aaii_source": "https://www.aaii.com/sentimentsurvey — gratis, rilis tiap Kamis, tanpa login.",
   "aaii": {
     "bullish_pct": 41.0,
     "bearish_pct": 29.0,
     "as_of": "2026-07-17"
   },
 
-  "_put_call_override_optional": "put/call ratio sudah otomatis dari CNN Fear & Greed — override di bawah ini HANYA kalau CNN putus dan kamu mau isi manual dari https://www.cboe.com/us/options/market_statistics/",
+  "_put_call_source": "https://www.cboe.com/us/options/market_statistics/ — cari 'Total Put/Call Ratio'. Konversi ke skala 0-100 (tinggi=greed): score = 55 - (ratio - 0.7) x 60, dibatasi 0-100 (ratio 0.7 netral, di bawahnya greed, di atasnya fear). Atau isi manual perkiraan sendiri.",
   "put_call_score": null,
   "put_call_as_of": null
 }

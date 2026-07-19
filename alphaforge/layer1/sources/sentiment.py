@@ -1,19 +1,21 @@
-"""Sumber sentimen tambahan untuk market_sentiment — strategi hybrid.
+"""Sumber sentimen tambahan untuk market_sentiment.
 
 Baik CBOE put/call ratio maupun AAII Investor Sentiment Survey tidak punya API
-resmi gratis (lihat 04_DATA_SOURCES/01_PROVIDERS_OVERVIEW.md §2b). Solusinya:
+resmi gratis (lihat 04_DATA_SOURCES/01_PROVIDERS_OVERVIEW.md §2b; CBOE dicoba
+langsung dan membalas 403). Solusi yang dipakai sekarang: KEDUANYA input manual
+via `dashboard/data/sentiment_manual.json` (diisi pengguna dari cboe.com /
+aaii.com). Absen/rusak/kadaluarsa → tidak dipakai, dilaporkan hilang dengan jujur.
 
-- **put/call**: diambil best-effort dari endpoint publik CNN Fear & Greed
-  (`put_call_options`). Ini endpoint TIDAK RESMI — kalau strukturnya berubah
-  atau putus, `fetch_put_call()` mengembalikan None dan komponen degrade dengan
-  jujur (tidak pernah melempar error).
-- **AAII**: dibaca dari file manual `dashboard/data/sentiment_manual.json` yang
-  diisi pengguna dari aaii.com (survei mingguan). Absen/rusak/kadaluarsa →
-  tidak dipakai.
+`fetch_put_call()` di bawah ini menarik put/call best-effort dari endpoint
+publik CNN Fear & Greed — TIDAK RESMI (bukan API terdokumentasi CNN, cuma URL
+yang dipanggil halaman web mereka). Fungsi ini SENGAJA TIDAK DIPANGGIL dari
+market_sentiment.py (dimatikan atas permintaan pengguna — proyek ini memilih
+hanya sumber resmi walau berarti market_sentiment lebih sering degraded).
+Dibiarkan ada (dormant) supaya gampang diaktifkan lagi kalau kebutuhannya
+berubah — tinggal panggil dari market_sentiment.py lagi.
 
 Semua skor pada skala 0–100 dengan konvensi yang sama seperti market_sentiment:
-tinggi = greed / risk-on, rendah = fear. (CNN sudah menormalkan put/call ke
-skala ini: put/call ratio tinggi = fear = skor rendah.)
+tinggi = greed / risk-on, rendah = fear.
 """
 from __future__ import annotations
 

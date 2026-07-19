@@ -1,17 +1,21 @@
 """02_LAYER1_SPECS/12_MARKET_SENTIMENT.md — kind=derived, satu-satunya
 composite Layer 1 (butuh minimal VIX + Market Breadth, dihitung terakhir).
 
-Sejak 2026-07 (integrasi hybrid) memakai s.d. 4 input sentimen:
-  1. VIX          — dari komponen volatility_index (sumber sendiri)
+Memakai s.d. 4 input sentimen, SEMUA dari sumber resmi:
+  1. VIX          — dari komponen volatility_index (Yahoo Finance)
   2. Market Breadth — dari komponen market_breadth (universe internal)
-  3. Put/Call     — otomatis best-effort dari CNN Fear & Greed (tidak resmi;
-                     lihat sources/sentiment.py). Bisa di-override manual.
+  3. Put/Call     — input manual opsional (dashboard/data/sentiment_manual.json).
+                     CBOE tidak punya API resmi gratis (403 saat dicoba).
+                     Sumber otomatis via endpoint tidak resmi CNN Fear & Greed
+                     SENGAJA DIMATIKAN (lihat sources/sentiment.py) — proyek
+                     ini memilih hanya sumber resmi, walau berarti komponen
+                     lebih sering degraded.
   4. AAII survey  — input manual opsional (dashboard/data/sentiment_manual.json),
                      karena AAII tidak punya API resmi gratis.
 
 status:
-  - `ok`       bila ≥3 dari 4 input tersedia (mis. VIX+breadth+put/call otomatis)
-  - `degraded` bila hanya 1–2 input
+  - `ok`       bila ≥3 dari 4 input tersedia (VIX+breadth+minimal 1 input manual)
+  - `degraded` bila hanya 1–2 input (default: cuma VIX+breadth, tanpa manual)
   - `missing`  bila tidak ada input sama sekali
 
 `status` menilai KELENGKAPAN DATA, bukan arah sinyal. Arah ada di `value.label`
@@ -55,15 +59,16 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     else:
         missing_inputs.append("market_breadth")
 
-    # 3. Put/Call — override manual > CNN otomatis
+    # 3. Put/Call — HANYA input manual. Sumber otomatis CNN Fear & Greed
+    # (endpoint tidak resmi) sengaja dimatikan — lihat sources/sentiment.py
+    # dan docstring modul ini.
     manual = sentiment_src.read_manual()
-    pc = manual.get("put_call") or sentiment_src.fetch_put_call()
+    pc = manual.get("put_call")
     if pc:
-        is_manual = "put_call" in manual
         available.append(("put_call", float(pc["score_0_100"])))
         evidence.append(ev("put_call_score", round(pc["score_0_100"], 1), pc.get("as_of") or now_iso()[:10],
-                           "manual" if is_manual else "CNN Fear & Greed (put/call, tidak resmi)"))
-        sources_used.append(source("manual" if is_manual else "CNN Fear & Greed"))
+                           "manual (CBOE)"))
+        sources_used.append(source("manual (CBOE)"))
     else:
         missing_inputs.append("put_call_ratio")
 
@@ -100,14 +105,13 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
 
     note = None
     if missing_inputs:
-        note = (f"Hilang: {', '.join(missing_inputs)}. "
-                "put/call diambil best-effort dari CNN Fear & Greed (tidak resmi); "
-                "AAII dari input manual dashboard/data/sentiment_manual.json.")
+        note = (f"Hilang: {', '.join(missing_inputs)}. put/call & AAII hanya lewat input manual "
+                "dashboard/data/sentiment_manual.json (tidak ada sumber otomatis resmi & gratis untuk keduanya).")
 
     rule = (
         "score = rata-rata tak berbobot dari input tersedia (skala 0-100, tinggi=greed) — "
         "vix: low→75/normal→50/high→20; breadth: %ticker di atas MA200; "
-        "put/call: skor CNN F&G (tinggi=greed); aaii: bull/(bull+bear)×100. "
+        "put/call: skor manual (tinggi=greed); aaii: bull/(bull+bear)×100. "
         f"score≥65→greed, ≤35→fear, selain itu→neutral. status=ok bila ≥{OK_MIN_INPUTS}/4 input tersedia."
     )
 

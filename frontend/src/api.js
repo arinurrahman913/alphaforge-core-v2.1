@@ -23,4 +23,10 @@ export const api = {
   historical: () => getJSON('/api/historical'),
   ticker: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}`),
   liveQuote: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}/live`),
+  // Trigger refresh pipeline dari dashboard. Tidak throw pada 409 (sudah jalan).
+  refresh: async (mode) => {
+    const resp = await fetch(`/api/refresh/${mode}`, { method: 'POST' })
+    return resp.json()
+  },
+  refreshStatus: () => getJSON('/api/refresh/status'),
 }

@@ -17,7 +17,10 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
 
 from flask import Flask, jsonify, send_from_directory
@@ -107,6 +110,74 @@ def get_ticker_live_quote(ticker: str):
     Best-effort — times out and returns {"stale": true} rather than blocking
     the request if Yahoo is slow/unreachable."""
     return jsonify(fetch_live_quote(ticker))
+
+
+# --- Refresh pipeline dari dashboard (tombol Generate) -----------------------
+# Menjalankan script refresh yang sudah ada sebagai subprocess di thread
+# background, supaya request HTTP tidak nge-block. Status di-poll oleh frontend.
+REFRESH_SCRIPTS = {
+    "layer1": ROOT / "scripts" / "refresh_layer1.py",
+    "full": ROOT / "scripts" / "refresh_full_pipeline.py",
+}
+
+_refresh_lock = threading.Lock()
+_refresh_state: dict = {
+    "running": False,
+    "mode": None,
+    "started_at": None,
+    "finished_at": None,
+    "ok": None,
+    "message": None,
+}
+
+
+def _run_refresh(mode: str) -> None:
+    script = REFRESH_SCRIPTS[mode]
+    ok = False
+    msg = ""
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(script)],
+            cwd=str(ROOT),
+            capture_output=True,
+            text=True,
+            timeout=1800,
+        )
+        ok = proc.returncode == 0
+        out = (proc.stdout or "").strip()
+        err = (proc.stderr or "").strip()
+        if ok:
+            msg = out.splitlines()[-1] if out else "Selesai."
+        else:
+            tail = err.splitlines()[-1] if err else f"exit code {proc.returncode}"
+            msg = f"Gagal: {tail}"
+    except subprocess.TimeoutExpired:
+        msg = "Timeout (>30 menit)."
+    except Exception as exc:  # noqa: BLE001
+        msg = f"Error: {exc}"
+    finally:
+        with _refresh_lock:
+            _refresh_state.update(running=False, finished_at=time.time(), ok=ok, message=msg)
+
+
+@app.post("/api/refresh/<mode>")
+def start_refresh(mode: str):
+    if mode not in REFRESH_SCRIPTS:
+        return jsonify({"error": f"unknown mode '{mode}'"}), 404
+    with _refresh_lock:
+        if _refresh_state["running"]:
+            return jsonify({"running": True, "mode": _refresh_state["mode"], "already": True}), 409
+        _refresh_state.update(
+            running=True, mode=mode, started_at=time.time(), finished_at=None, ok=None, message=None
+        )
+    threading.Thread(target=_run_refresh, args=(mode,), daemon=True).start()
+    return jsonify({"started": True, "mode": mode})
+
+
+@app.get("/api/refresh/status")
+def refresh_status():
+    with _refresh_lock:
+        return jsonify(dict(_refresh_state))
 
 
 @app.get("/")

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import TickerModal from './components/TickerModal'
+import GenerateButton from './components/GenerateButton'
 import Layer1View from './views/Layer1View'
 import ScreeningView from './views/ScreeningView'
 import EvidenceView from './views/EvidenceView'
@@ -55,6 +56,7 @@ export default function App() {
             <h1>{title}</h1>
             <p>{desc}</p>
           </div>
+          <GenerateButton />
         </div>
 
         <div className="content">

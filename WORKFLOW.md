@@ -62,7 +62,16 @@ http://localhost:5173
 
 ## 4. Refresh Data (biar angka aktual)
 
-Dashboard menampilkan **snapshot** — angka hanya berubah saat kamu generate ulang. Pilih sesuai kebutuhan:
+Dashboard menampilkan **snapshot** — angka hanya berubah saat kamu generate ulang.
+
+### Cara termudah: tombol **Generate** di dashboard
+Di pojok kanan atas dashboard ada tombol **Generate ▾** dengan 2 pilihan:
+- **Refresh Layer 1** — cepat (~1 menit), update komponen makro (breadth/sentiment tidak ikut).
+- **Full Pipeline** — semua stage (Layer 1 + Layer 2), lebih lama.
+
+Klik → tombol jadi "Generating… mm:ss" (jalan di background), dan dashboard **auto-reload** saat selesai. Backend (`python backend/app.py`) harus jalan. Tidak bisa dua refresh sekaligus.
+
+### Atau lewat terminal (pilih sesuai kebutuhan):
 
 ### A. Layer 1 saja — cepat (~1 menit)
 ```powershell

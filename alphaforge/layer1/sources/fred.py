@@ -10,10 +10,21 @@ refresh dashboard berkala) tidak perlu menembak FRED tiap kali.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import requests
 
 from ... import cache
+
+# Auto-load FRED_API_KEY dari file .env di root repo (gitignored), supaya tidak
+# perlu di-set manual tiap sesi terminal / scheduled task. Aman kalau .env atau
+# python-dotenv tidak ada — os.environ tetap dipakai sebagai sumber utama.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parents[3] / ".env")
+except ImportError:
+    pass
 
 BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 OBSERVATIONS_CACHE_TTL = 12 * 3600  # 12 jam

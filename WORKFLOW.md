@@ -21,13 +21,16 @@ Dashboard (React) **hanya membaca file JSON** hasil pipeline — tidak menghitun
 # dari folder repo: H:\Project1\alphaforge-core-v2.1
 pip install -r requirements.txt
 npm --prefix frontend install
-
-# FRED API key (gratis: https://fred.stlouisfed.org/docs/api/api_key.html)
-# tanpa ini, 4 komponen berbasis FRED jadi status "missing"
-$env:FRED_API_KEY = "MASUKKAN_KEY_KAMU"
 ```
 
-> Catatan: `$env:FRED_API_KEY` hanya berlaku di sesi PowerShell yang sedang terbuka. Buka terminal baru → set lagi. (Untuk permanen: Settings → Environment Variables.)
+**FRED API key** (gratis: https://fred.stlouisfed.org/docs/api/api_key.html) — set **sekali** di file `.env`:
+
+```powershell
+Copy-Item .env.example .env
+# lalu buka .env, ganti "your_fred_api_key_here" dengan key kamu
+```
+
+Setelah itu **otomatis**: backend, CLI, dan scheduled task membaca `.env` sendiri (via `python-dotenv`) — **tidak perlu** ketik `$env:FRED_API_KEY` lagi di tiap terminal. File `.env` sudah di-gitignore (tidak akan ter-commit). Tanpa key, 4 komponen berbasis FRED jadi status "missing".
 
 ---
 
@@ -37,9 +40,9 @@ Butuh **2 terminal**: backend (API) + frontend (UI).
 
 ### Terminal 1 — Backend (Flask, port 5000)
 ```powershell
-$env:FRED_API_KEY = "MASUKKAN_KEY_KAMU"
 python backend/app.py
 ```
+> FRED key otomatis dibaca dari `.env` (lihat bagian 2).
 Menyajikan API di `http://localhost:5000/api/<stage>` dan otomatis reload data saat file JSON berubah.
 
 ### Terminal 2 — Frontend (Vite, port 5173)
@@ -63,20 +66,17 @@ Dashboard menampilkan **snapshot** — angka hanya berubah saat kamu generate ul
 
 ### A. Layer 1 saja — cepat (~1 menit)
 ```powershell
-$env:FRED_API_KEY = "MASUKKAN_KEY_KAMU"
 python scripts/refresh_layer1.py
 ```
 Update 10/12 komponen makro. `market_breadth` & `market_sentiment` **tidak** ikut ter-update (butuh Screening).
 
 ### B. Layer 1 lengkap 12/12 (butuh Screening dulu, ~beberapa menit)
 ```powershell
-$env:FRED_API_KEY = "MASUKKAN_KEY_KAMU"
 python -m alphaforge.cli layer1 --with-screening --screening-limit 100 --out dashboard/data/layer1_context.json
 ```
 
 ### C. Full pipeline — semua stage Layer 1 + Layer 2 (paling lama)
 ```powershell
-$env:FRED_API_KEY = "MASUKKAN_KEY_KAMU"
 python scripts/refresh_full_pipeline.py
 ```
 Menjalankan Screening → Evidence → … → Aggregator + Layer 1 lengkap. Bersifat **all-or-nothing**: kalau satu stage gagal, data lama tetap dipakai (tidak menulis setengah jadi).
@@ -163,7 +163,7 @@ Ticker dikelompokkan per **tier market cap**: Mega (>$100B) → Large → Mid �
 
 | Gejala | Solusi |
 |---|---|
-| Komponen FRED "missing" | `$env:FRED_API_KEY` belum di-set di terminal backend → set lalu restart `python backend/app.py`. |
+| Komponen FRED "missing" | File `.env` belum ada / key salah → `Copy-Item .env.example .env` lalu isi key, restart `python backend/app.py`. |
 | `market_breadth` missing | Jalankan refresh opsi B atau C (`--with-screening` / full pipeline). |
 | Dashboard kosong / error fetch | Pastikan backend (terminal 1) jalan di port 5000. |
 | Angka tidak berubah | Refresh data (bagian 4) lalu Ctrl+R di browser. |
@@ -174,16 +174,15 @@ Ticker dikelompokkan per **tier market cap**: Mega (>$100B) → Large → Mid �
 ## 9. Alur Singkat (cheat sheet)
 
 ```powershell
-# 1. set key
-$env:FRED_API_KEY = "KEY_KAMU"
+# 0. sekali seumur setup: Copy-Item .env.example .env  → isi FRED key
 
-# 2. refresh data (pilih salah satu)
+# 1. refresh data (pilih salah satu) — key otomatis dari .env
 python scripts/refresh_layer1.py                 # cepat, Layer 1 saja
 python scripts/refresh_full_pipeline.py          # lengkap semua stage
 
-# 3. jalankan (2 terminal)
+# 2. jalankan (2 terminal)
 python backend/app.py                            # terminal 1
 npm --prefix frontend run dev                    # terminal 2
 
-# 4. buka http://localhost:5173 → Ctrl+R setelah refresh data
+# 3. buka http://localhost:5173 → Ctrl+R setelah refresh data
 ```

@@ -22,13 +22,16 @@ BATCH_DELAY_SECONDS = float(os.environ.get("YF_BATCH_DELAY_SECONDS", "2.0"))
 PRICE_CACHE_TTL_SECONDS = 6 * 3600
 INFO_CACHE_TTL_SECONDS = 24 * 3600
 
-MIN_MARKET_CAP = 30_000_000
 MIN_AVG_DOLLAR_VOLUME = 300_000
 MIN_PRICE = 0.50
 MIN_PRICE_HISTORY_DAYS = 20
 
-MICRO_CAP_MAX = 300_000_000
-SMALL_CAP_MAX = 2_000_000_000
+# Market cap tiers (no longer hard exclude by market cap, just categorize)
+MICRO_CAP_THRESHOLD = 300_000_000
+SMALL_CAP_THRESHOLD = 2_000_000_000
+MID_CAP_THRESHOLD = 10_000_000_000
+LARGE_CAP_THRESHOLD = 100_000_000_000
+
 RECENT_IPO_MAX_DAYS = 252
 LOW_LIQUIDITY_MAX = 1_000_000
 
@@ -36,6 +39,22 @@ LOW_LIQUIDITY_MAX = 1_000_000
 def _chunks(seq: list, size: int):
     for i in range(0, len(seq), size):
         yield seq[i:i + size]
+
+
+def _get_market_cap_tier(market_cap: float | None) -> str | None:
+    """Kategorikan market cap ke tier berdasarkan threshold."""
+    if market_cap is None:
+        return None
+    if market_cap < MICRO_CAP_THRESHOLD:
+        return "micro_cap"
+    elif market_cap < SMALL_CAP_THRESHOLD:
+        return "small_cap"
+    elif market_cap < MID_CAP_THRESHOLD:
+        return "mid_cap"
+    elif market_cap < LARGE_CAP_THRESHOLD:
+        return "large_cap"
+    else:
+        return "mega_cap"
 
 
 def fetch_price_history_batch(tickers: list[str]) -> dict[str, pd.DataFrame]:
@@ -116,19 +135,11 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
                                    last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
                                    price_history_days=history_days)
 
+    # Get market cap dan categorize ke tier (no hard exclude by market cap anymore)
     market_cap = (fast_info or {}).get("market_cap")
-    if market_cap is not None and market_cap < MIN_MARKET_CAP:
-        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
-                                   hard_exclude_reason="market_cap_below_minimum",
-                                   last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
-                                   market_cap=market_cap, price_history_days=history_days)
+    market_cap_tier = _get_market_cap_tier(market_cap)
 
     soft_flags = []
-    if market_cap is not None:
-        if market_cap < MICRO_CAP_MAX:
-            soft_flags.append("micro_cap")
-        elif market_cap < SMALL_CAP_MAX:
-            soft_flags.append("small_cap")
     if history_days < RECENT_IPO_MAX_DAYS:
         soft_flags.append("recent_ipo")
     if avg_dollar_volume < LOW_LIQUIDITY_MAX:
@@ -138,6 +149,7 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
 
     return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=True,
                                soft_flags=soft_flags, market_cap=market_cap,
+                               market_cap_tier=market_cap_tier,
                                avg_dollar_volume_20d=avg_dollar_volume, last_price=last_price,
                                price_history_days=history_days)
 

@@ -4,7 +4,9 @@ import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import HBarChart from '../components/HBarChart'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
-import { ratingClass } from '../format'
+import Sparkline, { InputBar } from '../components/Sparkline'
+import Icon from '../components/Icon'
+import { describeComponent, deltaArrow, componentIcon } from '../layer1meta'
 
 export default function Layer1View() {
   const { data, error } = useStageData(api.layer1)
@@ -20,17 +22,17 @@ export default function Layer1View() {
   const layerScore = data.layer_score
 
   const stats = [
-    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—' },
-    { label: 'Komponen', value: entries.length },
-    { label: 'OK', value: ok, tone: 'good' },
-    { label: 'Degraded', value: deg, tone: deg ? 'warn' : undefined },
-    { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%` },
+    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—', icon: 'gauge', accent: '#e8b84b' },
+    { label: 'Komponen', value: entries.length, icon: 'layers', accent: '#818CF8' },
+    { label: 'OK', value: ok, tone: 'good', icon: 'check', accent: '#4ADE80' },
+    { label: 'Degraded', value: deg, tone: deg ? 'warn' : undefined, icon: 'alert', accent: '#FBBF7A' },
+    { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%`, icon: 'shield', accent: '#22D3EE' },
   ]
 
   const contribChart = layerScore
     ? [...layerScore.contributions]
         .sort((a, b) => b.weighted - a.weighted)
-        .map((c) => ({ label: c.component, count: Math.round(c.weighted * 10) / 10, color: 'var(--accent2)' }))
+        .map((c) => ({ label: c.component, count: Math.round(c.weighted * 10) / 10, color: 'linear-gradient(90deg,#e8b84b,#f5cf6f)' }))
     : []
 
   const reasons = data.context_summary?.confidence?.reasons || []
@@ -61,22 +63,58 @@ export default function Layer1View() {
         </div>
       )}
 
-      <div className="l1-grid">
-        {entries.map(([key, c]) => (
-          <div className={`l1-card${c.status !== 'ok' ? ' deg' : ''}`} key={key} onClick={() => setSelected(c)} style={{ cursor: 'pointer' }}>
-            <div className="l1-name">
-              <span>{c.name || key}</span>
-              <span className={`pill ${ratingClass(c.status)}`}>{c.status}</span>
-            </div>
-            <div className="l1-narr">{c.narrative || c.note || '—'}</div>
-            {c.confidence !== null && c.confidence !== undefined && (
-              <div style={{ marginTop: 8, fontSize: 11, color: 'var(--faint)' }}>
-                confidence {c.confidence.toFixed(0)}% · {c.data_freshness || '—'}
-                {c.conflicts?.length > 0 && ` · ${c.conflicts.length} konflik`}
+      <div className="l1a-grid">
+        {entries.map(([key, c], idx) => {
+          const m = describeComponent(key, c)
+          const isDeg = c.status !== 'ok'
+          const chartColor = isDeg ? '#4fd1e0' : '#e8b84b'
+          return (
+            <div className={`l1a-card${isDeg ? ' deg' : ''}`} key={key} onClick={() => setSelected(c)} style={{ '--i': idx }}>
+              <div className="l1a-top">
+                <div className="l1a-idwrap">
+                  <span className={`l1a-ic${isDeg ? ' cy' : ''}`}>
+                    <Icon name={componentIcon(key)} size={18} />
+                  </span>
+                  <div>
+                    <p className="l1a-label">{c.name || key}</p>
+                    <div className="l1a-val">
+                      {m.hero}
+                      {m.unit && <span className="u">{m.unit}</span>}
+                    </div>
+                  </div>
+                </div>
+                <span className={`l1a-pill ${isDeg ? 'dg' : 'ok'}`}>{isDeg ? 'degraded' : 'ok'}</span>
               </div>
-            )}
-          </div>
-        ))}
+              {m.delta && <span className={`l1a-delta ${m.delta.dir}`}>{deltaArrow(m.delta.dir)} {m.delta.text}</span>}
+
+              {m.stats && (
+                <div className="l1a-mini">
+                  {m.stats.map((s, i) => (
+                    <div key={i}>
+                      <p className="l1a-mini-l">{s.l}</p>
+                      <p className="l1a-mini-v">{s.v}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="l1a-chart">
+                {key === 'market_sentiment' ? (
+                  <InputBar used={m.inputsUsed ?? 1} total={4} color={chartColor} />
+                ) : (
+                  <Sparkline trend={m.trend} color={chartColor} seed={key} height={m.stats ? 36 : 52} />
+                )}
+              </div>
+
+              <p className="l1a-foot">{c.narrative || c.note || '—'}</p>
+              <div className="l1a-meta">
+                {c.confidence !== null && c.confidence !== undefined && <span>conf {c.confidence.toFixed(0)}%</span>}
+                {c.data_freshness && <span>· {c.data_freshness}</span>}
+                {c.conflicts?.length > 0 && <span className="cf">· {c.conflicts.length} konflik</span>}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       {selected && <Layer1ComponentModal component={selected} onClose={() => setSelected(null)} />}

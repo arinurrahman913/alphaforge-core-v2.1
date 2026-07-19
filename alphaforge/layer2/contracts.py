@@ -25,6 +25,7 @@ class ScreeningCandidate:
     hard_exclude_reason: str | None = None
     soft_flags: list[str] = field(default_factory=list)
     market_cap: float | None = None
+    market_cap_tier: str | None = None  # micro_cap, small_cap, mid_cap, large_cap, mega_cap
     avg_dollar_volume_20d: float | None = None
     last_price: float | None = None
     price_history_days: int | None = None

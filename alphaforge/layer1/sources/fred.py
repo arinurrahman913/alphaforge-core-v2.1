@@ -10,6 +10,7 @@ refresh dashboard berkala) tidak perlu menembak FRED tiap kali.
 from __future__ import annotations
 
 import os
+from datetime import date
 from pathlib import Path
 
 import requests
@@ -43,6 +44,18 @@ def latest_observation(series_id: str) -> tuple[str, float]:
     if obs:
         return obs[0]
     raise ValueError(f"no valid observation for {series_id}")
+
+
+def observation_near(obs: list[tuple[str, float]], target_iso: str) -> tuple[str, float]:
+    """Dari list observasi (date_iso, value) — urutan bebas — kembalikan yang
+    TANGGALNYA paling dekat ke `target_iso`. Dipakai menghitung delta YoY /
+    6-bulan berdasarkan TANGGAL, bukan posisi indeks: `series_observations`
+    membuang nilai '.' (missing di FRED) dan bisa balik lebih pendek dari
+    limit, jadi `obs[-1]` belum tentu benar-benar N periode lalu. Mencari via
+    tanggal kebal terhadap gap/panjang-variabel dan menjujurkan span yang
+    benar-benar dipakai. `obs` harus tidak kosong (dijamin pemanggil)."""
+    target = date.fromisoformat(target_iso[:10])
+    return min(obs, key=lambda o: abs((date.fromisoformat(o[0][:10]) - target).days))
 
 
 def series_observations(series_id: str, limit: int = 24) -> list[tuple[str, float]]:

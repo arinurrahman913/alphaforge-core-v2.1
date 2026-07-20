@@ -235,6 +235,9 @@ def _build_layer_score(components: dict[str, ComponentReading]) -> LayerScore:
 def _build_context_summary(components: dict, conflicts_found: list[str]) -> ContextSummary:
     degraded = [name for name, r in components.items() if r.status in ("degraded", "missing")]
     n_ok = len(components) - len(degraded)
+    # Confidence: komponen degraded (punya data parsial) dapat kredit separuh,
+    # bukan disamakan dengan missing (nihil data) — dulu keduanya dihitung 0.
+    n_degraded_only = sum(1 for r in components.values() if r.status == "degraded")
 
     parts = []
     yc = components["yield_curve"]
@@ -281,7 +284,7 @@ def _build_context_summary(components: dict, conflicts_found: list[str]) -> Cont
     return ContextSummary(
         method_version=CONTEXT_SUMMARY_METHOD_VERSION,
         narrative=narrative,
-        confidence=Confidence(score=n_ok / len(components) * 100.0, band=band, limiters=degraded, reasons=reasons),
+        confidence=Confidence(score=(n_ok + 0.5 * n_degraded_only) / len(components) * 100.0, band=band, limiters=degraded, reasons=reasons),
         components_degraded=degraded,
     )
 
@@ -297,12 +300,29 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
             for name, fn in LEAF_COMPONENTS.items()
         }
         for name, fut in futures.items():
-            components[name] = fut.result()
+            try:
+                components[name] = fut.result()
+            except Exception as exc:  # noqa: BLE001
+                # Jaring pengaman: satu komponen yang gagal tak terduga (mis.
+                # IndexError dari respons FRED kosong yang lolos try lokalnya)
+                # tidak boleh mematikan seluruh build — jadikan missing supaya
+                # 11 komponen lain tetap terkirim (jaminan §5 "Kalau Ada
+                # Komponen yang Gagal").
+                components[name] = ComponentReading(
+                    name=name, value=None, status="missing", kind="derived",
+                    note=f"Komponen gagal tak terduga: {type(exc).__name__}: {exc}",
+                )
 
-    components["market_sentiment"] = market_sentiment_mod.compute(
-        vix_reading=components["volatility_index"],
-        breadth_reading=components["market_breadth"],
-    )
+    try:
+        components["market_sentiment"] = market_sentiment_mod.compute(
+            vix_reading=components["volatility_index"],
+            breadth_reading=components["market_breadth"],
+        )
+    except Exception as exc:  # noqa: BLE001
+        components["market_sentiment"] = ComponentReading(
+            name="market_sentiment", value=None, status="missing", kind="derived",
+            note=f"Komponen gagal tak terduga: {type(exc).__name__}: {exc}",
+        )
 
     # Post-processing terpusat: freshness -> confidence -> contribution,
     # urutannya penting karena confidence butuh freshness duluan.

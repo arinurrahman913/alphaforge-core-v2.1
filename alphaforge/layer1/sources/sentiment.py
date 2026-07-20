@@ -81,7 +81,7 @@ def fetch_cftc_spx() -> dict | None:
         "$limit": "1",
     }
     try:
-        r = requests.get(CFTC_URL, params=params, headers=CNN_HEADERS, timeout=15)
+        r = requests.get(CFTC_URL, params=params, headers=CNN_HEADERS, timeout=8)
         r.raise_for_status()
         rows = r.json()
         if not rows:
@@ -115,11 +115,13 @@ def fetch_finra_short_volume() -> dict | None:
     if cached is not None:
         return cached
     today = datetime.now(timezone.utc).date()
-    for back in range(0, 6):
+    # Maksimal 4 percobaan mundur (hari ini + 3 hari bursa lalu) × timeout 8s
+    # = worst-case ~32 dtk, bukan ~90 dtk. Best-effort: gagal → input hilang.
+    for back in range(0, 4):
         d = today - timedelta(days=back)
         url = FINRA_SHORT_URL.format(date=d.strftime("%Y%m%d"))
         try:
-            r = requests.get(url, headers=CNN_HEADERS, timeout=15)
+            r = requests.get(url, headers=CNN_HEADERS, timeout=8)
         except Exception:
             continue
         if r.status_code != 200 or len(r.content) < 200:

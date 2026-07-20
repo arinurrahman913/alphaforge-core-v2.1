@@ -10,10 +10,11 @@ daripada diisi placeholder yang menyesatkan.
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import requests
 
+from ... import cache
 from ..contracts import ComponentReading
 from ._util import ev, missing, source, th
 from ..sources.fred import api_key
@@ -27,10 +28,20 @@ NAME = "macro_calendar"
 RELEASES = {10: "CPI", 50: "Employment Situation"}
 HORIZON_DAYS = 30
 SEVERITY = "high"
+CALENDAR_CACHE_TTL = 12 * 3600  # selaras dgn caching seri FRED lain (fred.py)
+
+
+def _today() -> date:
+    return datetime.now(timezone.utc).date()  # UTC, konsisten dgn now_iso()
 
 
 def _upcoming_dates(release_id: int, label: str) -> list[dict]:
-    today = date.today()
+    # Cache 12 jam: dulu endpoint ini dipanggil langsung tanpa cache, jadi tiap
+    # build Layer 1 nembak FRED 2× — beda dari seri FRED lain yang sudah cached.
+    cached = cache.get("layer1_macro_calendar", str(release_id), CALENDAR_CACHE_TTL)
+    if cached is not None:
+        return cached
+    today = _today()
     resp = requests.get(
         "https://api.stlouisfed.org/fred/release/dates",
         params={
@@ -44,7 +55,9 @@ def _upcoming_dates(release_id: int, label: str) -> list[dict]:
         timeout=15,
     )
     resp.raise_for_status()
-    return [{"label": label, "date": d["date"], "severity": SEVERITY} for d in resp.json().get("release_dates", [])]
+    events = [{"label": label, "date": d["date"], "severity": SEVERITY} for d in resp.json().get("release_dates", [])]
+    cache.set("layer1_macro_calendar", str(release_id), events)
+    return events
 
 
 def compute() -> ComponentReading:
@@ -56,7 +69,7 @@ def compute() -> ComponentReading:
         return missing(NAME, "direct", f"FRED release calendar gagal ditarik: {exc}")
 
     events.sort(key=lambda e: e["date"])
-    today = date.today()
+    today = _today()
     if events:
         days_to_next = (date.fromisoformat(events[0]["date"]) - today).days
         narrative = (

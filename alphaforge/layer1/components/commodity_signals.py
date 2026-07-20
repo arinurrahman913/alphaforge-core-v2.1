@@ -21,22 +21,22 @@ def compute() -> ComponentReading:
         gold_df = yahoo.history("GC=F", period="6mo")
         gold = float(gold_df["Close"].iloc[-1])
         gold_as_of = gold_df.index[-1].strftime("%Y-%m-%d")
-        gold_chg = yahoo.pct_change("GC=F", days=30, period="6mo")
+        gold_chg = yahoo.pct_change("GC=F", days=21, period="6mo")
 
         wti_df = yahoo.history("CL=F", period="6mo")
         wti = float(wti_df["Close"].iloc[-1])
         wti_as_of = wti_df.index[-1].strftime("%Y-%m-%d")
-        wti_chg = yahoo.pct_change("CL=F", days=30, period="6mo")
+        wti_chg = yahoo.pct_change("CL=F", days=21, period="6mo")
     except Exception as exc:
         return missing(NAME, "direct", f"Yahoo futures gagal ditarik: {exc}")
 
-    # Sama seperti currency_dxy.py: days=30 di yahoo.pct_change() adalah 30
-    # hari bursa (~42 hari kalender), bukan 30 hari kalender persis.
+    # 21 hari bursa ≈ 30 hari kalender (~1 bulan) — selaras field "30d" &
+    # currency_dxy (dulu days=30 = ~42 hari kalender, menyesatkan).
     narrative = (
-        f"Emas {gold:,.0f} ({gold_chg:+.1f}% 30h bursa), WTI {wti:,.2f} ({wti_chg:+.1f}% 30h bursa)."
+        f"Emas {gold:,.0f} ({gold_chg:+.1f}% ~1bln), WTI {wti:,.2f} ({wti_chg:+.1f}% ~1bln)."
     )
     rule = (
-        "score = 55 dikurangi rata-rata perubahan emas+WTI 30h bursa "
+        "score = 55 dikurangi rata-rata perubahan emas+WTI ~1 bulan (21 hari bursa) "
         "(dibatasi ±10 poin) — komoditas naik dibaca sedikit bearish (risiko inflasi/late-cycle)"
     )
 
@@ -59,9 +59,9 @@ def compute() -> ComponentReading:
         narrative_version="1.0.0",
         evidence=[
             ev("gold", gold, gold_as_of, "Yahoo Finance GC=F"),
-            ev("gold_change_30d_pct", gold_chg, gold_as_of, "Yahoo Finance GC=F (30 hari bursa)"),
+            ev("gold_change_30d_pct", gold_chg, gold_as_of, "Yahoo Finance GC=F (~1 bulan, 21 hari bursa)"),
             ev("wti", wti, wti_as_of, "Yahoo Finance CL=F"),
-            ev("wti_change_30d_pct", wti_chg, wti_as_of, "Yahoo Finance CL=F (30 hari bursa)"),
+            ev("wti_change_30d_pct", wti_chg, wti_as_of, "Yahoo Finance CL=F (~1 bulan, 21 hari bursa)"),
         ],
         rule=rule,
         thresholds=[th("swing dibatasi ± poin dari baseline 55", "clamp", MAX_SWING)],

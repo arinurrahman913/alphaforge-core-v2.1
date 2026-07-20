@@ -22,13 +22,16 @@ RAW_SCORE_NEUTRAL = 55.0
 
 def compute() -> ComponentReading:
     try:
+        # Semua fetch pakai period="1y" yang sama supaya berbagi satu entry
+        # cache per ticker (dulu 6mo & 1y = dua key = dua unduhan per ETF;
+        # money_flow juga kini pakai 1y → ikut reuse cache yang sama).
         bench_df = yahoo.history(BENCHMARK, period="1y")
         as_of = bench_df.index[-1].strftime("%Y-%m-%d")
-        bench_1m = yahoo.pct_change(BENCHMARK, days=21, period="6mo")
+        bench_1m = yahoo.pct_change(BENCHMARK, days=21, period="1y")
         bench_3m = yahoo.pct_change(BENCHMARK, days=63, period="1y")
         relative = {}
         for etf in SECTOR_ETFS:
-            r1m = yahoo.pct_change(etf, days=21, period="6mo")
+            r1m = yahoo.pct_change(etf, days=21, period="1y")
             r3m = yahoo.pct_change(etf, days=63, period="1y")
             relative[etf] = {
                 "return_1m_pct": r1m,

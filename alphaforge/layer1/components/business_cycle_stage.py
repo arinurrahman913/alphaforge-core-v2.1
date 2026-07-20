@@ -8,6 +8,8 @@ di sini, bukan disamarkan seolah PMI resmi.
 """
 from __future__ import annotations
 
+from datetime import date, timedelta
+
 from ..contracts import ComponentReading
 from ..sources import fred
 from ._util import ev, missing, source, th
@@ -21,17 +23,23 @@ RAW_SCORE = {"early-cycle": 90.0, "mid-cycle": 65.0, "late-cycle": 35.0, "recess
 def compute() -> ComponentReading:
     try:
         gdp_date, gdp_qoq = fred.latest_observation("A191RL1Q225SBEA")  # real GDP QoQ SAAR %
-        unrate_obs = fred.series_observations("UNRATE", limit=7)
-        indpro_obs = fred.series_observations("INDPRO", limit=13)
+        # Ambil buffer ekstra: window 6-bulan/YoY dicari via TANGGAL (bukan
+        # posisi indeks), jadi kebal terhadap gap nilai '.' & panjang variabel.
+        unrate_obs = fred.series_observations("UNRATE", limit=10)
+        indpro_obs = fred.series_observations("INDPRO", limit=16)
     except Exception as exc:
         return missing(NAME, "derived", f"FRED gagal ditarik: {exc}", method_version=METHOD_VERSION)
 
+    if not unrate_obs or not indpro_obs:
+        return missing(NAME, "derived", "FRED UNRATE/INDPRO balik kosong.", method_version=METHOD_VERSION)
+
     unrate_date, unrate_now = unrate_obs[0]
-    unrate_6mo_ago = unrate_obs[-1][1]
+    _, unrate_6mo_ago = fred.observation_near(unrate_obs, (date.fromisoformat(unrate_date) - timedelta(days=182)).isoformat())
     unrate_rising = unrate_now > unrate_6mo_ago + 0.2
 
     indpro_date, indpro_now = indpro_obs[0]
-    indpro_yoy = (indpro_now - indpro_obs[-1][1]) / indpro_obs[-1][1] * 100.0
+    _, indpro_year_ago = fred.observation_near(indpro_obs, (date.fromisoformat(indpro_date) - timedelta(days=365)).isoformat())
+    indpro_yoy = (indpro_now - indpro_year_ago) / indpro_year_ago * 100.0 if indpro_year_ago else 0.0
 
     expansive = indpro_yoy > 0
     if gdp_qoq < 0 and unrate_rising:

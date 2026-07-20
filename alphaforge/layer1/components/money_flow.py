@@ -10,10 +10,14 @@ from ..sources import yahoo
 from ._util import ev, missing, source, th
 
 NAME = "money_flow"
-METHOD_VERSION = "1.0.0"
+METHOD_VERSION = "1.1.0"
 
 SECTOR_ETFS = ["XLK", "XLE", "XLF", "XLV", "XLI", "XLY", "XLP", "XLU", "XLB", "XLRE", "XLC"]
 VOL_RATIO_THRESHOLD = 1.3
+# Jendela agregasi. Dulu 1 hari (volume + arah harga hari terakhir) — sangat
+# berisik, arahnya bisa berbalik tiap hari. 3 hari menyaring noise satu sesi
+# jadi hanya lonjakan volume yang bertahan yang terhitung sebagai flow.
+WINDOW = 3
 
 
 def compute() -> ComponentReading:
@@ -21,13 +25,18 @@ def compute() -> ComponentReading:
         flows = {}
         as_of = None
         for etf in SECTOR_ETFS:
-            df = yahoo.history(etf, period="2mo")
+            df = yahoo.history(etf, period="1y")  # period sama dgn sector_rotation → reuse cache
             as_of = df.index[-1].strftime("%Y-%m-%d")
             vol = df["Volume"]
-            avg_vol_20d = float(vol.iloc[-21:-1].mean())
-            last_vol = float(vol.iloc[-1])
-            price_chg = (float(df["Close"].iloc[-1]) - float(df["Close"].iloc[-2])) / float(df["Close"].iloc[-2]) * 100.0
-            vol_ratio = last_vol / avg_vol_20d if avg_vol_20d else 0.0
+            close = df["Close"]
+            if len(df) < 20 + WINDOW + 1:
+                # Histori tidak cukup untuk jendela 3-hari + baseline 20-hari.
+                flows[etf] = {"volume_ratio_vs_20d": 0.0, "price_change_pct": 0.0, "direction": "neutral"}
+                continue
+            recent_vol = float(vol.iloc[-WINDOW:].mean())
+            avg_vol_20d = float(vol.iloc[-(20 + WINDOW):-WINDOW].mean())  # 20 hari SEBELUM jendela
+            price_chg = (float(close.iloc[-1]) - float(close.iloc[-1 - WINDOW])) / float(close.iloc[-1 - WINDOW]) * 100.0
+            vol_ratio = recent_vol / avg_vol_20d if avg_vol_20d else 0.0
             if vol_ratio > VOL_RATIO_THRESHOLD and price_chg > 0:
                 direction = "inflow"
             elif vol_ratio > VOL_RATIO_THRESHOLD and price_chg < 0:
@@ -44,9 +53,9 @@ def compute() -> ComponentReading:
         f"Proksi volume+harga (bukan data flow institusional). Inflow terdeteksi di: "
         f"{', '.join(inflows) if inflows else 'tidak ada'}. "
         f"Outflow di: {', '.join(outflows) if outflows else 'tidak ada'} "
-        f"(volume >30% di atas rata-rata 20 hari + arah harga, universe {len(SECTOR_ETFS)} sector ETF)."
+        f"(volume rata-rata {WINDOW} hari >30% di atas rata-rata 20 hari + arah harga {WINDOW} hari, universe {len(SECTOR_ETFS)} sector ETF)."
     )
-    rule = f"volume_ratio > {VOL_RATIO_THRESHOLD} & price naik → inflow; volume_ratio > {VOL_RATIO_THRESHOLD} & price turun → outflow; selain itu → neutral"
+    rule = f"volume {WINDOW}h/rata2 20h > {VOL_RATIO_THRESHOLD} & harga {WINDOW}h naik → inflow; > {VOL_RATIO_THRESHOLD} & harga {WINDOW}h turun → outflow; selain itu → neutral"
     raw_score = max(0.0, min(100.0, 50.0 + (len(inflows) - len(outflows)) / len(SECTOR_ETFS) * 50.0))
 
     return ComponentReading(

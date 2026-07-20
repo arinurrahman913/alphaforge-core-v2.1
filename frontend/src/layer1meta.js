@@ -51,12 +51,12 @@ export function describeComponent(key, c) {
       return {
         hero: v.vix?.toFixed(1),
         unit: 'VIX',
-        delta: { text: v.vix < v.avg_5y ? 'Di bawah avg 5th' : 'Di atas avg 5th', dir: v.vix < v.avg_5y ? 'down' : 'up' },
+        delta: { text: v.vix < v.median_5y ? 'Di bawah median 5th' : 'Di atas median 5th', dir: v.vix < v.median_5y ? 'down' : 'up' },
         stats: [
-          { l: 'Avg 5Y', v: v.avg_5y?.toFixed(1) },
+          { l: 'Median 5Y', v: v.median_5y?.toFixed(1) },
           { l: 'Level', v: cap(v.level) },
         ],
-        trend: v.vix < v.avg_5y ? 'down' : 'up',
+        trend: v.vix < v.median_5y ? 'down' : 'up',
         accent,
       }
 

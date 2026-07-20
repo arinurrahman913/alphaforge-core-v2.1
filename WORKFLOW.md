@@ -8,7 +8,7 @@ Panduan lengkap: cara menjalankan platform, refresh data, dan **membaca setiap b
 
 Dua mesin analisis saham yang berjalan berurutan:
 
-- **Layer 1 — Market Context Engine**: 12 komponen makro (yield curve, VIX, likuiditas, dll) → satu skor kondisi pasar (`Layer Score`).
+- **Layer 1 — Market Context Engine**: 13 komponen makro (yield curve, VIX, likuiditas, credit spread, dll) → satu skor kondisi pasar (`Layer Score`).
 - **Layer 2 — Stock Analysis Engine**: 9 tahap per saham → Screening → Evidence → Knowledge → Peer → Confidence → Risk → Reasoning → Aggregator → Historical.
 
 Dashboard (React) **hanya membaca file JSON** hasil pipeline — tidak menghitung ulang. Jadi alurnya selalu: **generate data → dashboard baca data**.
@@ -91,11 +91,11 @@ python scripts/refresh_layer1.py
 ```
 Update komponen makro. `market_breadth` & `market_sentiment` ikut terisi dengan **memakai ulang cache harga** dari Screening terakhir (`.cache/price_history/`, difilter ke ticker yang lolos Screening di `screening.json` — universe-nya sama persis dengan run harian, nol panggilan jaringan). Kalau cache masih kosong (belum pernah full pipeline), keduanya `missing`/`degraded` seperti sebelumnya sampai full pipeline pertama jalan.
 
-### B. Layer 1 lengkap 11/12 (butuh Screening dulu, ~beberapa menit)
+### B. Layer 1 lengkap 12/13 (butuh Screening dulu, ~beberapa menit)
 ```powershell
 python -m alphaforge.cli layer1 --with-screening --screening-limit 100 --out dashboard/data/layer1_context.json
 ```
-Mengisi `market_breadth`. Untuk 12/12 (termasuk `market_sentiment` ok), lengkapi input manual dulu (§5.7).
+Mengisi `market_breadth`. `market_sentiment` sudah `ok` otomatis (CFTC+FINRA); untuk 13/13 penuh termasuk AAII, lengkapi input manual dulu (§5.7).
 
 ### C. Full pipeline — semua stage Layer 1 + Layer 2 (paling lama)
 ```powershell
@@ -123,10 +123,13 @@ Navigasi antar tahap. **Market** → Layer 1. **Fase A/B** → tahap-tahap Layer
 | Tile | Arti |
 |---|---|
 | **Layer Score** | Skor makro agregat 0–100 (rata-rata tertimbang semua komponen ok). Makin tinggi = kondisi makro makin kondusif untuk aset berisiko. |
-| **Komponen** | Jumlah komponen makro (12). |
+| **Komponen** | Jumlah komponen makro (13). |
 | **OK** | Komponen dengan data lengkap. |
 | **Degraded** | Komponen datanya parsial/hilang. |
 | **Confidence** | Keyakinan keseluruhan terhadap paket data. |
+
+### 5.2b Tren Layer Score (pasca-audit, 2026-07)
+Panel kecil di bawah Stat Tiles, di atas bar chart kontribusi — menampilkan `LayerScore` dari waktu ke waktu (satu titik/hari, dari `dashboard/data/layer1_history.json`). Ditambahkan supaya skor hari ini bisa dibandingkan dengan beberapa hari/minggu terakhir, bukan cuma snapshot titik-waktu. Baru terisi setelah ≥2 hari refresh berjalan (biasanya kosong/placeholder di awal pemakaian); makin lama, makin bisa dipakai untuk mengecek apakah skor sekarang "biasa" atau tidak biasa dibanding histori — dan ke depannya jadi dasar validasi LayerScore terhadap hasil pasar nyata.
 
 ### 5.3 Bar Chart "Kontribusi ke Layer Score"
 Tiap batang = seberapa besar sumbangan komponen itu ke Layer Score (skor × bobot). Batang panjang = komponen berbobot besar & skor tinggi.
@@ -186,6 +189,7 @@ File `sentiment_manual.json` sudah di-gitignore. Data AAII kadaluarsa (>30 hari)
 | Endpoint | File sumber |
 |---|---|
 | `/api/layer1` | `dashboard/data/layer1_context.json` |
+| `/api/layer1_history` | `dashboard/data/layer1_history.json` (snapshot harian `LayerScore`, dasar tren) |
 | `/api/screening` | `dashboard/data/screening.json` |
 | `/api/evidence` | `dashboard/data/evidence.json` |
 | `/api/ticker/<TICKER>` | gabungan semua stage untuk 1 ticker |

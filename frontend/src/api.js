@@ -12,6 +12,7 @@ async function getJSON(path) {
 
 export const api = {
   layer1: () => getJSON('/api/layer1'),
+  layer1History: () => getJSON('/api/layer1_history'),
   screening: () => getJSON('/api/screening'),
   evidence: () => getJSON('/api/evidence'),
   knowledge: () => getJSON('/api/knowledge'),

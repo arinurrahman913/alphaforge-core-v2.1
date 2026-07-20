@@ -19,6 +19,7 @@ from datetime import date
 from .components import (
     business_cycle_stage,
     commodity_signals,
+    credit_spread,
     currency_dxy,
     liquidity_conditions,
     macro_calendar,
@@ -47,28 +48,36 @@ LEAF_COMPONENTS = {
     "commodity_signals": commodity_signals.compute,
     "volatility_index": volatility_index.compute,
     "market_breadth": market_breadth.compute,
+    "credit_spread": credit_spread.compute,
 }
 
 CONTEXT_SUMMARY_METHOD_VERSION = "1.0.0"
-LAYER_SCORE_METHOD_VERSION = "1.0.0"
+LAYER_SCORE_METHOD_VERSION = "1.1.0"
 
 # Bobot kontribusi ke LayerScore final, jumlah = 1.0. market_sentiment
 # dikasih bobot kecil karena secara struktur sudah composite dari
 # volatility_index + market_breadth (dua-duanya sudah ditimbang sendiri
 # di atas) — bobot besar di sini akan menghitung sinyal yang sama 2x.
+#
+# credit_spread (2026-07, pasca-audit): ditambahkan sebagai leading indicator
+# risk-appetite yang sebelumnya tidak ada. Bobot 12 komponen lama diskalakan
+# ×0.90 (proporsi relatif dipertahankan) lalu credit_spread diberi 0.10 —
+# signifikan karena secara historis lebih prediktif dibanding banyak proksi
+# lain di sini, tapi tidak dominan.
 WEIGHTS = {
-    "market_regime": 0.15,
-    "business_cycle_stage": 0.12,
-    "yield_curve": 0.10,
-    "volatility_index": 0.10,
-    "market_breadth": 0.10,
-    "liquidity_conditions": 0.10,
-    "sector_rotation": 0.08,
-    "money_flow": 0.07,
-    "currency_dxy": 0.07,
-    "commodity_signals": 0.05,
-    "macro_calendar": 0.03,
-    "market_sentiment": 0.03,
+    "market_regime": 0.135,
+    "business_cycle_stage": 0.108,
+    "yield_curve": 0.09,
+    "volatility_index": 0.09,
+    "market_breadth": 0.09,
+    "liquidity_conditions": 0.09,
+    "credit_spread": 0.10,
+    "sector_rotation": 0.072,
+    "money_flow": 0.063,
+    "currency_dxy": 0.063,
+    "commodity_signals": 0.045,
+    "macro_calendar": 0.027,
+    "market_sentiment": 0.027,
 }
 
 # Cadence (hari) dipakai buat klasifikasi data_freshness: fresh ≤1.5×cadence,
@@ -84,6 +93,7 @@ CADENCE_DAYS = {
     "money_flow": 1,
     "market_breadth": 1,
     "market_sentiment": 1,
+    "credit_spread": 1,          # BAMLH0A0HYM2 rilis harian (business day)
     "liquidity_conditions": 7,   # berbasis WALCL (mingguan), lebih sering dari M2SL (bulanan)
     "business_cycle_stage": 30,  # berbasis INDPRO (bulanan), paling sering dari GDP (kuartalan)
 }
@@ -252,6 +262,9 @@ def _build_context_summary(components: dict, conflicts_found: list[str]) -> Cont
     sentiment = components["market_sentiment"]
     if sentiment.status in ("ok", "degraded") and sentiment.value:
         parts.append(f"sentimen {sentiment.value['label']}")
+    credit = components.get("credit_spread")
+    if credit and credit.status == "ok":
+        parts.append(f"credit spread {credit.value['level']}")
 
     narrative = (", ".join(parts).capitalize() + ".") if parts else "Konteks tidak bisa disusun — mayoritas komponen kosong."
     if degraded:

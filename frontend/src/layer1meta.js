@@ -145,6 +145,19 @@ export function describeComponent(key, c) {
       }
     }
 
+    case 'credit_spread':
+      return {
+        hero: v.oas_pct?.toFixed(2),
+        unit: 'pp OAS',
+        delta: { text: cap(v.level), dir: v.level === 'wide' ? 'down' : v.level === 'tight' ? 'up' : 'flat' },
+        stats: [
+          { l: 'Persentil 5Y', v: `${Math.round((v.percentile_5y ?? 0) * 100)}%` },
+          { l: 'Level', v: cap(v.level) },
+        ],
+        trend: v.level === 'wide' ? 'down' : v.level === 'tight' ? 'up' : 'flat',
+        accent,
+      }
+
     case 'macro_calendar': {
       const ev = (v.events || [])[0]
       const days = ev ? Math.max(0, Math.round((new Date(ev.date) - new Date()) / 86400000)) : null
@@ -204,6 +217,7 @@ const COMPONENT_ICON = {
   volatility_index: 'wave',
   market_breadth: 'bars',
   market_sentiment: 'mood',
+  credit_spread: 'bond',
 }
 
 export function componentIcon(key) {

@@ -22,10 +22,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from alphaforge.layer1 import historical as layer1_historical  # noqa: E402
 from alphaforge.layer1.pipeline import build_market_context_package  # noqa: E402
 from alphaforge.layer2.screening import load_cached_price_cache  # noqa: E402
 
 OUT_PATH = ROOT / "dashboard" / "data" / "layer1_context.json"
+HISTORY_PATH = ROOT / "dashboard" / "data" / "layer1_history.json"
 SCREENING_PATH = ROOT / "dashboard" / "data" / "screening.json"
 
 
@@ -56,6 +58,7 @@ def main() -> int:
     pkg = build_market_context_package(price_cache=price_cache or None)
     data = pkg.to_dict()
     _atomic_write(OUT_PATH, data)
+    layer1_historical.append_entry(HISTORY_PATH, pkg)
 
     n_ok = sum(1 for c in data["components"].values() if c["status"] == "ok")
     score = data["layer_score"]["final_score"] if data["layer_score"] else None

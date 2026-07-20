@@ -28,6 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from alphaforge.layer1 import historical as layer1_historical  # noqa: E402
 from alphaforge.layer1.pipeline import build_market_context_package  # noqa: E402
 from alphaforge.layer2.screening import run_screening  # noqa: E402
 from alphaforge.layer2.evidence import run_evidence  # noqa: E402
@@ -173,6 +174,7 @@ def main() -> int:
     _atomic_write(DATA_DIR / "final_recommendations.json", aggregator_data)
     _atomic_write(DATA_DIR / "historical_timeline.json", timeline_data)
     _atomic_write(DATA_DIR / "layer1_context.json", layer1_data)
+    layer1_historical.append_entry(DATA_DIR / "layer1_history.json", layer1_pkg)
 
     # Root reference snapshots — tracked in git, matches the convention
     # already established for evidence.json/knowledge.json/peer_results.json/

@@ -30,3 +30,14 @@ def ev(field: str, value: Any, as_of: str, source_label: str) -> Evidence:
 def th(label: str, operator: str, value: float) -> Threshold:
     """Shorthand buat satu Threshold."""
     return Threshold(label=label, operator=operator, value=value)
+
+
+def percentile_rank(values: list[float], current: float) -> float:
+    """Fraksi nilai historis (termasuk current) yang <= current — 0 = current
+    adalah nilai terendah dalam window, 1 = tertinggi. Dipakai komponen yang
+    ingin menskalakan sinyal relatif terhadap distribusi historisnya sendiri
+    (percentile), bukan angka ambang tetap yang maknanya bisa melenceng
+    antar rezim (mis. suku bunga, inflasi)."""
+    if not values:
+        return 0.5
+    return sum(1 for v in values if v <= current) / len(values)

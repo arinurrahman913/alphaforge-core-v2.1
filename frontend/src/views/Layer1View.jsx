@@ -3,6 +3,7 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import VBarChart from '../components/VBarChart'
+import Layer1ScoreTrend from '../components/Layer1ScoreTrend'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
 import StatDetailModal from '../components/StatDetailModal'
 import Sparkline, { InputBar } from '../components/Sparkline'
@@ -11,6 +12,7 @@ import { describeComponent, deltaArrow, componentIcon } from '../layer1meta'
 
 export default function Layer1View() {
   const { data, error } = useStageData(api.layer1)
+  const { data: history } = useStageData(api.layer1History)
   const [selected, setSelected] = useState(null)
   const [statDetail, setStatDetail] = useState(null)
 
@@ -55,6 +57,8 @@ export default function Layer1View() {
   return (
     <>
       <StatCards stats={stats} />
+
+      <Layer1ScoreTrend history={Array.isArray(history) ? history : []} />
 
       {layerScore && contribChart.length > 0 && (
         <div className="chart-row">

@@ -4,7 +4,7 @@ Implementasi kode AlphaForge v2 (Layer 1 — Market Context Engine, Layer 2 — 
 
 ## Isi Repo
 
-- `alphaforge/layer1/` — Market Context Engine, 12 komponen sesuai `02_LAYER1_SPECS/`. Lihat §Layer 1 di bawah.
+- `alphaforge/layer1/` — Market Context Engine, 13 komponen sesuai `02_LAYER1_SPECS/` (+ `credit_spread`, ditambahkan pasca-audit 2026-07). Lihat §Layer 1 di bawah.
 - `alphaforge/layer2/` — Stock Analysis Engine: Screening (tahap 1), Evidence (tahap 2). Lihat §Layer 2 di bawah.
 - `alphaforge/cache.py` — cache lokal berbasis file (`.cache/`, gitignored) dengan TTL, dipakai Screening & Evidence.
 - `dashboard/dashboard-mockup.html` — mockup dashboard lokal (statis, data contoh hardcoded), mengikuti spec `01_ARCHITECTURE/05_DASHBOARD_LOCAL.md`. Belum terhubung ke pipeline nyata.
@@ -57,9 +57,10 @@ referensi visual untuk halaman yang belum ada datanya (Daftar Lensa, Layer 2).
 | Liquidity Conditions | FRED (`WALCL`, `M2SL`) | Jalan (butuh `FRED_API_KEY`) |
 | Macro Calendar | FRED release calendar (CPI, Employment) | Jalan (butuh `FRED_API_KEY`) |
 | Business Cycle Stage | FRED (GDP QoQ, UNRATE, INDPRO sbg proksi PMI — lihat catatan di modul) | Jalan (butuh `FRED_API_KEY`) |
-| Money Flow | Yahoo (volume+price proxy 11 sector ETF) | Jalan |
-| Market Breadth | Cache harga universe Screening | **`status=missing`** — Screening belum diimplementasikan |
+| Money Flow | Yahoo (volume+price proxy 11 sector ETF, jendela 3 hari) | Jalan |
+| Market Breadth | Cache harga universe Screening | Jalan (butuh Screening pernah jalan sekali — lihat §Layer 2) |
 | Market Sentiment | VIX + Market Breadth + CFTC COT + FINRA short-volume + put/call + AAII | Jalan — `ok` pada ≥3/6 input; 4 otomatis resmi (VIX, breadth, CFTC, FINRA), put/call & AAII opsional manual |
+| Credit Spread | FRED (`BAMLH0A0HYM2`, ICE BofA US HY OAS) | Jalan (butuh `FRED_API_KEY`) — skor berbasis percentile historis, bukan band tetap |
 
 ## Layer 2 — Stock Analysis Engine
 
@@ -213,9 +214,11 @@ http://localhost:8765/peer-live.html
 ## Status Implementasi
 
 ### Layer 1
-- **11/12 komponen**: live (yield curve, VIX, DXY, commodities, regime, sector rotation, liquidity, macro calendar, business cycle, money flow, market breadth)
-- `FRED_API_KEY` diperlukan untuk 4 komponen FRED
+- **13/13 komponen**: live (yield curve, VIX, DXY, commodities, regime, sector rotation, liquidity, macro calendar, business cycle, money flow, market breadth, market sentiment, credit spread)
+- `FRED_API_KEY` diperlukan untuk 5 komponen FRED (yield curve, liquidity, macro calendar, business cycle, credit spread)
 - `market_sentiment`: `ok` — 4 input otomatis resmi (VIX, breadth, CFTC COT, FINRA short-volume); put/call & AAII opsional lewat input manual
+- `currency_dxy` & `commodity_signals`: skor berbasis percentile 3 tahun (bukan band % perubahan tetap) — tahan-rezim terhadap perubahan volatilitas
+- `dashboard/data/layer1_history.json`: snapshot harian `LayerScore` (satu entry/hari, run berulang di hari sama saling menggantikan) — dasar untuk validasi/backtest LayerScore vs hasil pasar nyata ke depannya
 
 ### Layer 2 — Stock Analysis Engine (Complete ✅)
 

@@ -35,6 +35,7 @@ FRONTEND_DIST = ROOT / "frontend" / "dist"
 
 STAGE_FILES = {
     "layer1": "layer1_context.json",
+    "layer1_history": "layer1_history.json",
     "screening": "screening.json",
     "evidence": "evidence.json",
     "knowledge": "knowledge.json",

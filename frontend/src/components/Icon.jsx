@@ -20,6 +20,7 @@ const ICONS = {
   wave: '<path d="M3 12h3.5l2-5 4 10 2-5H20"/>',
   bars: '<path d="M4 20h16"/><rect x="5" y="11" width="3" height="7" rx="1"/><rect x="10.5" y="6" width="3" height="12" rx="1"/><rect x="16" y="9" width="3" height="9" rx="1"/>',
   mood: '<circle cx="12" cy="12" r="9"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14.5h6"/>',
+  bond: '<path d="M4 7h11"/><path d="M4 12h7"/><path d="M4 17h14"/><path d="M17 9.5v5"/><circle cx="17" cy="7" r="1.6"/><circle cx="20" cy="17" r="1.6"/>',
   dot: '<circle cx="12" cy="12" r="4"/>',
 }
 

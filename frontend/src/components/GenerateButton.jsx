@@ -3,7 +3,7 @@ import { api } from '../api'
 import Icon from './Icon'
 
 const MODES = [
-  { key: 'layer1', label: 'Refresh Layer 1', note: '~1 menit · 10/12 komponen makro' },
+  { key: 'layer1', label: 'Refresh Layer 1', note: '~1 menit · komponen makro (breadth pakai cache terakhir)' },
   { key: 'full', label: 'Full Pipeline', note: 'semua stage · lebih lama' },
 ]
 

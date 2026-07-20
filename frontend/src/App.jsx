@@ -14,7 +14,7 @@ import AggregatorView from './views/AggregatorView'
 import HistoricalView from './views/HistoricalView'
 
 const TITLES = {
-  layer1: ['Layer 1 — Market Context', '12 komponen makro, membaca data/layer1_context.json'],
+  layer1: ['Layer 1 — Market Context', '13 komponen makro, membaca data/layer1_context.json'],
   screening: ['Screening', 'Filter kandidat dari universe mentah — data/screening.json'],
   evidence: ['Evidence', 'Fakta terverifikasi per ticker (price, fundamental, ownership, news, SEC filings)'],
   knowledge: ['Knowledge', '7-section profile per ticker, hasil sintesis Evidence'],

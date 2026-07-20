@@ -1,21 +1,29 @@
 """02_LAYER1_SPECS/12_MARKET_SENTIMENT.md — kind=derived, satu-satunya
 composite Layer 1 (butuh minimal VIX + Market Breadth, dihitung terakhir).
 
-Memakai s.d. 4 input sentimen, SEMUA dari sumber resmi:
-  1. VIX          — dari komponen volatility_index (Yahoo Finance)
-  2. Market Breadth — dari komponen market_breadth (universe internal)
-  3. Put/Call     — input manual opsional (dashboard/data/sentiment_manual.json).
+Memakai s.d. 6 input sentimen, SEMUA dari sumber resmi:
+  1. VIX          — dari komponen volatility_index (Yahoo Finance), OTOMATIS
+  2. Market Breadth — dari komponen market_breadth (universe internal), OTOMATIS
+  3. CFTC COT     — positioning spekulan E-mini S&P 500 dari laporan CFTC
+                     Commitments of Traders (resmi, mingguan, gratis via Socrata).
+                     OTOMATIS — lihat sources/sentiment.fetch_cftc_spx().
+  4. FINRA short  — rasio short-volume pasar dari file harian FINRA Reg SHO
+                     (resmi, gratis). OTOMATIS — fetch_finra_short_volume().
+                     Proksi kasar (short volume termasuk hedging market-maker).
+  5. Put/Call     — input manual opsional (dashboard/data/sentiment_manual.json).
                      CBOE tidak punya API resmi gratis (403 saat dicoba).
                      Sumber otomatis via endpoint tidak resmi CNN Fear & Greed
-                     SENGAJA DIMATIKAN (lihat sources/sentiment.py) — proyek
-                     ini memilih hanya sumber resmi, walau berarti komponen
-                     lebih sering degraded.
-  4. AAII survey  — input manual opsional (dashboard/data/sentiment_manual.json),
+                     SENGAJA DIMATIKAN (lihat sources/sentiment.py).
+  6. AAII survey  — input manual opsional (dashboard/data/sentiment_manual.json),
                      karena AAII tidak punya API resmi gratis.
 
+Dengan CFTC + FINRA, 4 input OTOMATIS (vix, breadth, cftc, finra) sudah cukup
+untuk status `ok` TANPA input manual apa pun — put/call & AAII jadi pelengkap
+opsional (menuju 6/6), bukan syarat.
+
 status:
-  - `ok`       bila ≥3 dari 4 input tersedia (VIX+breadth+minimal 1 input manual)
-  - `degraded` bila hanya 1–2 input (default: cuma VIX+breadth, tanpa manual)
+  - `ok`       bila ≥3 dari 6 input tersedia
+  - `degraded` bila hanya 1–2 input
   - `missing`  bila tidak ada input sama sekali
 
 `status` menilai KELENGKAPAN DATA, bukan arah sinyal. Arah ada di `value.label`
@@ -29,10 +37,11 @@ from ..sources import sentiment as sentiment_src
 from ._util import ev, source, th
 
 NAME = "market_sentiment"
-METHOD_VERSION = "2.0.0"
+METHOD_VERSION = "3.0.0"
 
 VIX_SCORE_MAP = {"low": 75, "normal": 50, "high": 20}
-OK_MIN_INPUTS = 3  # ≥3 dari 4 input → status ok
+TOTAL_INPUTS = 6   # vix, market_breadth, cftc, finra, put_call, aaii
+OK_MIN_INPUTS = 3  # ≥3 dari 6 input → status ok
 
 
 def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) -> ComponentReading:
@@ -59,7 +68,27 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     else:
         missing_inputs.append("market_breadth")
 
-    # 3. Put/Call — HANYA input manual. Sumber otomatis CNN Fear & Greed
+    # 3. CFTC COT — positioning spekulan E-mini S&P 500 (OTOMATIS, resmi)
+    cftc = sentiment_src.fetch_cftc_spx()
+    if cftc:
+        available.append(("cftc", float(cftc["score_0_100"])))
+        evidence.append(ev("cftc_spx_net_long_pct", round(cftc["score_0_100"], 1), cftc.get("as_of") or now_iso()[:10],
+                           "CFTC Commitments of Traders (E-mini S&P 500)"))
+        sources_used.append(source("CFTC COT (Socrata)"))
+    else:
+        missing_inputs.append("cftc_cot")
+
+    # 4. FINRA short-volume ratio (OTOMATIS, resmi) — proksi, dibalik ke greed
+    finra = sentiment_src.fetch_finra_short_volume()
+    if finra:
+        available.append(("finra", float(finra["score_0_100"])))
+        evidence.append(ev("finra_short_volume_pct", round(finra.get("short_ratio_pct", 0.0), 1),
+                           finra.get("as_of") or now_iso()[:10], "FINRA Reg SHO daily short volume"))
+        sources_used.append(source("FINRA Reg SHO"))
+    else:
+        missing_inputs.append("finra_short_volume")
+
+    # 5. Put/Call — HANYA input manual. Sumber otomatis CNN Fear & Greed
     # (endpoint tidak resmi) sengaja dimatikan — lihat sources/sentiment.py
     # dan docstring modul ini.
     manual = sentiment_src.read_manual()
@@ -72,7 +101,7 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     else:
         missing_inputs.append("put_call_ratio")
 
-    # 4. AAII survey — hanya dari input manual
+    # 6. AAII survey — hanya dari input manual
     aaii = manual.get("aaii")
     if aaii:
         available.append(("aaii", float(aaii["score_0_100"])))
@@ -97,7 +126,7 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
 
     used_names = [n for n, _ in available]
     narrative = (
-        f"Signal: {label}. Skor sentimen {score:.0f}/100, dari {n} dari 4 input "
+        f"Signal: {label}. Skor sentimen {score:.0f}/100, dari {n} dari {TOTAL_INPUTS} input "
         f"({', '.join(used_names)}), dibobot rata."
     )
     if missing_inputs:
@@ -106,18 +135,22 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     note = None
     if missing_inputs:
         note = (f"Hilang: {', '.join(missing_inputs)}. put/call & AAII hanya lewat input manual "
-                "dashboard/data/sentiment_manual.json (tidak ada sumber otomatis resmi & gratis untuk keduanya).")
+                "dashboard/data/sentiment_manual.json (tidak ada sumber otomatis resmi & gratis untuk keduanya); "
+                "cftc & finra otomatis tapi best-effort (bisa hilang kalau jaringan/rilis belum tersedia).")
 
     rule = (
         "score = rata-rata tak berbobot dari input tersedia (skala 0-100, tinggi=greed) — "
         "vix: low→75/normal→50/high→20; breadth: %ticker di atas MA200; "
+        "cftc: long/(long+short)×100 spekulan E-mini S&P 500; "
+        "finra: short-volume dibalik (netral ~48%, proksi); "
         "put/call: skor manual (tinggi=greed); aaii: bull/(bull+bear)×100. "
-        f"score≥65→greed, ≤35→fear, selain itu→neutral. status=ok bila ≥{OK_MIN_INPUTS}/4 input tersedia."
+        f"score≥65→greed, ≤35→fear, selain itu→neutral. status=ok bila ≥{OK_MIN_INPUTS}/{TOTAL_INPUTS} input tersedia."
     )
 
     return ComponentReading(
         name=NAME,
-        value={"score_0_100": score, "label": label, "inputs_used": used_names},
+        value={"score_0_100": score, "label": label, "inputs_used": used_names,
+               "inputs_total": TOTAL_INPUTS},
         status=status,
         kind="derived",
         method_version=METHOD_VERSION,
@@ -125,7 +158,7 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
         sources=sources_used,
         note=note,
         narrative=narrative,
-        narrative_version="2.0.0",
+        narrative_version="3.0.0",
         evidence=evidence,
         rule=rule,
         thresholds=[

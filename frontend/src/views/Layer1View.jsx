@@ -115,7 +115,7 @@ export default function Layer1View() {
 
               <div className="l1a-chart">
                 {key === 'market_sentiment' ? (
-                  <InputBar used={m.inputsUsed ?? 1} total={4} color={chartColor} />
+                  <InputBar used={m.inputsUsed ?? 1} total={m.inputsTotal ?? 6} color={chartColor} />
                 ) : (
                   <Sparkline trend={m.trend} color={chartColor} seed={key} height={m.stats ? 36 : 52} />
                 )}

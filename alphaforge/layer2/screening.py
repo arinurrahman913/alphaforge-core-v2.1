@@ -5,6 +5,7 @@ Batching & delay antar request mengikuti 04_DATA_SOURCES/05_RATE_LIMIT_CACHING_S
 """
 from __future__ import annotations
 
+import json
 import os
 import time
 from datetime import datetime, timezone
@@ -12,7 +13,7 @@ from datetime import datetime, timezone
 import pandas as pd
 import yfinance as yf
 
-from ..cache import get as cache_get, set as cache_set
+from ..cache import CACHE_DIR, get as cache_get, set as cache_set
 from .contracts import ScreeningCandidate, ScreeningResult
 from .sources.listing import cheap_filter, fetch_universe
 
@@ -92,6 +93,49 @@ def fetch_price_history_batch(tickers: list[str]) -> dict[str, pd.DataFrame]:
             cache_set("price_history", t, to_cache.to_dict(orient="records"))
 
     return result
+
+
+def load_cached_price_cache(tickers: list[str] | set[str] | None = None) -> dict[str, pd.DataFrame]:
+    """Rekonstruksi price_cache dari file cache price_history yang SUDAH ADA,
+    tanpa panggilan jaringan sama sekali. Dipakai refresh cepat Layer 1
+    (refresh_layer1.py) supaya market_breadth/market_sentiment tetap terisi
+    dari data Screening terakhir tanpa harus menjalankan Screening penuh lagi.
+
+    `tickers` membatasi ke universe tertentu — WAJIB diisi dengan daftar
+    ticker yang LOLOS Screening terakhir (lihat refresh_layer1.py yang
+    membacanya dari screening.json) supaya breadth dihitung atas universe
+    yang PERSIS SAMA dengan run full pipeline harian (yang cuma memakai
+    kandidat passed). Tanpa filter ini, folder cache bisa berisi sisa ticker
+    dari run lama (mis. --screening-limit besar) sehingga angka breadth
+    melenceng dari run harian. `tickers=None` → pakai semua yang ada di cache
+    (fallback, mis. screening.json belum ada).
+
+    Sengaja mengabaikan TTL: data yang dipakai ulang boleh beberapa jam/hari
+    lebih tua — klasifikasi data_freshness di pipeline yang menandai fresh/
+    acceptable/stale secara jujur berdasarkan tanggal harga sebenarnya. Kalau
+    belum ada cache sama sekali (run pertama), return {} → breadth jadi
+    missing, sama seperti perilaku lama."""
+    out: dict[str, pd.DataFrame] = {}
+    d = CACHE_DIR / "price_history"
+    if not d.exists():
+        return out
+    allow = set(tickers) if tickers is not None else None
+    for p in d.glob("*.json"):
+        if allow is not None and p.stem not in allow:
+            continue
+        try:
+            payload = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        records = payload.get("data") if isinstance(payload, dict) else None
+        if not records:
+            continue
+        df = pd.DataFrame(records)
+        if df.empty or "__date__" not in df.columns:
+            continue
+        df.index = pd.to_datetime(df.pop("__date__"))
+        out[p.stem] = df
+    return out
 
 
 def fetch_fast_info(ticker: str) -> dict | None:

@@ -78,7 +78,7 @@ Dashboard menampilkan **snapshot** — angka hanya berubah saat kamu generate ul
 
 ### Cara termudah: tombol **Generate** di dashboard
 Di pojok kanan atas dashboard ada tombol **Generate ▾** dengan 2 pilihan:
-- **Refresh Layer 1** — cepat (~1 menit), update komponen makro (breadth/sentiment tidak ikut).
+- **Refresh Layer 1** — cepat (~1 menit), update komponen makro. `market_breadth`/`market_sentiment` ikut ter-refresh dengan **memakai ulang cache harga** hasil Screening terakhir (tanpa panggilan jaringan) — tetap `ok` selama full pipeline harian sudah pernah jalan.
 - **Full Pipeline** — semua stage (Layer 1 + Layer 2), lebih lama.
 
 Klik → tombol jadi "Generating… mm:ss" (jalan di background), dan dashboard **auto-reload** saat selesai. Backend (`python backend/app.py`) harus jalan. Tidak bisa dua refresh sekaligus.
@@ -89,7 +89,7 @@ Klik → tombol jadi "Generating… mm:ss" (jalan di background), dan dashboard 
 ```powershell
 python scripts/refresh_layer1.py
 ```
-Update 10/12 komponen makro. `market_breadth` & `market_sentiment` **tidak** ikut ter-update (butuh Screening).
+Update komponen makro. `market_breadth` & `market_sentiment` ikut terisi dengan **memakai ulang cache harga** dari Screening terakhir (`.cache/price_history/`, difilter ke ticker yang lolos Screening di `screening.json` — universe-nya sama persis dengan run harian, nol panggilan jaringan). Kalau cache masih kosong (belum pernah full pipeline), keduanya `missing`/`degraded` seperti sebelumnya sampai full pipeline pertama jalan.
 
 ### B. Layer 1 lengkap 11/12 (butuh Screening dulu, ~beberapa menit)
 ```powershell
@@ -153,20 +153,31 @@ Tiap kartu Layer 1 dibaca begini:
 ### 5.5 Membaca contoh nyata
 - `yield_curve +0.37pp · Normal` → spread 10Y–2Y positif, kurva normal (tidak inverted → sinyal resesi rendah).
 - `volatility_index 18.8 VIX · ▼ Di bawah avg 5th` → pasar relatif tenang.
-- `market_sentiment 58/100 · degraded` → 2/4 input tersedia (vix, breadth) — default, karena put/call & AAII cuma lewat input manual (lihat 5.7).
+- `market_sentiment 50/100 · ok` → biasanya 4 input otomatis tersedia (vix, breadth, cftc, finra); put/call & AAII opsional lewat input manual (lihat 5.7).
 
 ### 5.6 Screening (Layer 2)
 Ticker dikelompokkan per **tier market cap**: Mega (>$100B) → Large → Mid → Small → Micro (<$300M). Tiap tabel menampilkan jumlah + detail (harga, avg $volume, flags). **Klik baris** → detail per ticker. Bagian "Hard Excluded" = ticker yang gagal filter (mis. likuiditas terlalu rendah).
 
-### 5.7 Melengkapi market_sentiment (opsional — input manual)
-`market_sentiment` default cuma pakai 2 input resmi-otomatis (VIX + Market Breadth) → selalu `degraded`. Dua input lain, **put/call ratio** dan **AAII Investor Sentiment Survey**, sama-sama tidak punya API resmi gratis (CBOE membalas 403 kalau dicoba langsung; ada endpoint tidak resmi via CNN Fear & Greed tapi proyek ini memilih untuk **tidak memakainya** — hanya sumber resmi). Kalau mau melengkapi, isi manual:
+### 5.7 Input market_sentiment (6 input, 4 otomatis)
+`market_sentiment` memakai s.d. **6 input**, dan **4 di antaranya otomatis** dari sumber resmi — jadi status `ok` (≥3/6) tercapai **tanpa input manual apa pun**:
 
-1. **Put/call**: buka https://www.cboe.com/us/options/market_statistics/ (cari "Total Put/Call Ratio"), atau
-2. **AAII**: buka https://www.aaii.com/sentimentsurvey (dirilis tiap Kamis, gratis tanpa login)
-3. Salin `dashboard/data/sentiment_manual.json.example` → `dashboard/data/sentiment_manual.json`, isi salah satu atau keduanya
+| # | Input | Sumber | Cara |
+|---|---|---|---|
+| 1 | VIX | Yahoo (`^VIX`) | otomatis |
+| 2 | Market Breadth | universe Screening internal | otomatis (via cache) |
+| 3 | CFTC COT | positioning spekulan E-mini S&P 500, laporan Commitments of Traders (Socrata) | **otomatis, resmi, gratis** |
+| 4 | FINRA short-volume | rasio short-volume pasar dari file harian Reg SHO | **otomatis, resmi, gratis** (proksi — termasuk hedging market-maker) |
+| 5 | Put/Call | CBOE Total Put/Call Ratio | manual opsional |
+| 6 | AAII survey | AAII Investor Sentiment Survey | manual opsional |
+
+CFTC & FINRA best-effort (kalau jaringan/rilis belum tersedia → input itu hilang, sisanya tetap jalan). Put/call & AAII tidak punya API resmi gratis (CBOE 403; CNN Fear & Greed tidak resmi → sengaja tidak dipakai), jadi cuma lewat input manual **kalau mau menuju 6/6**:
+
+1. **Put/call**: https://www.cboe.com/us/options/market_statistics/ ("Total Put/Call Ratio")
+2. **AAII**: https://www.aaii.com/sentimentsurvey (rilis tiap Kamis, gratis tanpa login)
+3. Salin `dashboard/data/sentiment_manual.json.example` → `dashboard/data/sentiment_manual.json`, isi salah satu/keduanya
 4. Generate ulang Layer 1 (tombol Generate atau `python scripts/refresh_layer1.py`)
 
-Status jadi `ok` begitu total input (vix + breadth + manual yang terisi) mencapai ≥3/4. File `sentiment_manual.json` sudah di-gitignore (spesifik-mesin, tidak ter-commit). Data kadaluarsa (AAII >30 hari) otomatis diabaikan.
+File `sentiment_manual.json` sudah di-gitignore. Data AAII kadaluarsa (>30 hari) otomatis diabaikan.
 
 ---
 
@@ -186,7 +197,7 @@ Status jadi `ok` begitu total input (vix + breadth + manual yang terisi) mencapa
 
 - **REAL**: semua hero value, delta, mini-stats, narasi, skor → dari **FRED API** + **Yahoo Finance**, per waktu generate.
 - **DEKORATIF**: garis sparkline di kartu (mengikuti arah saja, bukan time-series 30-hari asli).
-- **Proksi** (tercatat di data): `business_cycle` pakai Industrial Production (bukan ISM PMI); `money_flow` proksi volume+harga; `market_breadth` universe Screening sendiri (bukan S&P 500); `market_sentiment` default degraded (2/4 input: cuma VIX+breadth) — put/call & AAII sengaja hanya lewat input manual, tidak ada sumber otomatis (§5.7), demi menghindari endpoint tidak resmi.
+- **Proksi** (tercatat di data): `business_cycle` pakai Industrial Production (bukan ISM PMI); `money_flow` proksi volume+harga; `market_breadth` universe Screening sendiri (bukan S&P 500); `market_sentiment` `ok` pada ≥3/6 input — 4 otomatis (VIX, breadth, CFTC COT, FINRA short-volume) + 2 manual opsional (put/call, AAII) (§5.7). **Catatan proksi FINRA**: short-volume konsolidasi termasuk hedging market-maker (bukan murni taruhan bearish), jadi kalibrasinya kasar & bisa di-tune di `alphaforge/layer1/sources/sentiment.py` (`FINRA_NEUTRAL_SHORT_PCT`, `FINRA_SLOPE`). Nilai put/call manual adalah snapshot sekali-isi — perbarui sesekali kalau ingin tetap aktual.
 - **Snapshot**, bukan live-stream — update hanya saat pipeline dijalankan ulang.
 
 ---
@@ -196,7 +207,7 @@ Status jadi `ok` begitu total input (vix + breadth + manual yang terisi) mencapa
 | Gejala | Solusi |
 |---|---|
 | Komponen FRED "missing" | File `.env` belum ada / key salah → `Copy-Item .env.example .env` lalu isi key, restart `python backend/app.py`. |
-| `market_breadth` missing | Jalankan refresh opsi B atau C (`--with-screening` / full pipeline). |
+| `market_breadth` missing | Cache harga masih kosong — jalankan full pipeline sekali (opsi C) untuk mengisinya. Setelah itu refresh cepat (opsi A) otomatis memakai ulang cache tsb. |
 | Dashboard kosong / error fetch | Pastikan backend (terminal 1) jalan di port 5000. |
 | Angka tidak berubah | Refresh data (bagian 4) lalu Ctrl+R di browser. |
 | Port bentrok | Ganti port backend: `$env:PORT="5001"` sebelum `python backend/app.py` (sesuaikan proxy di `frontend/vite.config.js`). |

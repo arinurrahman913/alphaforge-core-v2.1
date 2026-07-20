@@ -20,7 +20,7 @@ tinggi = greed / risk-on, rendah = fear.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -41,6 +41,108 @@ CACHE_NS = "sentiment"
 PUT_CALL_TTL = 12 * 3600
 MANUAL_PATH = Path(__file__).resolve().parents[3] / "dashboard" / "data" / "sentiment_manual.json"
 AAII_MAX_AGE_DAYS = 30
+
+# --- Sumber OTOMATIS resmi tambahan (CFTC + FINRA) -----------------------------
+# Beda dari CNN di atas: keduanya sumber pemerintah/regulator resmi dengan data
+# publik gratis tanpa API key, jadi AKTIF DIPANGGIL dari market_sentiment.py
+# (sejalan prinsip "hanya sumber resmi"). Hasilnya di-cache (bukan file mentah,
+# cuma skor kecil) supaya tidak nembak jaringan tiap refresh.
+CFTC_URL = "https://publicreporting.cftc.gov/resource/6dca-aqww.json"  # Legacy COT, futures-only
+CFTC_TTL = 12 * 3600            # rilis mingguan (Jumat), 12 jam lebih dari cukup
+FINRA_SHORT_URL = "https://cdn.finra.org/equity/regsho/daily/CNMSshvol{date}.txt"
+FINRA_TTL = 12 * 3600          # file harian
+# Kalibrasi FINRA short-volume → skala greed (tinggi=greed). Short volume
+# konsolidasi mencakup hedging market-maker (bukan murni taruhan bearish), jadi
+# ini PROKSI kasar: netral di ~48% short, tiap 1pp geser skor 2.5 poin. Konstanta
+# gampang di-tune di sini kalau mau.
+FINRA_NEUTRAL_SHORT_PCT = 48.0
+FINRA_SLOPE = 2.5
+
+
+def _clamp(x: float, lo: float = 0.0, hi: float = 100.0) -> float:
+    return max(lo, min(hi, x))
+
+
+def fetch_cftc_spx() -> dict | None:
+    """Positioning spekulan (noncommercial) di futures E-mini S&P 500 dari
+    laporan CFTC Commitments of Traders (resmi, mingguan, gratis via Socrata).
+
+    Skor 0-100 = long / (long + short) × 100 — analog dengan konvensi AAII
+    bull/(bull+bear): >50 spekulan net long (greed), <50 net short (fear).
+    Return {'score_0_100', 'as_of', 'long', 'short'} atau None (best-effort,
+    cached 12 jam)."""
+    cached = cache.get(CACHE_NS, "cftc_spx", CFTC_TTL)
+    if cached is not None:
+        return cached
+    params = {
+        "$where": "market_and_exchange_names like '%E-MINI S&P 500%' "
+                  "AND market_and_exchange_names not like '%MICRO%'",
+        "$order": "report_date_as_yyyy_mm_dd DESC",
+        "$limit": "1",
+    }
+    try:
+        r = requests.get(CFTC_URL, params=params, headers=CNN_HEADERS, timeout=15)
+        r.raise_for_status()
+        rows = r.json()
+        if not rows:
+            return None
+        row = rows[0]
+        long_ = int(row["noncomm_positions_long_all"])
+        short = int(row["noncomm_positions_short_all"])
+        if long_ + short <= 0:
+            return None
+        data = {
+            "score_0_100": long_ / (long_ + short) * 100.0,
+            "as_of": str(row["report_date_as_yyyy_mm_dd"])[:10],
+            "long": long_,
+            "short": short,
+        }
+    except Exception:
+        return None
+    cache.set(CACHE_NS, "cftc_spx", data)
+    return data
+
+
+def fetch_finra_short_volume() -> dict | None:
+    """Rasio short-volume pasar (seluruh saham NMS) dari file harian FINRA
+    Reg SHO (resmi, gratis). Short volume tinggi → bearish, jadi DIBALIK ke
+    skala greed. Ini PROKSI kasar (lihat catatan kalibrasi di atas).
+
+    Return {'score_0_100', 'as_of', 'short_ratio_pct'} atau None. Coba beberapa
+    hari bursa terakhir mundur (file belum tentu ada utk hari ini/akhir pekan).
+    Best-effort, cached 12 jam."""
+    cached = cache.get(CACHE_NS, "finra_short", FINRA_TTL)
+    if cached is not None:
+        return cached
+    today = datetime.now(timezone.utc).date()
+    for back in range(0, 6):
+        d = today - timedelta(days=back)
+        url = FINRA_SHORT_URL.format(date=d.strftime("%Y%m%d"))
+        try:
+            r = requests.get(url, headers=CNN_HEADERS, timeout=15)
+        except Exception:
+            continue
+        if r.status_code != 200 or len(r.content) < 200:
+            continue
+        tot_short = 0.0
+        tot_vol = 0.0
+        for line in r.text.splitlines()[1:]:  # skip header
+            parts = line.split("|")
+            if len(parts) < 5:
+                continue
+            try:
+                tot_short += float(parts[2])
+                tot_vol += float(parts[4])
+            except ValueError:
+                continue
+        if tot_vol <= 0:
+            continue
+        short_ratio = tot_short / tot_vol * 100.0
+        score = _clamp(50.0 + (FINRA_NEUTRAL_SHORT_PCT - short_ratio) * FINRA_SLOPE)
+        data = {"score_0_100": score, "as_of": d.strftime("%Y-%m-%d"), "short_ratio_pct": short_ratio}
+        cache.set(CACHE_NS, "finra_short", data)
+        return data
+    return None
 
 
 def fetch_put_call() -> dict | None:

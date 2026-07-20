@@ -168,9 +168,10 @@ export function describeComponent(key, c) {
         delta: { text: cap(v.label), dir: 'flat' },
         stats: [
           { l: 'Signal', v: cap(v.label) },
-          { l: 'Input', v: `${(v.inputs_used || []).length}/4` },
+          { l: 'Input', v: `${(v.inputs_used || []).length}/${v.inputs_total || 6}` },
         ],
         inputsUsed: (v.inputs_used || []).length,
+        inputsTotal: v.inputs_total || 6,
         trend: 'flat',
         accent,
       }

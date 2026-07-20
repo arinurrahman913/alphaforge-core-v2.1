@@ -59,7 +59,7 @@ referensi visual untuk halaman yang belum ada datanya (Daftar Lensa, Layer 2).
 | Business Cycle Stage | FRED (GDP QoQ, UNRATE, INDPRO sbg proksi PMI — lihat catatan di modul) | Jalan (butuh `FRED_API_KEY`) |
 | Money Flow | Yahoo (volume+price proxy 11 sector ETF) | Jalan |
 | Market Breadth | Cache harga universe Screening | **`status=missing`** — Screening belum diimplementasikan |
-| Market Sentiment | VIX + Market Breadth + AAII + put/call | **Selalu `status=degraded`** — AAII survey & CBOE put/call belum diintegrasikan (tidak ada API resmi gratis, butuh scraping yang belum diverifikasi) |
+| Market Sentiment | VIX + Market Breadth + CFTC COT + FINRA short-volume + put/call + AAII | Jalan — `ok` pada ≥3/6 input; 4 otomatis resmi (VIX, breadth, CFTC, FINRA), put/call & AAII opsional manual |
 
 ## Layer 2 — Stock Analysis Engine
 
@@ -215,7 +215,7 @@ http://localhost:8765/peer-live.html
 ### Layer 1
 - **11/12 komponen**: live (yield curve, VIX, DXY, commodities, regime, sector rotation, liquidity, macro calendar, business cycle, money flow, market breadth)
 - `FRED_API_KEY` diperlukan untuk 4 komponen FRED
-- `market_sentiment`: degraded (AAII survey & CBOE put/call belum integrated)
+- `market_sentiment`: `ok` — 4 input otomatis resmi (VIX, breadth, CFTC COT, FINRA short-volume); put/call & AAII opsional lewat input manual
 
 ### Layer 2 — Stock Analysis Engine (Complete ✅)
 

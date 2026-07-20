@@ -106,11 +106,13 @@ class LayerScore:
     contributions: list[ScoreContribution]
     excluded: list[str]
     reasoning: str
+    band_label: str = ""  # label regime dari final_score: Risk-Off/Neutral/Neutral Positive/Risk-On
 
     def to_dict(self) -> dict:
         return {
             "final_score": self.final_score,
             "formula_version": self.formula_version,
+            "band_label": self.band_label,
             "contributions": [asdict(c) for c in self.contributions],
             "excluded": self.excluded,
             "reasoning": self.reasoning,
@@ -123,12 +125,14 @@ class ContextSummary:
     narrative: str
     confidence: Confidence
     components_degraded: list[str]
+    executive_summary: str = ""  # 1-2 kalimat "so what" — jawaban tindakan, bukan deskripsi status
     kind: Kind = "derived"
 
     def to_dict(self) -> dict:
         return {
             "kind": self.kind,
             "method_version": self.method_version,
+            "executive_summary": self.executive_summary,
             "narrative": self.narrative,
             "confidence": asdict(self.confidence),
             "components_degraded": self.components_degraded,

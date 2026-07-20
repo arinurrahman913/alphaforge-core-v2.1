@@ -22,6 +22,7 @@ export default function StatCards({ stats }) {
           )}
           <div className="stat-label">{s.label}</div>
           <div className={`stat-value${s.tone ? ' ' + s.tone : ''}`}>{s.value}</div>
+          {s.sub && <div className="stat-sub">{s.sub}</div>}
           {s.onClick && <div className="stat-hint">Lihat perhitungan ›</div>}
         </div>
       ))}

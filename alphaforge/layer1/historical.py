@@ -39,18 +39,36 @@ def load_history(path: str | Path) -> list[dict]:
         return []
 
 
+def _driver_drag(pkg: "MarketContextPackage") -> tuple[dict | None, dict | None]:
+    """Kontributor yang paling menarik skor ke atas (driver) & ke bawah (drag),
+    memakai (score-50)×weight — konsisten dengan _build_executive_summary.
+    Disimpan per-hari supaya tooltip tren bisa jelaskan 'kenapa' tiap titik."""
+    contribs = pkg.layer_score.contributions if pkg.layer_score else []
+    if not contribs:
+        return None, None
+    driver = max(contribs, key=lambda c: (c.score - 50.0) * c.weight)
+    drag = min(contribs, key=lambda c: (c.score - 50.0) * c.weight)
+    d = {"component": driver.component, "score": round(driver.score, 1)} if (driver.score - 50.0) > 2.0 else None
+    g = {"component": drag.component, "score": round(drag.score, 1)} if (drag.score - 50.0) < -2.0 else None
+    return d, g
+
+
 def _entry_from_package(pkg: "MarketContextPackage") -> dict | None:
     if not pkg.layer_score:
         return None
     n_ok = sum(1 for c in pkg.components.values() if c.status == "ok")
+    top_driver, top_drag = _driver_drag(pkg)
     return {
         "date": pkg.generated_at[:10],  # YYYY-MM-DD, UTC (generated_at pakai now_iso() = UTC)
         "generated_at": pkg.generated_at,
         "final_score": pkg.layer_score.final_score,
         "formula_version": pkg.layer_score.formula_version,
+        "band_label": pkg.layer_score.band_label,
         "n_ok": n_ok,
         "n_total": len(pkg.components),
         "confidence_score": round(pkg.context_summary.confidence.score, 1) if pkg.context_summary else None,
+        "top_driver": top_driver,
+        "top_drag": top_drag,
     }
 
 

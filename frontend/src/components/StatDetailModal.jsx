@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ratingClass } from '../format'
+import { ratingClass, prettyLabel } from '../format'
 
 // Modal transparansi untuk stat tiles Layer 1: menjelaskan alasan + perhitungan
 // tiap angka (Layer Score, Confidence, Komponen, OK, Degraded).
@@ -19,7 +19,7 @@ export default function StatDetailModal({ which, data, onClose }) {
   const comps = Object.entries(data.components || {})
 
   const TITLES = {
-    score: `Layer Score — ${ls ? ls.final_score.toFixed(0) : '—'}`,
+    score: `Layer Score — ${ls ? ls.final_score.toFixed(0) : '—'}${ls?.band_label ? ` · ${ls.band_label}` : ''}`,
     confidence: `Confidence — ${conf?.score != null ? conf.score.toFixed(0) : '—'}%`,
     components: `Komponen — ${comps.length}`,
     ok: `Komponen OK — ${comps.filter(([, c]) => c.status === 'ok').length}`,
@@ -86,7 +86,7 @@ function ScoreDetail({ ls }) {
             <tbody>
               {rows.map((c) => (
                 <tr key={c.component} style={{ cursor: 'default' }}>
-                  <td className="ticker">{c.component}</td>
+                  <td className="ticker">{prettyLabel(c.component)}</td>
                   <td>{c.score.toFixed(0)}</td>
                   <td>{(c.weight * 100).toFixed(0)}%</td>
                   <td style={{ color: 'var(--gold-hi)', fontFamily: 'var(--mono)' }}>{c.weighted.toFixed(2)}</td>
@@ -108,7 +108,7 @@ function ScoreDetail({ ls }) {
           <div className="msection-title">Dikecualikan</div>
           {ls.excluded.map((e) => (
             <div className="flag medium" key={e}>
-              {e} — status degraded/missing, tidak diikutkan agar tidak menurunkan skor secara keliru. Bobotnya
+              {prettyLabel(e)} — status degraded/missing, tidak diikutkan agar tidak menurunkan skor secara keliru. Bobotnya
               dinormalisasi ulang ke komponen lain.
             </div>
           ))}
@@ -190,7 +190,7 @@ function ComponentsDetail({ comps, filter }) {
           <tbody>
             {rows.map(([key, c]) => (
               <tr key={key} style={{ cursor: 'default' }}>
-                <td className="ticker">{c.name || key}</td>
+                <td className="ticker">{prettyLabel(c.name || key)}</td>
                 <td>
                   <span className={`pill ${ratingClass(c.status)}`}>{c.status}</span>
                 </td>
@@ -204,7 +204,7 @@ function ComponentsDetail({ comps, filter }) {
       {filter === 'degraded' &&
         rows.map(([key, c]) => (
           <p className="narrative" key={`n-${key}`} style={{ fontSize: 12.5, marginTop: 10, opacity: 0.85 }}>
-            <b>{c.name || key}:</b> {c.note || c.narrative || 'Tidak ada catatan.'}
+            <b>{prettyLabel(c.name || key)}:</b> {c.note || c.narrative || 'Tidak ada catatan.'}
           </p>
         ))}
     </div>

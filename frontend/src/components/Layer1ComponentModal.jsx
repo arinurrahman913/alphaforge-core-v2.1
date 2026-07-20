@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ratingClass } from '../format'
+import { ratingClass, prettyLabel } from '../format'
 
 const FRESHNESS_TONE = { fresh: 'ok', acceptable: 'warn', stale: 'bad' }
 
@@ -20,7 +20,7 @@ export default function Layer1ComponentModal({ component, onClose }) {
       <div className="modal-box">
         <div className="modal-head">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <h2>{c.name}</h2>
+            <h2>{prettyLabel(c.name)}</h2>
             <span className={`pill ${ratingClass(c.status)}`}>{c.status}</span>
           </div>
           <button className="x" onClick={onClose}>
@@ -102,7 +102,7 @@ export default function Layer1ComponentModal({ component, onClose }) {
                   <tbody>
                     {c.evidence.map((e, i) => (
                       <tr key={i} style={{ cursor: 'default' }}>
-                        <td className="ticker">{e.field}</td>
+                        <td className="ticker">{prettyLabel(e.field)}</td>
                         <td>{String(e.value)}</td>
                         <td>{e.as_of}</td>
                         <td style={{ whiteSpace: 'normal' }}>{e.source}</td>

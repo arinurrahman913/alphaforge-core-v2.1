@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
-import VBarChart from '../components/VBarChart'
+import ContributionChart from '../components/ContributionChart'
 import Layer1ScoreTrend from '../components/Layer1ScoreTrend'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
 import StatDetailModal from '../components/StatDetailModal'
@@ -26,32 +26,14 @@ export default function Layer1View() {
   const layerScore = data.layer_score
 
   const stats = [
-    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—', icon: 'gauge', accent: '#e8b84b', onClick: () => setStatDetail('score') },
+    { label: 'Layer Score', value: layerScore ? layerScore.final_score.toFixed(0) : '—', sub: layerScore?.band_label || null, icon: 'gauge', accent: '#e8b84b', onClick: () => setStatDetail('score') },
     { label: 'Komponen', value: entries.length, icon: 'layers', accent: '#818CF8', onClick: () => setStatDetail('components') },
     { label: 'OK', value: ok, tone: 'good', icon: 'check', accent: '#4ADE80', onClick: () => setStatDetail('ok') },
     { label: 'Degraded', value: deg, tone: deg ? 'warn' : undefined, icon: 'alert', accent: '#FBBF7A', onClick: () => setStatDetail('degraded') },
     { label: 'Confidence', value: `${data.context_summary?.confidence?.score?.toFixed(0) ?? '—'}%`, icon: 'shield', accent: '#22D3EE', onClick: () => setStatDetail('confidence') },
   ]
 
-  const SHORT_LABEL = {
-    yield_curve: 'yield',
-    business_cycle_stage: 'cycle',
-    market_regime: 'regime',
-    liquidity_conditions: 'liquidity',
-    market_breadth: 'breadth',
-    volatility_index: 'vix',
-    commodity_signals: 'commodity',
-    sector_rotation: 'sector',
-    money_flow: 'flow',
-    currency_dxy: 'dxy',
-    macro_calendar: 'calendar',
-  }
-  const contribChart = layerScore
-    ? [...layerScore.contributions]
-        .sort((a, b) => b.weighted - a.weighted)
-        .map((c) => ({ label: SHORT_LABEL[c.component] || c.component, full: c.component, count: Math.round(c.weighted * 10) / 10 }))
-    : []
-
+  const statusByComponent = Object.fromEntries(entries.map(([k, c]) => [k, c.status]))
   const reasons = data.context_summary?.confidence?.reasons || []
 
   return (
@@ -60,15 +42,18 @@ export default function Layer1View() {
 
       <Layer1ScoreTrend history={Array.isArray(history) ? history : []} />
 
-      {layerScore && contribChart.length > 0 && (
+      {layerScore && layerScore.contributions?.length > 0 && (
         <div className="chart-row">
-          <VBarChart title={`Kontribusi ke Layer Score (${layerScore.reasoning})`} data={contribChart} />
+          <ContributionChart contributions={layerScore.contributions} statusByComponent={statusByComponent} />
         </div>
       )}
 
       {data.context_summary && (
         <div className="l1-card l1-summary">
           <div className="l1-name">Ringkasan</div>
+          {data.context_summary.executive_summary && (
+            <p className="l1-exec">{data.context_summary.executive_summary}</p>
+          )}
           <div className="narrative">{data.context_summary.narrative}</div>
           {reasons.length > 0 && (
             <ul style={{ marginTop: 10, paddingLeft: 18 }}>

@@ -202,6 +202,73 @@ def _detect_conflicts(components: dict[str, ComponentReading]) -> list[str]:
     return conflicts_found
 
 
+# Label komponen versi manusia (Bahasa Indonesia) untuk narasi executive summary.
+# Enum/label teknis tetap Inggris; prosa naratif ikut gaya komponen lain (ID).
+COMPONENT_LABEL_ID = {
+    "yield_curve": "Yield curve",
+    "business_cycle_stage": "Siklus bisnis",
+    "market_regime": "Regime pasar",
+    "liquidity_conditions": "Likuiditas",
+    "market_breadth": "Breadth pasar",
+    "volatility_index": "Volatilitas (VIX)",
+    "commodity_signals": "Komoditas",
+    "sector_rotation": "Rotasi sektor",
+    "money_flow": "Money flow",
+    "currency_dxy": "Dolar (DXY)",
+    "macro_calendar": "Kalender makro",
+    "market_sentiment": "Sentimen pasar",
+    "credit_spread": "Credit spread",
+}
+
+
+def _score_band_label(score: float) -> str:
+    """Regime dari Layer Score final (0-100), selaras 4 zona background tren.
+    <35 Risk-Off; 35-50 Neutral; 50-65 Neutral Positive; >65 Risk-On."""
+    if score < 35:
+        return "Risk-Off"
+    if score < 50:
+        return "Neutral"
+    if score <= 65:
+        return "Neutral Positive"
+    return "Risk-On"
+
+
+def _build_executive_summary(layer_score: LayerScore, components: dict[str, ComponentReading]) -> str:
+    """Satu-dua kalimat menjawab 'so what' untuk screening — dirakit dari
+    band regime + kontributor terkuat (driver) & terlemah (drag). Bukan
+    sekadar mendeskripsikan status, tapi menyimpulkan implikasi tindakan."""
+    band = layer_score.band_label
+    implication = {
+        "Risk-On": "kondisi mendukung screening lebih agresif.",
+        "Neutral Positive": "screening tetap selektif sambil menunggu konfirmasi arah.",
+        "Neutral": "screening sebaiknya tetap selektif.",
+        "Risk-Off": "screening defensif dan sangat selektif.",
+    }.get(band, "screening tetap selektif.")
+
+    contribs = layer_score.contributions
+    if not contribs:
+        return f"Market {band} — {implication}"
+
+    # driver = kontribusi paling menarik skor ke atas (score>50), drag = paling menekan ke bawah.
+    driver = max(contribs, key=lambda c: (c.score - 50.0) * c.weight)
+    drag = min(contribs, key=lambda c: (c.score - 50.0) * c.weight)
+    driver_name = COMPONENT_LABEL_ID.get(driver.component, driver.component)
+    drag_name = COMPONENT_LABEL_ID.get(drag.component, drag.component)
+
+    clauses = [f"Market {band}."]
+    has_driver = (driver.score - 50.0) > 2.0
+    has_drag = (drag.score - 50.0) < -2.0
+    if has_driver and has_drag:
+        clauses.append(f"{driver_name} jadi pendorong utama namun {drag_name} masih menahan, sehingga {implication}")
+    elif has_driver:
+        clauses.append(f"{driver_name} jadi pendorong utama, sehingga {implication}")
+    elif has_drag:
+        clauses.append(f"{drag_name} masih menekan kondisi, sehingga {implication}")
+    else:
+        clauses.append(f"Sinyal antar-komponen relatif seimbang, sehingga {implication}")
+    return " ".join(clauses)
+
+
 def _build_layer_score(components: dict[str, ComponentReading]) -> LayerScore:
     included = []
     excluded = []
@@ -233,16 +300,18 @@ def _build_layer_score(components: dict[str, ComponentReading]) -> LayerScore:
     else:
         reasoning = f"Rata-rata tertimbang dari semua {len(included)} komponen, semua berstatus ok."
 
+    final_rounded = round(final_score, 1)
     return LayerScore(
-        final_score=round(final_score, 1),
+        final_score=final_rounded,
         formula_version=LAYER_SCORE_METHOD_VERSION,
         contributions=contributions,
         excluded=excluded,
         reasoning=reasoning,
+        band_label=_score_band_label(final_rounded),
     )
 
 
-def _build_context_summary(components: dict, conflicts_found: list[str]) -> ContextSummary:
+def _build_context_summary(components: dict, conflicts_found: list[str], layer_score: LayerScore | None = None) -> ContextSummary:
     degraded = [name for name, r in components.items() if r.status in ("degraded", "missing")]
     n_ok = len(components) - len(degraded)
     # Confidence: komponen degraded (punya data parsial) dapat kredit separuh,
@@ -294,11 +363,14 @@ def _build_context_summary(components: dict, conflicts_found: list[str]) -> Cont
         reasons.append("Tidak ada konflik antar-indikator terdeteksi")
     reasons.append("Evidence lengkap untuk semua komponen berstatus ok" if n_ok else "Evidence terbatas — sebagian besar komponen tidak aktif")
 
+    executive_summary = _build_executive_summary(layer_score, components) if layer_score else ""
+
     return ContextSummary(
         method_version=CONTEXT_SUMMARY_METHOD_VERSION,
         narrative=narrative,
         confidence=Confidence(score=(n_ok + 0.5 * n_degraded_only) / len(components) * 100.0, band=band, limiters=degraded, reasons=reasons),
         components_degraded=degraded,
+        executive_summary=executive_summary,
     )
 
 
@@ -347,7 +419,7 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
 
     conflicts_found = _detect_conflicts(components)
     layer_score = _build_layer_score(components)
-    context_summary = _build_context_summary(components, conflicts_found)
+    context_summary = _build_context_summary(components, conflicts_found, layer_score)
 
     return MarketContextPackage(
         session_id=session_id,

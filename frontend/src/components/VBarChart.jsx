@@ -21,15 +21,12 @@ export default function VBarChart({ title, data }) {
           const chi = rampHi(t)
           const h = (d.count / max) * MAX_BAR_PX
           return (
-            <div className="vbar" key={d.label} title={`${d.full || d.label}: ${d.count}`}>
+            <div className="vbar" key={d.label} title={`${d.full || d.label}: ${d.count}`} style={{ '--bc': c, '--bc2': chi }}>
               <div className="vbar-area">
-                <div className="vbar-bub" style={{ background: `radial-gradient(circle at 35% 30%, ${chi}, ${c})` }}>
+                <div className="vbar-bub" style={{ '--vi': i }}>
                   {d.count}
                 </div>
-                <div
-                  className="vbar-pil"
-                  style={{ height: `${h}px`, background: `linear-gradient(180deg, ${chi}, ${c})`, '--vi': i }}
-                />
+                <div className="vbar-pil" style={{ height: `${h}px`, '--vi': i }} />
               </div>
               <div className="vbar-lab">{d.label}</div>
             </div>

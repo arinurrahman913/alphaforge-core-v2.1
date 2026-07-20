@@ -1,7 +1,7 @@
 {
   "evidence_count": 46,
   "knowledge_generated": 46,
-  "generated_at": "2026-07-19T12:59:43.307612+00:00",
+  "generated_at": "2026-07-20T09:24:48.461886+00:00",
   "profiles": [
     {
       "ticker": "AAL",
@@ -104,7 +104,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:43.307612+00:00",
+        "evidence_date": "2026-07-20T09:24:48.461886+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -216,7 +216,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:44.231362+00:00",
+        "evidence_date": "2026-07-20T09:24:51.060322+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -303,7 +303,7 @@
         "return_1y": 42.19620254273809,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.954594038097344,
+        "volatility_daily": 3.954593845152555,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -328,7 +328,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:45.326955+00:00",
+        "evidence_date": "2026-07-20T09:24:53.625891+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -415,7 +415,7 @@
         "return_1y": 58.66276325419365,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5392008062628175,
+        "volatility_daily": 1.5392005841911052,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -440,7 +440,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:46.371509+00:00",
+        "evidence_date": "2026-07-20T09:24:56.733508+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -552,7 +552,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:47.043904+00:00",
+        "evidence_date": "2026-07-20T09:24:58.584681+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -664,7 +664,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:47.785483+00:00",
+        "evidence_date": "2026-07-20T09:25:00.708408+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -776,7 +776,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:48.440687+00:00",
+        "evidence_date": "2026-07-20T09:25:02.510535+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -888,7 +888,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:49.974206+00:00",
+        "evidence_date": "2026-07-20T09:25:04.466959+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1000,7 +1000,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:50.710150+00:00",
+        "evidence_date": "2026-07-20T09:25:07.696707+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1112,7 +1112,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:51.415538+00:00",
+        "evidence_date": "2026-07-20T09:25:09.714667+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1224,7 +1224,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:52.037867+00:00",
+        "evidence_date": "2026-07-20T09:25:11.524141+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1336,7 +1336,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:52.948700+00:00",
+        "evidence_date": "2026-07-20T09:25:13.548171+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -1448,7 +1448,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:54.105967+00:00",
+        "evidence_date": "2026-07-20T09:25:15.878651+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1561,7 +1561,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:54.838972+00:00",
+        "evidence_date": "2026-07-20T09:25:18.293549+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1673,7 +1673,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:55.569239+00:00",
+        "evidence_date": "2026-07-20T09:25:20.574949+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1785,7 +1785,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:56.285502+00:00",
+        "evidence_date": "2026-07-20T09:25:22.966068+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1897,7 +1897,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:56.925950+00:00",
+        "evidence_date": "2026-07-20T09:25:25.215494+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2010,7 +2010,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:57.908635+00:00",
+        "evidence_date": "2026-07-20T09:25:27.641172+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2122,7 +2122,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:58.775736+00:00",
+        "evidence_date": "2026-07-20T09:25:30.924704+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2234,7 +2234,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T12:59:59.709535+00:00",
+        "evidence_date": "2026-07-20T09:25:34.109039+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2346,7 +2346,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:00.544107+00:00",
+        "evidence_date": "2026-07-20T09:25:36.606499+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2458,7 +2458,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:01.460416+00:00",
+        "evidence_date": "2026-07-20T09:25:39.426991+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2571,7 +2571,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:02.383918+00:00",
+        "evidence_date": "2026-07-20T09:25:41.759904+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -2683,7 +2683,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:03.457662+00:00",
+        "evidence_date": "2026-07-20T09:25:44.248210+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2795,7 +2795,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:04.802990+00:00",
+        "evidence_date": "2026-07-20T09:25:46.774617+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2907,7 +2907,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:05.574478+00:00",
+        "evidence_date": "2026-07-20T09:25:49.159785+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2994,7 +2994,7 @@
         "return_1y": 46.184424084325066,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5460748812530916,
+        "volatility_daily": 1.5460741620192997,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3019,7 +3019,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:06.820702+00:00",
+        "evidence_date": "2026-07-20T09:25:52.255378+00:00",
         "method_version": "1.1",
         "fields_completed": 6,
         "fields_expected": 50,
@@ -3131,7 +3131,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:08.026602+00:00",
+        "evidence_date": "2026-07-20T09:25:54.880170+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3244,7 +3244,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:08.719055+00:00",
+        "evidence_date": "2026-07-20T09:25:57.373263+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3356,7 +3356,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:09.425420+00:00",
+        "evidence_date": "2026-07-20T09:25:59.709042+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3469,7 +3469,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:10.405957+00:00",
+        "evidence_date": "2026-07-20T09:26:01.587963+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3581,7 +3581,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:11.120849+00:00",
+        "evidence_date": "2026-07-20T09:26:03.695910+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -3693,7 +3693,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:11.936849+00:00",
+        "evidence_date": "2026-07-20T09:26:06.045318+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3806,7 +3806,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:12.508764+00:00",
+        "evidence_date": "2026-07-20T09:26:08.209005+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -3918,7 +3918,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:13.175912+00:00",
+        "evidence_date": "2026-07-20T09:26:10.257144+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4002,10 +4002,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 52.51912479706553,
+        "return_1y": 52.51913714921166,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.048795029928305,
+        "volatility_daily": 2.048795188306253,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4030,7 +4030,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:14.249827+00:00",
+        "evidence_date": "2026-07-20T09:26:13.258563+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -4142,7 +4142,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:15.222926+00:00",
+        "evidence_date": "2026-07-20T09:26:16.212822+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4229,7 +4229,7 @@
         "return_1y": 85.75902682495276,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.010402375969728,
+        "volatility_daily": 4.010401869538544,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4254,7 +4254,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:16.047886+00:00",
+        "evidence_date": "2026-07-20T09:26:18.662490+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4366,7 +4366,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:17.223307+00:00",
+        "evidence_date": "2026-07-20T09:26:19.505034+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4478,7 +4478,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:19.385771+00:00",
+        "evidence_date": "2026-07-20T09:26:20.189990+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4562,10 +4562,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -13.0640782733143,
+        "return_1y": -13.064087308742941,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.624265080727891,
+        "volatility_daily": 1.6242648381638563,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -4590,7 +4590,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:21.675631+00:00",
+        "evidence_date": "2026-07-20T09:26:21.170470+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4702,7 +4702,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:22.940332+00:00",
+        "evidence_date": "2026-07-20T09:26:21.777887+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4814,7 +4814,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:24.048073+00:00",
+        "evidence_date": "2026-07-20T09:26:22.572410+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4926,7 +4926,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:25.035496+00:00",
+        "evidence_date": "2026-07-20T09:26:23.455486+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5038,7 +5038,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:25.850464+00:00",
+        "evidence_date": "2026-07-20T09:26:24.020591+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5150,7 +5150,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-19T13:00:26.903960+00:00",
+        "evidence_date": "2026-07-20T09:26:24.645578+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,

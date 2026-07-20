@@ -1,7 +1,7 @@
 {
   "knowledge_count": 46,
   "peer_comparisons_generated": 46,
-  "generated_at": "2026-07-19T13:00:26.932167+00:00",
+  "generated_at": "2026-07-20T09:26:24.678540+00:00",
   "comparisons": [
     {
       "ticker": "AAL",
@@ -19,7 +19,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932167+00:00",
+      "generated_at": "2026-07-20T09:26:24.678540+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -127,7 +127,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932324+00:00",
+      "generated_at": "2026-07-20T09:26:24.678718+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -238,7 +238,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932413+00:00",
+      "generated_at": "2026-07-20T09:26:24.678808+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -355,7 +355,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932516+00:00",
+      "generated_at": "2026-07-20T09:26:24.678912+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -482,7 +482,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932658+00:00",
+      "generated_at": "2026-07-20T09:26:24.679068+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -593,7 +593,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932737+00:00",
+      "generated_at": "2026-07-20T09:26:24.679145+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -720,7 +720,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932855+00:00",
+      "generated_at": "2026-07-20T09:26:24.679266+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -847,7 +847,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.932971+00:00",
+      "generated_at": "2026-07-20T09:26:24.679387+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -999,7 +999,7 @@
         "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933220+00:00",
+      "generated_at": "2026-07-20T09:26:24.679640+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1126,7 +1126,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933333+00:00",
+      "generated_at": "2026-07-20T09:26:24.679754+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1253,7 +1253,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933447+00:00",
+      "generated_at": "2026-07-20T09:26:24.679871+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1364,7 +1364,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933516+00:00",
+      "generated_at": "2026-07-20T09:26:24.679942+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1491,7 +1491,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933634+00:00",
+      "generated_at": "2026-07-20T09:26:24.680060+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1618,7 +1618,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933750+00:00",
+      "generated_at": "2026-07-20T09:26:24.680176+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1745,7 +1745,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933869+00:00",
+      "generated_at": "2026-07-20T09:26:24.680294+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -1872,7 +1872,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.933982+00:00",
+      "generated_at": "2026-07-20T09:26:24.685393+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2024,7 +2024,7 @@
         "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934209+00:00",
+      "generated_at": "2026-07-20T09:26:24.685956+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2151,7 +2151,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934322+00:00",
+      "generated_at": "2026-07-20T09:26:24.686084+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2262,7 +2262,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934394+00:00",
+      "generated_at": "2026-07-20T09:26:24.686161+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2389,7 +2389,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934506+00:00",
+      "generated_at": "2026-07-20T09:26:24.686296+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2516,7 +2516,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934615+00:00",
+      "generated_at": "2026-07-20T09:26:24.686423+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2627,7 +2627,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934686+00:00",
+      "generated_at": "2026-07-20T09:26:24.686498+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2754,7 +2754,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934793+00:00",
+      "generated_at": "2026-07-20T09:26:24.686609+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2871,7 +2871,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934890+00:00",
+      "generated_at": "2026-07-20T09:26:24.686710+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -2988,7 +2988,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.934988+00:00",
+      "generated_at": "2026-07-20T09:26:24.686808+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3105,7 +3105,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935086+00:00",
+      "generated_at": "2026-07-20T09:26:24.686907+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3216,7 +3216,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935155+00:00",
+      "generated_at": "2026-07-20T09:26:24.686979+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3368,7 +3368,7 @@
         "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935383+00:00",
+      "generated_at": "2026-07-20T09:26:24.687238+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3495,7 +3495,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935496+00:00",
+      "generated_at": "2026-07-20T09:26:24.687354+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3622,7 +3622,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935610+00:00",
+      "generated_at": "2026-07-20T09:26:24.687471+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3749,7 +3749,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935718+00:00",
+      "generated_at": "2026-07-20T09:26:24.687581+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3860,7 +3860,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935789+00:00",
+      "generated_at": "2026-07-20T09:26:24.687656+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -3971,7 +3971,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935864+00:00",
+      "generated_at": "2026-07-20T09:26:24.687733+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4098,7 +4098,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.935970+00:00",
+      "generated_at": "2026-07-20T09:26:24.687838+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4225,7 +4225,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936082+00:00",
+      "generated_at": "2026-07-20T09:26:24.687951+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4377,7 +4377,7 @@
         "group_size": 45,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936301+00:00",
+      "generated_at": "2026-07-20T09:26:24.688166+00:00",
       "peer_group_basis": "screening_universe",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4494,7 +4494,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936406+00:00",
+      "generated_at": "2026-07-20T09:26:24.688269+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4611,7 +4611,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936504+00:00",
+      "generated_at": "2026-07-20T09:26:24.688367+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4728,7 +4728,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936604+00:00",
+      "generated_at": "2026-07-20T09:26:24.688467+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4855,7 +4855,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936727+00:00",
+      "generated_at": "2026-07-20T09:26:24.688589+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -4972,7 +4972,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936822+00:00",
+      "generated_at": "2026-07-20T09:26:24.688684+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5099,7 +5099,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.936940+00:00",
+      "generated_at": "2026-07-20T09:26:24.688800+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5216,7 +5216,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.937041+00:00",
+      "generated_at": "2026-07-20T09:26:24.688901+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5333,7 +5333,7 @@
         "group_size": 10,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.937136+00:00",
+      "generated_at": "2026-07-20T09:26:24.688997+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5444,7 +5444,7 @@
         "group_size": 4,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.937208+00:00",
+      "generated_at": "2026-07-20T09:26:24.689070+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",
@@ -5571,7 +5571,7 @@
         "group_size": 20,
         "peer_failures": []
       },
-      "generated_at": "2026-07-19T13:00:26.937328+00:00",
+      "generated_at": "2026-07-20T09:26:24.689189+00:00",
       "peer_group_basis": "sector",
       "pe_ratio_comparison": {
         "metric_name": "pe_ratio",

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { ratingClass, prettyLabel } from '../format'
+import { describeComponent, deltaArrow, interpretationOf } from '../layer1meta'
 
 const FRESHNESS_TONE = { fresh: 'ok', acceptable: 'warn', stale: 'bad' }
 
@@ -14,6 +15,9 @@ export default function Layer1ComponentModal({ component, onClose }) {
 
   if (!component) return null
   const c = component
+  const m = describeComponent(c._key || c.name, c)
+  const interp = interpretationOf(c)
+  const scoreVal = c.contribution ? c.contribution.score : c.raw_score
 
   return (
     <div className="modal" onClick={(e) => e.target.classList.contains('modal') && onClose()}>
@@ -28,6 +32,31 @@ export default function Layer1ComponentModal({ component, onClose }) {
           </button>
         </div>
         <div className="modal-body">
+          <div className="l1sum">
+            <div className="l1sum-grid">
+              <div className="l1sum-cell">
+                <div className="l1sum-l">Result</div>
+                <div className="l1sum-v">
+                  {m.hero}
+                  {m.unit && <span className="l1sum-u"> {m.unit}</span>}
+                </div>
+                {m.delta && <div className={`l1sum-delta ${m.delta.dir}`}>{deltaArrow(m.delta.dir)} {m.delta.text}</div>}
+              </div>
+              <div className="l1sum-cell">
+                <div className="l1sum-l">Score (raw)</div>
+                <div className="l1sum-v">{scoreVal != null ? scoreVal.toFixed(0) : '—'}<span className="l1sum-u"> /100</span></div>
+              </div>
+              <div className="l1sum-cell">
+                <div className="l1sum-l">Contribution</div>
+                <div className="l1sum-v">
+                  {c.contribution ? c.contribution.weighted.toFixed(1) : '—'}
+                  {c.contribution && <span className="l1sum-u"> ({(c.contribution.weight * 100).toFixed(0)}%)</span>}
+                </div>
+              </div>
+            </div>
+            <div className="l1sum-interp"><span className="l1sum-so">So what?</span> {interp}</div>
+          </div>
+
           {c.narrative && (
             <div className="msection">
               <div className="msection-title">Reasoning</div>
@@ -50,19 +79,11 @@ export default function Layer1ComponentModal({ component, onClose }) {
                 )}
               </div>
             </div>
-            {c.contribution && (
-              <>
-                <div className="mcell">
-                  <div className="mcell-label">Score (raw)</div>
-                  <div className="mcell-val">{c.contribution.score.toFixed(0)}</div>
-                </div>
-                <div className="mcell">
-                  <div className="mcell-label">Weight → Weighted</div>
-                  <div className="mcell-val">
-                    {(c.contribution.weight * 100).toFixed(0)}% → {c.contribution.weighted.toFixed(1)}
-                  </div>
-                </div>
-              </>
+            {c.method_version && (
+              <div className="mcell">
+                <div className="mcell-label">Method Version</div>
+                <div className="mcell-val" style={{ fontFamily: 'var(--mono)', fontSize: 13 }}>{c.method_version}</div>
+              </div>
             )}
           </div>
 

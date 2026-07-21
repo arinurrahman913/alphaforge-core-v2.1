@@ -124,10 +124,23 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     n = len(available)
     status = "ok" if n >= OK_MIN_INPUTS else "degraded"
 
+    # Komposisi arah tiap input (ambang sama dgn label akhir) — supaya user tahu
+    # KENAPA hasil akhir greed/neutral/fear, bukan cuma angka rata-ratanya.
+    def _bucket(s: float) -> str:
+        return "bullish" if s >= 65 else "bearish" if s <= 35 else "neutral"
+
+    per_input = [{"input": nm, "score": round(s, 0), "stance": _bucket(s)} for nm, s in available]
+    composition = {
+        "bullish": sum(1 for x in per_input if x["stance"] == "bullish"),
+        "neutral": sum(1 for x in per_input if x["stance"] == "neutral"),
+        "bearish": sum(1 for x in per_input if x["stance"] == "bearish"),
+    }
+
     used_names = [n for n, _ in available]
+    comp_txt = f"Bullish {composition['bullish']} / Neutral {composition['neutral']} / Bearish {composition['bearish']}"
     narrative = (
         f"Signal: {label}. Skor sentimen {score:.0f}/100, dari {n} dari {TOTAL_INPUTS} input "
-        f"({', '.join(used_names)}), dibobot rata."
+        f"({', '.join(used_names)}), dibobot rata. Komposisi: {comp_txt}."
     )
     if missing_inputs:
         narrative += f" Belum ada: {', '.join(missing_inputs)}."
@@ -150,7 +163,7 @@ def compute(vix_reading: ComponentReading, breadth_reading: ComponentReading) ->
     return ComponentReading(
         name=NAME,
         value={"score_0_100": score, "label": label, "inputs_used": used_names,
-               "inputs_total": TOTAL_INPUTS},
+               "inputs_total": TOTAL_INPUTS, "composition": composition, "per_input": per_input},
         status=status,
         kind="derived",
         method_version=METHOD_VERSION,

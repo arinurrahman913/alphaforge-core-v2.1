@@ -49,18 +49,38 @@ def compute() -> ComponentReading:
 
     inflows = [k for k, v in flows.items() if v["direction"] == "inflow"]
     outflows = [k for k, v in flows.items() if v["direction"] == "outflow"]
+
+    # Money Flow adalah KONFIRMASI, bukan penentu arah — proxy volume+harga
+    # tidak setara data flow institusional. Kalimat eksplisit soal keseimbangan
+    # inflow/outflow supaya label "flat" tidak disalahartikan sebagai sinyal.
+    diff = len(inflows) - len(outflows)
+    if diff == 0:
+        flow_state = "seimbang"
+        confirmation_note = ("Inflow dan outflow relatif seimbang sehingga belum ada arah dominan. "
+                             "Money Flow di sini berperan sebagai konfirmasi, bukan penentu arah pasar.")
+    elif diff > 0:
+        flow_state = "net_inflow"
+        confirmation_note = (f"Net inflow tipis ({len(inflows)} vs {len(outflows)} sektor) — mengonfirmasi "
+                             "minat beli, tapi bukan penentu arah (proxy volume+harga, bukan flow institusional).")
+    else:
+        flow_state = "net_outflow"
+        confirmation_note = (f"Net outflow tipis ({len(outflows)} vs {len(inflows)} sektor) — mengonfirmasi "
+                             "tekanan jual, tapi bukan penentu arah (proxy volume+harga, bukan flow institusional).")
+
     narrative = (
         f"Proksi volume+harga (bukan data flow institusional). Inflow terdeteksi di: "
         f"{', '.join(inflows) if inflows else 'tidak ada'}. "
         f"Outflow di: {', '.join(outflows) if outflows else 'tidak ada'} "
-        f"(volume rata-rata {WINDOW} hari >30% di atas rata-rata 20 hari + arah harga {WINDOW} hari, universe {len(SECTOR_ETFS)} sector ETF)."
+        f"(volume rata-rata {WINDOW} hari >30% di atas rata-rata 20 hari + arah harga {WINDOW} hari, universe {len(SECTOR_ETFS)} sector ETF). "
+        f"{confirmation_note}"
     )
     rule = f"volume {WINDOW}h/rata2 20h > {VOL_RATIO_THRESHOLD} & harga {WINDOW}h naik → inflow; > {VOL_RATIO_THRESHOLD} & harga {WINDOW}h turun → outflow; selain itu → neutral"
     raw_score = max(0.0, min(100.0, 50.0 + (len(inflows) - len(outflows)) / len(SECTOR_ETFS) * 50.0))
 
     return ComponentReading(
         name=NAME,
-        value={"sectors": flows, "inflows": inflows, "outflows": outflows},
+        value={"sectors": flows, "inflows": inflows, "outflows": outflows,
+               "flow_state": flow_state, "confirmation_note": confirmation_note, "role": "confirmation"},
         status="ok",
         kind="derived",
         method_version=METHOD_VERSION,

@@ -400,6 +400,18 @@ tbody tr:last-child td{border-bottom:none}
 .modal-head .x{cursor:pointer;color:var(--dim);font-size:22px;line-height:1;background:none;border:none;width:32px;height:32px;border-radius:8px;transition:background .15s var(--ease),color .15s var(--ease)}
 .modal-head .x:hover{color:var(--text);background:var(--panel3)}
 .modal-body{padding:24px}
+/* Summary Box modal Layer 1 — Result / Score / Contribution / So-what */
+.l1sum{background:linear-gradient(150deg,color-mix(in srgb,var(--gold) 10%,var(--panel2)),var(--panel2));
+  border:1px solid var(--rule-strong);border-radius:12px;padding:14px 16px;margin-bottom:20px}
+.l1sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}
+.l1sum-cell{min-width:0}
+.l1sum-l{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.l1sum-v{font-family:var(--sans);font-size:19px;font-weight:700;color:var(--text);line-height:1.15;overflow-wrap:anywhere}
+.l1sum-u{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--dim)}
+.l1sum-delta{font-family:var(--mono);font-size:11px;font-weight:700;margin-top:3px}
+.l1sum-delta.up{color:var(--good)}.l1sum-delta.down{color:var(--bad)}.l1sum-delta.flat{color:var(--gold-hi)}
+.l1sum-interp{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);font-family:var(--sans);font-size:12.5px;line-height:1.5;color:var(--dim)}
+.l1sum-so{font-weight:700;color:var(--gold-hi);margin-right:4px}
 .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:20px}
 .mcell{background:var(--panel2);border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent)}
 .mcell-label{font-family:var(--sans);font-size:10px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}

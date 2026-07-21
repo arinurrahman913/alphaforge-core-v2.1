@@ -70,15 +70,37 @@ def compute() -> ComponentReading:
 
     events.sort(key=lambda e: e["date"])
     today = _today()
+
+    # Impact label per severity (CPI & Employment = High; struktur siap kalau
+    # nanti ada seri severity lebih rendah ditambahkan).
+    IMPACT = {"high": "High", "medium": "Medium", "low": "Low"}
+    top_events = [
+        {
+            "label": e["label"],
+            "date": e["date"],
+            "days_until": (date.fromisoformat(e["date"]) - today).days,
+            "impact": IMPACT.get(e["severity"], "Medium"),
+        }
+        for e in events[:3]
+    ]
+
     if events:
         days_to_next = (date.fromisoformat(events[0]["date"]) - today).days
+        # Event risk: seberapa dekat rilis high-impact berikutnya.
+        if days_to_next <= 3:
+            event_risk = "High Event Risk"
+        elif days_to_next <= 7:
+            event_risk = "Medium Event Risk"
+        else:
+            event_risk = "Low Event Risk"
+        top_txt = "; ".join(f"{e['label']} ({e['days_until']}h, {e['impact']})" for e in top_events)
         narrative = (
-            f"{events[0]['label']} rilis {events[0]['date']} ({days_to_next} hari lagi). "
-            f"{len(events)} peristiwa dalam {HORIZON_DAYS} hari."
+            f"{event_risk}. Terdekat: {top_txt}. {len(events)} peristiwa dalam {HORIZON_DAYS} hari."
         )
     else:
         days_to_next = None
-        narrative = f"Tidak ada rilis CPI/Employment terjadwal dalam {HORIZON_DAYS} hari."
+        event_risk = "Low Event Risk"
+        narrative = f"Low Event Risk — tidak ada rilis CPI/Employment terjadwal dalam {HORIZON_DAYS} hari."
 
     rule = "risk window sempit menurunkan score: rilis high-severity ≤3 hari → 40, ≤7 hari → 65, selain itu → 85"
     if days_to_next is None:
@@ -92,12 +114,12 @@ def compute() -> ComponentReading:
 
     return ComponentReading(
         name=NAME,
-        value={"events": events, "horizon_days": HORIZON_DAYS},
+        value={"events": events, "horizon_days": HORIZON_DAYS, "top_events": top_events, "event_risk": event_risk},
         status="ok",
         kind="direct",
         sources=[source("FRED release calendar")],
         narrative=narrative,
-        narrative_version="1.0.0",
+        narrative_version="1.1.0",
         evidence=[
             ev("next_event", events[0]["label"] if events else None, today.isoformat(), "FRED release calendar"),
             ev("days_to_next", days_to_next, today.isoformat(), "FRED release calendar"),

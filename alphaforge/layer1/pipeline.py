@@ -178,6 +178,28 @@ def _detect_conflicts(components: dict[str, ComponentReading]) -> list[str]:
             flag("currency_dxy", "liquidity_conditions",
                  "Dolar menguat di tengah likuiditas yang longgar (Fed tidak tightening) — sinyal campuran untuk aset berisiko.")
 
+    # Likuiditas ↔ Credit Spread & DXY — reasoning lintas-indikator (#9): kondisi
+    # likuiditas jarang berdiri sendiri, credit spread & dolar mengkonfirmasi
+    # atau membantahnya.
+    credit = components.get("credit_spread")
+    if liquidity and credit and liquidity.status == "ok" and credit.status == "ok":
+        tightening = liquidity.value["tightening"]
+        spread_stress = credit.value["level"] == "wide" or credit.value.get("rising_fast")
+        if tightening and spread_stress:
+            flag("liquidity_conditions", "credit_spread",
+                 "Likuiditas mengetat DAN credit spread melebar — dua leading indicator risk-off "
+                 "saling menguatkan; kondisi pendanaan memburuk, screening lebih hati-hati.")
+        elif not tightening and spread_stress:
+            flag("liquidity_conditions", "credit_spread",
+                 "Likuiditas masih longgar tapi credit spread mulai melebar — divergensi; "
+                 "kredit sering memimpin, waspadai pengetatan yang belum terlihat di agregat likuiditas.")
+
+    if dxy and liquidity and dxy.status == "ok" and liquidity.status == "ok":
+        if dxy.value["change_30d_pct"] > 1.0 and liquidity.value["tightening"]:
+            flag("liquidity_conditions", "currency_dxy",
+                 "Dolar menguat DAN likuiditas mengetat bersamaan — pengetatan ganda kanal dolar; "
+                 "headwind kuat untuk EM, komoditas, dan growth.")
+
     commodity = components.get("commodity_signals")
     if dxy and commodity and dxy.status == "ok" and commodity.status == "ok":
         dxy_strengthening = dxy.value["change_30d_pct"] > 1.0

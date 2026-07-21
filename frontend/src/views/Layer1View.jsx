@@ -73,7 +73,7 @@ export default function Layer1View() {
           const isDeg = c.status !== 'ok'
           const chartColor = isDeg ? '#4fd1e0' : '#e8b84b'
           return (
-            <div className={`l1a-card${isDeg ? ' deg' : ''}`} key={key} onClick={() => setSelected(c)} style={{ '--i': idx }}>
+            <div className={`l1a-card${isDeg ? ' deg' : ''}`} key={key} onClick={() => setSelected({ ...c, _key: key })} style={{ '--i': idx }}>
               <div className="l1a-top">
                 <div className="l1a-idwrap">
                   <span className={`l1a-ic${isDeg ? ' cy' : ''}`}>

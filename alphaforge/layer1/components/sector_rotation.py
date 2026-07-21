@@ -42,14 +42,34 @@ def compute() -> ComponentReading:
     except Exception as exc:
         return missing(NAME, "direct", f"Yahoo sector ETF gagal ditarik: {exc}")
 
-    leader = max(relative, key=lambda k: relative[k]["relative_1m_pct"])
-    laggard = min(relative, key=lambda k: relative[k]["relative_1m_pct"])
+    ranked = sorted(relative, key=lambda k: relative[k]["relative_1m_pct"], reverse=True)
+    leader = ranked[0]
+    laggard = ranked[-1]
+    leaders = [{"etf": e, "relative_1m_pct": relative[e]["relative_1m_pct"]} for e in ranked[:3]]
+    laggards = [{"etf": e, "relative_1m_pct": relative[e]["relative_1m_pct"]} for e in ranked[-3:][::-1]]
 
+    # Implikasi screening: bila 3 pemimpin didominasi sektor defensif → rotasi
+    # bertahan, screening sebaiknya lebih selektif; bila didominasi siklikal →
+    # nafsu risiko sehat, screening bisa lebih agresif.
+    top3 = {l["etf"] for l in leaders}
+    n_def = len(top3 & DEFENSIVE)
+    n_cyc = len(top3 & CYCLICAL)
+    if n_def > n_cyc:
+        screening_implication = ("Dominasi sektor defensif di pemimpin — rotasi bertahan; "
+                                 "screening sebaiknya lebih selektif (utamakan kualitas & neraca kuat).")
+    elif n_cyc > n_def:
+        screening_implication = ("Dominasi sektor siklikal di pemimpin — nafsu risiko sehat; "
+                                 "screening bisa lebih terbuka ke growth/beta lebih tinggi.")
+    else:
+        screening_implication = ("Kepemimpinan sektor campuran — tak ada bias rotasi jelas; "
+                                 "pertahankan kriteria screening standar.")
+
+    lead_txt = ", ".join(f"{l['etf']} ({l['relative_1m_pct']:+.1f}pp)" for l in leaders)
+    lag_txt = ", ".join(f"{l['etf']} ({l['relative_1m_pct']:+.1f}pp)" for l in laggards)
     narrative = (
-        f"{leader} memimpin relatif terhadap {BENCHMARK} ({relative[leader]['relative_1m_pct']:+.1f}pp/1bln), "
-        f"{laggard} tertinggal ({relative[laggard]['relative_1m_pct']:+.1f}pp/1bln)."
+        f"Leader vs {BENCHMARK}: {lead_txt}. Laggard: {lag_txt} (relatif 1 bulan). {screening_implication}"
     )
-    rule = "leader = ETF sektor dengan relative_1m_pct tertinggi vs SPY; laggard = terendah"
+    rule = "ranking = relative_1m_pct vs SPY; leaders = 3 teratas, laggards = 3 terbawah"
 
     if leader in CYCLICAL:
         raw_score = RAW_SCORE_CYCLICAL_LEADS
@@ -60,16 +80,17 @@ def compute() -> ComponentReading:
 
     return ComponentReading(
         name=NAME,
-        value={"benchmark": BENCHMARK, "sectors": relative, "leader": leader, "laggard": laggard},
+        value={"benchmark": BENCHMARK, "sectors": relative, "leader": leader, "laggard": laggard,
+               "leaders": leaders, "laggards": laggards, "screening_implication": screening_implication},
         status="ok",
         kind="direct",
         sources=[source("Yahoo Finance")],
         narrative=narrative,
-        narrative_version="1.0.0",
+        narrative_version="1.1.0",
         evidence=[
-            ev("leader", leader, as_of, "Yahoo Finance sector ETF (relative 1m vs SPY)"),
+            ev("leaders", ", ".join(l["etf"] for l in leaders), as_of, "Yahoo Finance sector ETF (top 3 relative 1m vs SPY)"),
             ev("leader_relative_1m_pct", relative[leader]["relative_1m_pct"], as_of, "Yahoo Finance"),
-            ev("laggard", laggard, as_of, "Yahoo Finance sector ETF (relative 1m vs SPY)"),
+            ev("laggards", ", ".join(l["etf"] for l in laggards), as_of, "Yahoo Finance sector ETF (bottom 3 relative 1m vs SPY)"),
         ],
         rule=rule,
         thresholds=[

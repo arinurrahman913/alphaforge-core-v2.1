@@ -58,9 +58,20 @@ def compute(price_cache: dict | None = None) -> ComponentReading:
                         method_version=METHOD_VERSION)
 
     pct_above_ma200 = above_ma200 / total * 100.0
+
+    # Band interpretasi absolut supaya angka % langsung punya makna.
+    if pct_above_ma200 < 40:
+        interpretation = "Weak"
+    elif pct_above_ma200 < 60:
+        interpretation = "Neutral"
+    elif pct_above_ma200 < 80:
+        interpretation = "Healthy"
+    else:
+        interpretation = "Very Strong"
+
     narrative = (
         f"[Internal Universe Breadth, BUKAN S&P 500] {advances}/{total} saham naik sesi terakhir. "
-        f"{pct_above_ma200:.1f}% di atas MA200. Universe: hasil Screening sendiri ({total} ticker)."
+        f"{pct_above_ma200:.1f}% di atas MA200 — {interpretation}. Universe: hasil Screening sendiri ({total} ticker)."
     )
     rule = "score = % ticker universe internal di atas MA200 (dipakai langsung sebagai raw_score, sudah 0-100)"
 
@@ -71,6 +82,7 @@ def compute(price_cache: dict | None = None) -> ComponentReading:
             "declines": declines,
             "pct_above_ma200": pct_above_ma200,
             "universe_size": total,
+            "interpretation": interpretation,
         },
         status="ok",
         kind="derived",

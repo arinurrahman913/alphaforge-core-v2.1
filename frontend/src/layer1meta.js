@@ -77,7 +77,7 @@ export function describeComponent(key, c) {
       return {
         hero: `${v.pct_above_ma200?.toFixed(1)}%`,
         unit: '>MA200',
-        delta: { text: v.advances > v.declines ? 'Advancing' : 'Declining', dir: v.advances > v.declines ? 'up' : 'down' },
+        delta: { text: v.interpretation || (v.advances > v.declines ? 'Advancing' : 'Declining'), dir: v.pct_above_ma200 >= 60 ? 'up' : v.pct_above_ma200 < 40 ? 'down' : 'flat' },
         stats: [
           { l: 'Naik', v: String(v.advances) },
           { l: 'Turun', v: String(v.declines) },
@@ -88,15 +88,16 @@ export function describeComponent(key, c) {
       }
 
     case 'sector_rotation': {
-      const lead = v.sectors?.[v.leader]?.relative_1m_pct
-      const lag = v.sectors?.[v.laggard]?.relative_1m_pct
+      const leaders = v.leaders || []
+      const laggards = v.laggards || []
+      const lead = leaders[0]?.relative_1m_pct
       return {
         hero: v.leader,
         unit: 'leads',
         delta: { text: lead != null ? `${sgn(lead)}pp vs SPY` : '—', dir: 'up' },
         stats: [
-          { l: 'Leader', v: `${v.leader} ${lead != null ? sgn(lead) : ''}` },
-          { l: 'Laggard', v: `${v.laggard} ${lag != null ? sgn(lag) : ''}` },
+          { l: 'Top 3 Leader', v: leaders.map((l) => l.etf).join(', ') || v.leader },
+          { l: 'Top 3 Laggard', v: laggards.map((l) => l.etf).join(', ') || v.laggard },
         ],
         trend: 'flat',
         accent,
@@ -125,69 +126,87 @@ export function describeComponent(key, c) {
       return {
         hero: v.dxy?.toFixed(2),
         unit: 'DXY',
-        delta: { text: `${sgn(v.change_30d_pct)}% 30h`, dir: v.change_30d_pct >= 0 ? 'up' : 'down' },
+        delta: { text: `${sgn(v.change_30d_pct)}% 1bln`, dir: v.change_30d_pct >= 0 ? 'up' : 'down' },
+        stats: [
+          { l: 'Δ 1 bulan', v: `${sgn(v.change_30d_pct)}%` },
+          { l: 'Δ 3 bulan', v: v.change_90d_pct != null ? `${sgn(v.change_90d_pct)}%` : '—' },
+          { l: 'Level', v: cap(v.level) },
+        ],
         trend: v.change_30d_pct >= 0 ? 'up' : 'down',
         accent,
       }
 
     case 'commodity_signals': {
-      const avg = (v.gold_change_30d_pct + v.wti_change_30d_pct) / 2
+      const reflationary = v.pattern === 'reflation' || v.pattern === 'inflation_shock'
       return {
-        hero: `${sgn(avg, 0)}%`,
-        unit: '30h avg',
-        delta: { text: avg >= 0 ? 'Menguat' : 'Melemah', dir: avg >= 0 ? 'up' : 'down' },
+        hero: v.pattern_label || '—',
+        unit: null,
+        delta: { text: `Oil ${sgn(v.wti_change_30d_pct, 0)}% · Cu ${sgn(v.copper_change_30d_pct, 0)}% · Au ${sgn(v.gold_change_30d_pct, 0)}%`, dir: 'flat' },
         stats: [
-          { l: 'Emas', v: `${sgn(v.gold_change_30d_pct)}%` },
-          { l: 'WTI', v: `${sgn(v.wti_change_30d_pct)}%` },
+          { l: 'Oil (WTI)', v: `${sgn(v.wti_change_30d_pct)}%` },
+          { l: 'Copper', v: `${sgn(v.copper_change_30d_pct)}%` },
+          { l: 'Gold', v: `${sgn(v.gold_change_30d_pct)}%` },
         ],
-        trend: avg >= 0 ? 'up' : 'down',
+        trend: reflationary ? 'up' : v.pattern === 'risk_off' || v.pattern === 'deflation' ? 'down' : 'flat',
         accent,
       }
     }
 
-    case 'credit_spread':
+    case 'credit_spread': {
+      const mom = v.momentum_30d_bps
+      const warn = v.rising_fast && v.level === 'tight'
       return {
-        hero: v.oas_pct?.toFixed(2),
-        unit: 'pp OAS',
-        delta: { text: cap(v.level), dir: v.level === 'wide' ? 'down' : v.level === 'tight' ? 'up' : 'flat' },
+        hero: v.oas_bps != null ? String(Math.round(v.oas_bps)) : v.oas_pct?.toFixed(2),
+        unit: 'bps OAS',
+        delta: { text: warn ? `⚠ ${sgn(mom, 0)} bps/30h` : `${cap(v.level)} · ${sgn(mom, 0)} bps/30h`, dir: mom > 5 ? 'down' : mom < -5 ? 'up' : 'flat' },
         stats: [
           { l: 'Persentil 5Y', v: `${Math.round((v.percentile_5y ?? 0) * 100)}%` },
+          { l: 'Momentum 30h', v: `${sgn(mom, 0)} bps` },
           { l: 'Level', v: cap(v.level) },
         ],
-        trend: v.level === 'wide' ? 'down' : v.level === 'tight' ? 'up' : 'flat',
-        accent,
-      }
-
-    case 'macro_calendar': {
-      const ev = (v.events || [])[0]
-      const days = ev ? Math.max(0, Math.round((new Date(ev.date) - new Date()) / 86400000)) : null
-      return {
-        hero: days != null ? String(days) : '—',
-        unit: 'hari',
-        delta: ev ? { text: ev.label, dir: 'flat' } : null,
-        stats: [
-          { l: 'Berikutnya', v: ev ? ev.label : '—' },
-          { l: 'Peristiwa', v: String((v.events || []).length) },
-        ],
-        trend: 'flat',
+        trend: v.level === 'wide' || warn ? 'down' : v.level === 'tight' ? 'up' : 'flat',
         accent,
       }
     }
 
-    case 'market_sentiment':
+    case 'macro_calendar': {
+      const top = (v.top_events || [])[0]
+      const risk = v.event_risk || '—'
+      return {
+        hero: top ? String(top.days_until) : '—',
+        unit: top ? 'hari' : null,
+        delta: { text: risk, dir: risk.startsWith('High') ? 'down' : risk.startsWith('Medium') ? 'flat' : 'up' },
+        stats: [
+          { l: 'Berikutnya', v: top ? `${top.label} (${top.impact})` : '—' },
+          { l: 'Peristiwa', v: String((v.events || []).length) },
+        ],
+        trend: risk.startsWith('High') ? 'down' : 'flat',
+        accent,
+      }
+    }
+
+    case 'market_sentiment': {
+      const comp = v.composition
       return {
         hero: Math.round(v.score_0_100).toString(),
         unit: '/100',
         delta: { text: cap(v.label), dir: 'flat' },
-        stats: [
-          { l: 'Signal', v: cap(v.label) },
-          { l: 'Input', v: `${(v.inputs_used || []).length}/${v.inputs_total || 6}` },
-        ],
+        stats: comp
+          ? [
+              { l: 'Bullish', v: String(comp.bullish) },
+              { l: 'Neutral', v: String(comp.neutral) },
+              { l: 'Bearish', v: String(comp.bearish) },
+            ]
+          : [
+              { l: 'Signal', v: cap(v.label) },
+              { l: 'Input', v: `${(v.inputs_used || []).length}/${v.inputs_total || 6}` },
+            ],
         inputsUsed: (v.inputs_used || []).length,
         inputsTotal: v.inputs_total || 6,
         trend: 'flat',
         accent,
       }
+    }
 
     default:
       return {
@@ -202,6 +221,21 @@ export function describeComponent(key, c) {
 
 export function deltaArrow(dir) {
   return dir === 'up' ? '▲' : dir === 'down' ? '▼' : '◆'
+}
+
+// Kalimat interpretasi "so what" per komponen untuk Summary Box modal —
+// utamakan field kaya yang sudah dihitung backend, jatuh ke narrative.
+export function interpretationOf(c) {
+  const v = c.value || {}
+  return (
+    v.pattern_interpretation ||
+    v.summary ||
+    v.confirmation_note ||
+    v.screening_implication ||
+    (c.narrative ? c.narrative.split('. ').slice(-1)[0] : null) ||
+    c.note ||
+    '—'
+  )
 }
 
 const COMPONENT_ICON = {

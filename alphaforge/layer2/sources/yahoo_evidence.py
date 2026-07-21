@@ -26,6 +26,7 @@ from ._retry import retry
 PRICE_CACHE_TTL = 6 * 3600  # 6 jam
 FUNDAMENTAL_CACHE_TTL = 24 * 3600  # 24 jam
 OWNERSHIP_CACHE_TTL = 24 * 3600  # 24 jam
+YAHOO_INFO_CACHE_TTL = 24 * 3600  # 24 jam — sama dengan 2 di atas, sengaja disamakan
 
 YF_EVIDENCE_RETRIES = 2
 YF_EVIDENCE_RETRY_BACKOFF_SECONDS = 3.0
@@ -57,6 +58,29 @@ def _apply_batch_delay():
             time.sleep(YF_EVIDENCE_BATCH_DELAY_SECONDS - elapsed)
         _batch_counter = 0
         _batch_last_time = time.time()
+
+
+def _fetch_yahoo_info(ticker: str) -> dict:
+    """Fetch `t.info` SEKALI, di-cache & dipakai bareng oleh fetch_fundamental_data
+    dan fetch_institutional_ownership — sebelumnya dua-duanya masing-masing
+    bikin `yf.Ticker(ticker).info` sendiri-sendiri untuk field dari respons
+    yang sama persis (2x network call untuk data yang identik). Sekarang
+    siapa pun yang panggil duluan yang bayar network cost-nya; yang kedua
+    otomatis kena cache "yahoo_info" (24h) tanpa perlu tahu soal itu."""
+    cached = cache_get("yahoo_info", ticker, YAHOO_INFO_CACHE_TTL)
+    if cached is not None:
+        return cached
+
+    _apply_batch_delay()
+
+    def _do_fetch():
+        return yf.Ticker(ticker).info
+
+    info = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
+                 backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
+                 label=f"yahoo_info:{ticker}")
+    cache_set("yahoo_info", ticker, info)
+    return info
 
 
 def fetch_price_market_data(ticker: str) -> PriceMarketData:
@@ -202,14 +226,7 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
         )
 
     try:
-        _apply_batch_delay()
-
-        def _do_fetch():
-            return yf.Ticker(ticker).info
-
-        info = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
-                     backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
-                     label=f"yahoo_fundamental:{ticker}")
+        info = _fetch_yahoo_info(ticker)
 
         metadata = SourceMetadata(
             source="yahoo_finance",
@@ -299,14 +316,7 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
         )
 
     try:
-        _apply_batch_delay()
-
-        def _do_fetch():
-            return yf.Ticker(ticker).info
-
-        info = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
-                     backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
-                     label=f"yahoo_ownership:{ticker}")
+        info = _fetch_yahoo_info(ticker)
 
         percentage = info.get("heldPercentInstitutions")
 

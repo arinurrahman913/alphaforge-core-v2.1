@@ -421,11 +421,12 @@ def _get_spx_validation_history() -> list[dict] | None:
         if price_range == 0:
             price_range = 1
 
+        import math
         history = []
         for idx, (dt, row) in enumerate(df_window.iterrows()):
             norm_price = (row["Close"] - min_52w) / price_range * 100.0
-            ma50_val = float(ma50_window.iloc[idx]) if ma50_window.iloc[idx] is not None else None
-            ma200_val = float(ma200_window.iloc[idx]) if ma200_window.iloc[idx] is not None else None
+            ma50_val = float(ma50_window.iloc[idx]) if not math.isnan(float(ma50_window.iloc[idx])) else None
+            ma200_val = float(ma200_window.iloc[idx]) if not math.isnan(float(ma200_window.iloc[idx])) else None
             history.append({
                 "date": dt.strftime("%Y-%m-%d"),
                 "price": float(row["Close"]),

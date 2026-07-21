@@ -19,7 +19,8 @@ from datetime import datetime, timezone
 import yfinance as yf
 from ...cache import get as cache_get, set as cache_set
 from ..contracts import (
-    SourceMetadata, PriceMarketData, PriceBar, FundamentalData, InstitutionalOwnership
+    SourceMetadata, PriceMarketData, PriceBar, FundamentalData, InstitutionalOwnership,
+    InstitutionalHolder
 )
 from ._retry import retry
 
@@ -303,8 +304,37 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
         )
 
 
+def _fetch_institutional_holders_detail(ticker: str) -> list[dict]:
+    """Fetch daftar top institusi pemegang saham (Yahoo Finance
+    `institutional_holders` — agregasi Yahoo dari SEC 13F, bukan parsing
+    manual filing). Endpoint terpisah dari `.info`, jadi ini panggilan
+    network baru per ticker (bukan bagian dari konsolidasi sebelumnya)."""
+    def _do_fetch():
+        df = yf.Ticker(ticker).institutional_holders
+        if df is None or df.empty:
+            return []
+        holders = []
+        for _, row in df.iterrows():
+            date_val = row.get("Date Reported")
+            pct_held = row.get("pctHeld")
+            pct_change = row.get("pctChange")
+            holders.append({
+                "holder": str(row.get("Holder", "")),
+                "shares": int(row["Shares"]) if row.get("Shares") is not None else None,
+                "pct_held": float(pct_held) * 100 if pct_held is not None else None,
+                "value_usd": float(row["Value"]) if row.get("Value") is not None else None,
+                "date_reported": date_val.strftime("%Y-%m-%d") if hasattr(date_val, "strftime") else (str(date_val) if date_val is not None else None),
+                "pct_change": float(pct_change) * 100 if pct_change is not None else None,
+            })
+        return holders
+
+    return retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
+                 backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
+                 label=f"yahoo_holders:{ticker}")
+
+
 def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
-    """Ambil kepemilikan institusional (cached 24h)."""
+    """Ambil kepemilikan institusional: persentase agregat + top holder detail (cached 24h)."""
     cached = cache_get("institutional_ownership", ticker, OWNERSHIP_CACHE_TTL)
     if cached is not None:
         meta = cached.get("_metadata", {})
@@ -312,13 +342,20 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
             metadata=SourceMetadata(**meta) if meta else SourceMetadata(
                 source="yahoo_finance", fetched_at=datetime.now(timezone.utc).isoformat(), status="ok"
             ),
-            percentage=cached.get("percentage")
+            percentage=cached.get("percentage"),
+            top_holders=[InstitutionalHolder(**h) for h in cached.get("top_holders", [])]
         )
 
     try:
         info = _fetch_yahoo_info(ticker)
-
         percentage = info.get("heldPercentInstitutions")
+
+        try:
+            holders_raw = _fetch_institutional_holders_detail(ticker)
+        except Exception as exc:
+            print(f"[yahoo_holders:{ticker}] gagal (post-processing/final), lanjut tanpa detail holder: {exc}", file=sys.stderr)
+            holders_raw = []
+        top_holders = [InstitutionalHolder(**h) for h in holders_raw]
 
         metadata = SourceMetadata(
             source="yahoo_finance",
@@ -326,11 +363,12 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
             status="ok" if percentage is not None else "missing"
         )
 
-        data = InstitutionalOwnership(metadata=metadata, percentage=percentage)
+        data = InstitutionalOwnership(metadata=metadata, percentage=percentage, top_holders=top_holders)
 
         # Cache
         to_cache = {
             "percentage": percentage,
+            "top_holders": holders_raw,
             "_metadata": {"source": metadata.source, "fetched_at": metadata.fetched_at, "status": metadata.status}
         }
         cache_set("institutional_ownership", ticker, to_cache)

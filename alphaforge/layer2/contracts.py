@@ -138,10 +138,23 @@ class FundamentalData:
 
 
 @dataclass
+class InstitutionalHolder:
+    """Satu institusi pemegang saham — dari Yahoo Finance `institutional_holders`
+    (agregasi Yahoo atas SEC 13F, bukan parsing 13F manual)."""
+    holder: str
+    shares: int | None = None
+    pct_held: float | None = None  # persentase dari total shares outstanding
+    value_usd: float | None = None
+    date_reported: str | None = None
+    pct_change: float | None = None  # perubahan kepemilikan vs laporan sebelumnya
+
+
+@dataclass
 class InstitutionalOwnership:
     """Kepemilikan institusional."""
     metadata: SourceMetadata
     percentage: float | None = None  # persentase agregat dari Yahoo
+    top_holders: list[InstitutionalHolder] = field(default_factory=list)  # top ~10 institusi pemegang terbesar
 
 
 @dataclass

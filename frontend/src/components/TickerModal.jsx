@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
-import { fmtPct, ratingClass } from '../format'
+import { fmtPct, fmtMoney, ratingClass } from '../format'
 
 export default function TickerModal({ ticker, onClose }) {
   const [data, setData] = useState(null)
@@ -263,6 +263,10 @@ function ModalBody({ data }) {
         </div>
       )}
 
+      {evidence?.institutional_ownership && (
+        <InstitutionalHoldersSection ownership={evidence.institutional_ownership} />
+      )}
+
       {historical && (
         <div className="msection">
           <div className="msection-title">
@@ -289,5 +293,64 @@ function ModalBody({ data }) {
         </div>
       )}
     </>
+  )
+}
+
+function InstitutionalHoldersSection({ ownership }) {
+  const holders = ownership.top_holders || []
+  const pct = ownership.percentage
+
+  if ((pct === null || pct === undefined) && holders.length === 0) return null
+
+  return (
+    <div className="msection">
+      <div className="msection-title">
+        Institutional Holders
+        {pct !== null && pct !== undefined && ` — ${(pct * 100).toFixed(1)}% dari total saham dipegang institusi`}
+      </div>
+      {holders.length === 0 ? (
+        <p className="narrative">Detail per-institusi tidak tersedia (data mentah dari Yahoo Finance).</p>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--sans)', fontSize: 12.5 }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid var(--rule)', color: 'var(--faint)', textAlign: 'left' }}>
+              <th style={{ padding: '4px 8px 8px 0', fontWeight: 600 }}>Institusi</th>
+              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>% Held</th>
+              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Shares</th>
+              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Value</th>
+              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Δ vs Sebelumnya</th>
+              <th style={{ padding: '4px 0 8px 8px', fontWeight: 600, textAlign: 'right' }}>Dilaporkan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {holders.map((h, i) => (
+              <tr key={i} style={{ borderBottom: '1px solid var(--rule)' }}>
+                <td style={{ padding: '6px 8px 6px 0' }}>{h.holder}</td>
+                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
+                  {h.pct_held !== null && h.pct_held !== undefined ? `${h.pct_held.toFixed(2)}%` : '—'}
+                </td>
+                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
+                  {h.shares !== null && h.shares !== undefined ? h.shares.toLocaleString() : '—'}
+                </td>
+                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>{fmtMoney(h.value_usd)}</td>
+                <td
+                  style={{
+                    padding: '6px 8px',
+                    textAlign: 'right',
+                    fontFamily: 'var(--mono)',
+                    color: h.pct_change > 0 ? 'var(--good)' : h.pct_change < 0 ? 'var(--bad)' : 'var(--dim)',
+                  }}
+                >
+                  {h.pct_change !== null && h.pct_change !== undefined ? fmtPct(h.pct_change) : '—'}
+                </td>
+                <td style={{ padding: '6px 0 6px 8px', textAlign: 'right', color: 'var(--faint)', fontSize: 11 }}>
+                  {h.date_reported || '—'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
   )
 }

@@ -19,7 +19,7 @@ from .knowledge_contracts import (
     CompetitiveStructure, CompetitiveMomentum, HistoricalTrend, Valuation, Governance
 )
 from .knowledge_helpers import (
-    calculate_returns, calculate_volatility, calculate_high_low_52w,
+    calculate_returns, calculate_volatility,
     calculate_financial_metrics, infer_size_category, compute_financial_trends
 )
 
@@ -45,14 +45,37 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     sector = evidence.fundamental.sector
 
     # #1: TREN CALCULATION — Parse price_history
+    # (high_52w/low_52w tidak dihitung ulang di sini — sudah tersedia langsung
+    # dari Evidence via evidence.price_market.high_52w/low_52w dari Yahoo)
     price_history = evidence.price_market.price_history or []
     returns = calculate_returns(price_history)
     volatility = calculate_volatility(price_history)
-    high_low = calculate_high_low_52w(price_history)
 
     # 2. Kesehatan Finansial
     # #2: Compute trends dari quarterly data jika ada
     trends = compute_financial_trends(evidence.fundamental.quarterly_data)
+
+    # #3: FIELD EXTRACTION — dihitung di sini (bukan di bawah) supaya
+    # metrics['net_margin_pct'] bisa dipakai sebagai fallback net_margin_q4
+    # yang benar kalau data kuartalan kosong (lihat net_margin_trend di bawah)
+    metrics = calculate_financial_metrics(
+        revenue=evidence.fundamental.revenue,
+        net_income=evidence.fundamental.net_income,
+        free_cash_flow=evidence.fundamental.free_cash_flow,
+        market_cap=evidence.price_market.market_cap,
+        shares_outstanding=evidence.price_market.shares_outstanding,
+        last_price=evidence.price_market.last_price,
+        eps=evidence.fundamental.eps
+    )
+
+    # Nominal CapEx per kuartal dari quarterly_data — quarterly_data[0] =
+    # kuartal terbaru (q4), [1]=q3, [2]=q2, [3]=q1, sama seperti pemetaan
+    # di compute_financial_trends().
+    qdata = evidence.fundamental.quarterly_data or []
+    capex_nominal = {}
+    for i, period in enumerate(qdata[:4]):
+        q_key = f"capex_nominal_q{4 - i}"
+        capex_nominal[q_key] = getattr(period, "capital_expenditures", None)
 
     financial_health = FinancialHealth(
         revenue_trend=RevenueTrend(
@@ -77,7 +100,11 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
             q1=trends.get('net_margin_q1'),
             q2=trends.get('net_margin_q2'),
             q3=trends.get('net_margin_q3'),
-            q4=trends.get('net_margin_q4') or evidence.fundamental.operating_margin
+            # Fallback kalau data kuartalan kosong: net_income/revenue TTM
+            # dari fundamental (metrics['net_margin_pct']) — BUKAN
+            # operating_margin seperti sebelumnya, yang mensubstitusi metrik
+            # yang beda sama sekali sebagai "net margin".
+            q4=trends.get('net_margin_q4') if trends.get('net_margin_q4') is not None else metrics['net_margin_pct']
         ),
         balance_sheet=BalanceSheet(
             debt_to_equity=evidence.fundamental.debt_to_equity,
@@ -89,6 +116,10 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
             fcf_margin_q4=_fcf_margin_pct(evidence.fundamental.free_cash_flow, evidence.fundamental.revenue)
         ),
         capex_info=CapExInfo(
+            capex_nominal_q1=capex_nominal.get('capex_nominal_q1'),
+            capex_nominal_q2=capex_nominal.get('capex_nominal_q2'),
+            capex_nominal_q3=capex_nominal.get('capex_nominal_q3'),
+            capex_nominal_q4=capex_nominal.get('capex_nominal_q4'),
             capex_pct_revenue_q4=trends.get('capex_pct_revenue_q4')
         )
     )
@@ -119,17 +150,8 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     )
 
     # 6. Valuasi
-    # #3: FIELD EXTRACTION — better metrics
-    metrics = calculate_financial_metrics(
-        revenue=evidence.fundamental.revenue,
-        net_income=evidence.fundamental.net_income,
-        free_cash_flow=evidence.fundamental.free_cash_flow,
-        market_cap=evidence.price_market.market_cap,
-        shares_outstanding=evidence.price_market.shares_outstanding,
-        last_price=evidence.price_market.last_price,
-        eps=evidence.fundamental.eps
-    )
-
+    # #3: FIELD EXTRACTION — metrics sudah dihitung di atas (dipakai juga
+    # untuk fallback net_margin_q4)
     valuation = Valuation(
         pe_ratio_trailing=evidence.fundamental.pe_ratio,
         ps_ratio=metrics['ps_ratio'],

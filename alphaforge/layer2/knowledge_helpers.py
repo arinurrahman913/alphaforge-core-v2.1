@@ -13,6 +13,15 @@ def calculate_returns(price_history: list[PriceBar]) -> dict[str, float | None]:
         'return_3y': % annual return (CAGR), past 3 years,
         'return_5y': % annual return (CAGR), past 5 years
     }
+
+    Catatan: return_3y/return_5y butuh >=756/>=1260 trading days histori.
+    Evidence saat ini cuma fetch `period="1y"` dari Yahoo (~252 bar) —
+    lihat sources/yahoo_evidence.py fetch_price_market_data — jadi kedua
+    field ini SELALU None untuk semua ticker sampai window fetch itu
+    diperlebar. Ini keterbatasan struktural yang disengaja didokumentasikan
+    di sini (bukan diperlebar sekarang — nambah histori 3-5x lipat per
+    ticker berdampak ke biaya bandwidth/waktu Evidence di skala full-market,
+    keputusan terpisah dari sekadar "fix bug kalkulasi").
     """
     if not price_history or len(price_history) < 2:
         return {'return_1y': None, 'return_3y': None, 'return_5y': None}
@@ -31,8 +40,19 @@ def calculate_returns(price_history: list[PriceBar]) -> dict[str, float | None]:
     total_days = len(sorted_dates) - 1
     total_return_pct = ((latest_price - first_price) / first_price) * 100
 
-    # 1-year return (365 days or actual available)
-    return_1y = total_return_pct if total_days <= 365 else _cagr(first_price, latest_price, 1)
+    # 1-year return. Kalau histori total <=365 hari, ya itu returnnya
+    # (semua histori yang ada = window "1 tahun"). Kalau histori lebih
+    # panjang, HARUS ambil harga dari ~365 hari lalu (bukan first_price,
+    # yang bisa jadi dari bertahun-tahun lalu) — bug sebelumnya dulu pakai
+    # first_price + _cagr(...,1) seolah-olah first_price itu persis 1 tahun
+    # lalu, padahal bisa jauh lebih lama, menghasilkan angka annualized
+    # yang salah total.
+    if total_days <= 365:
+        return_1y = total_return_pct
+    else:
+        idx_1y_ago = max(0, len(sorted_dates) - 366)
+        price_1y_ago = prices_by_date[sorted_dates[idx_1y_ago]]
+        return_1y = ((latest_price - price_1y_ago) / price_1y_ago) * 100 if price_1y_ago > 0 else None
 
     # 3-year CAGR (roughly 756 trading days = 3 years)
     price_3y_ago = None

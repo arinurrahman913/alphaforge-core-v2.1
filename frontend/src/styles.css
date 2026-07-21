@@ -227,6 +227,16 @@ a{color:inherit}
 .l1-trend-legend .ln.gold{border-color:#e8b84b}
 .l1-trend-legend .ln.blue{border-top-style:dashed;border-color:rgba(120,200,255,.85)}
 .l1-trend-legend-sep{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--faint)}
+/* Performance Chart (S&P500 vs Layer Score overlay) */
+.perf-subtitle{font-family:var(--sans);font-size:11px;color:var(--dim);margin-top:-6px}
+.perf-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px;margin-top:12px}
+.perf-stats>div{display:flex;flex-direction:column;gap:4px}
+.perf-label{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--faint);text-transform:uppercase}
+.perf-val{font-family:var(--mono);font-size:18px;font-weight:700}
+.perf-note{margin-top:12px;padding-top:11px;border-top:1px solid var(--rule);font-family:var(--sans);font-size:11.5px;color:var(--dim);line-height:1.5}
+.perf-legend{display:flex;gap:16px;margin-top:12px;font-family:var(--sans);font-size:10.5px;color:var(--dim)}
+.perf-legend span{display:flex;align-items:center;gap:6px}
+.perf-legend i{width:12px;height:3px;display:inline-block}
 
 .donut-wrap{display:flex;align-items:center;gap:18px}
 .donut-legend{display:flex;flex-direction:column;gap:6px;font-size:12px}

@@ -491,6 +491,25 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
 
     spx_history = _get_spx_validation_history()
 
+    # Data quality summary untuk dashboard stats card
+    n_total = len(components)
+    n_ok = sum(1 for c in components.values() if c.status == "ok")
+    n_degraded = sum(1 for c in components.values() if c.status == "degraded")
+    freshness_tally = {}
+    for c in components.values():
+        if c.data_freshness:
+            freshness_tally[c.data_freshness] = freshness_tally.get(c.data_freshness, 0) + 1
+    confidence_band = context_summary.confidence.band if context_summary else "medium"
+    data_quality_summary = {
+        "total": n_total,
+        "ok": n_ok,
+        "degraded": n_degraded,
+        "fresh": freshness_tally.get("fresh", 0),
+        "acceptable": freshness_tally.get("acceptable", 0),
+        "stale": freshness_tally.get("stale", 0),
+        "confidence_band": confidence_band,
+    }
+
     return MarketContextPackage(
         session_id=session_id,
         components=components,
@@ -498,4 +517,5 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
         layer_score=layer_score,
         generated_at=now_iso(),
         spx_history=spx_history,
+        data_quality_summary=data_quality_summary,
     )

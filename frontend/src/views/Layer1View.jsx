@@ -4,6 +4,7 @@ import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import ContributionChart from '../components/ContributionChart'
 import Layer1ScoreTrend from '../components/Layer1ScoreTrend'
+import Layer1PerformanceChart from '../components/Layer1PerformanceChart'
 import Layer1ComponentModal from '../components/Layer1ComponentModal'
 import StatDetailModal from '../components/StatDetailModal'
 import Sparkline, { InputBar } from '../components/Sparkline'
@@ -41,6 +42,10 @@ export default function Layer1View() {
       <StatCards stats={stats} />
 
       <Layer1ScoreTrend history={Array.isArray(history) ? history : []} />
+
+      {data.spx_history && Array.isArray(history) && (
+        <Layer1PerformanceChart spxHistory={data.spx_history} layerHistory={history} />
+      )}
 
       {layerScore && layerScore.contributions?.length > 0 && (
         <div className="chart-row">

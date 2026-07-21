@@ -23,10 +23,13 @@ export default function ScreeningView({ onSelectTicker }) {
 
   const passed = data.passed || []
   const excluded = data.hard_excluded || []
+  const sectorFilter = data.sector_filter
 
   const stats = [
     { label: 'Universe Raw', value: data.universe_raw?.toLocaleString() ?? '—' },
-    { label: 'After Cheap Filter', value: data.universe_after_cheap_filter?.toLocaleString() ?? '—' },
+    ...(sectorFilter
+      ? [{ label: `Sektor: ${sectorFilter}`, value: data.universe_after_sector_filter?.toLocaleString() ?? '—' }]
+      : [{ label: 'After Cheap Filter', value: data.universe_after_cheap_filter?.toLocaleString() ?? '—' }]),
     { label: 'Scanned', value: data.universe_scanned ?? '—' },
     { label: 'Passed', value: passed.length, tone: 'good' },
     { label: 'Excluded', value: excluded.length, tone: 'bad' },
@@ -35,6 +38,7 @@ export default function ScreeningView({ onSelectTicker }) {
   const columns = [
     { key: 'ticker', label: 'Ticker', render: (r) => <span className="ticker">{r.ticker}</span> },
     { key: 'exchange', label: 'Exchange', render: (r) => r.exchange },
+    ...(sectorFilter ? [] : [{ key: 'sector', label: 'Sektor', render: (r) => r.sector || '—' }]),
     { key: 'market_cap', label: 'Market Cap', render: (r) => fmtMoney(r.market_cap), sortValue: (r) => r.market_cap },
     {
       key: 'avg_dollar_volume_20d',
@@ -62,6 +66,12 @@ export default function ScreeningView({ onSelectTicker }) {
 
   return (
     <>
+      {sectorFilter && (
+        <div className="gen-sector-warn" style={{ margin: '0 0 1.2rem', maxWidth: 'none' }}>
+          Menampilkan hasil Screening yang difilter ke sektor <strong>{sectorFilter}</strong> saja —
+          bukan full-market. Pakai "Generate → Full Pipeline — Semua Sektor" untuk scan seluruh universe.
+        </div>
+      )}
       <StatCards stats={stats} />
 
       <div style={{ marginTop: '2rem' }}>

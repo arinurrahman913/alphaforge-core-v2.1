@@ -24,9 +24,13 @@ export const api = {
   historical: () => getJSON('/api/historical'),
   ticker: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}`),
   liveQuote: (ticker) => getJSON(`/api/ticker/${encodeURIComponent(ticker)}/live`),
+  sectors: () => getJSON('/api/sectors'),
   // Trigger refresh pipeline dari dashboard. Tidak throw pada 409 (sudah jalan).
-  refresh: async (mode) => {
-    const resp = await fetch(`/api/refresh/${mode}`, { method: 'POST' })
+  // `sector` opsional — filter Screening ke satu sektor GICS (butuh sector_map,
+  // lihat scripts/build_sector_map.py) supaya run jauh lebih cepat dari full-market.
+  refresh: async (mode, sector) => {
+    const qs = sector ? `?sector=${encodeURIComponent(sector)}` : ''
+    const resp = await fetch(`/api/refresh/${mode}${qs}`, { method: 'POST' })
     return resp.json()
   },
   refreshStatus: () => getJSON('/api/refresh/status'),

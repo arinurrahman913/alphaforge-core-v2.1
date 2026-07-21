@@ -23,12 +23,15 @@ import threading
 import time
 from pathlib import Path
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from alphaforge.layer2.sources.live_quote import fetch_live_quote  # noqa: E402
+from alphaforge.layer2.sources.sector_map import (  # noqa: E402
+    KNOWN_SECTORS, load_sector_map_meta as sector_map_meta
+)
 
 DATA_DIR = ROOT / "dashboard" / "data"
 FRONTEND_DIST = ROOT / "frontend" / "dist"
@@ -125,6 +128,7 @@ _refresh_lock = threading.Lock()
 _refresh_state: dict = {
     "running": False,
     "mode": None,
+    "sector": None,
     "started_at": None,
     "finished_at": None,
     "ok": None,
@@ -132,7 +136,7 @@ _refresh_state: dict = {
 }
 
 
-def _run_refresh(mode: str) -> None:
+def _run_refresh(mode: str, sector: str | None = None) -> None:
     script = REFRESH_SCRIPTS[mode]
     ok = False
     msg = ""
@@ -140,14 +144,19 @@ def _run_refresh(mode: str) -> None:
         # mode="full" sekarang scan full-market (~5000+ ticker) secara default
         # (lihat SCREENING_LIMIT di scripts/refresh_full_pipeline.py) — bisa
         # makan waktu berjam-jam, jauh di atas 30 menit lama yang cukup untuk
-        # sample 60-ticker.
-        timeout = 4 * 3600 if mode == "full" else 1800
+        # sample 60-ticker. Kalau `sector` diisi, scope-nya jauh lebih kecil
+        # (satu sektor GICS) jadi tetap cepat walau mode="full".
+        timeout = 4 * 3600 if mode == "full" and not sector else 1800
+        env = dict(os.environ)
+        if sector:
+            env["SCREENING_SECTOR"] = sector
         proc = subprocess.run(
             [sys.executable, str(script)],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
             timeout=timeout,
+            env=env,
         )
         ok = proc.returncode == 0
         out = (proc.stdout or "").strip()
@@ -170,20 +179,38 @@ def _run_refresh(mode: str) -> None:
 def start_refresh(mode: str):
     if mode not in REFRESH_SCRIPTS:
         return jsonify({"error": f"unknown mode '{mode}'"}), 404
+    sector = request.args.get("sector") or None
     with _refresh_lock:
         if _refresh_state["running"]:
             return jsonify({"running": True, "mode": _refresh_state["mode"], "already": True}), 409
         _refresh_state.update(
-            running=True, mode=mode, started_at=time.time(), finished_at=None, ok=None, message=None
+            running=True, mode=mode, sector=sector, started_at=time.time(), finished_at=None, ok=None, message=None
         )
-    threading.Thread(target=_run_refresh, args=(mode,), daemon=True).start()
-    return jsonify({"started": True, "mode": mode})
+    threading.Thread(target=_run_refresh, args=(mode, sector), daemon=True).start()
+    return jsonify({"started": True, "mode": mode, "sector": sector})
 
 
 @app.get("/api/refresh/status")
 def refresh_status():
     with _refresh_lock:
         return jsonify(dict(_refresh_state))
+
+
+@app.get("/api/sectors")
+def get_sectors():
+    """Daftar sektor GICS yang bisa dipilih di dashboard + status sector_map
+    (kapan terakhir dibangun, berapa ticker sudah termapping) — dipakai
+    tombol screening per-sektor supaya user tahu mapnya sudah siap atau belum
+    sebelum klik (kalau belum dibangun, scripts/build_sector_map.py perlu
+    dijalankan dulu, kalau tidak filter sektor apapun hasilkan 0 kandidat)."""
+    meta = sector_map_meta()
+    return jsonify({
+        "known_sectors": KNOWN_SECTORS,
+        "map_built": meta is not None,
+        "generated_at": meta.get("generated_at") if meta else None,
+        "total_mapped": meta.get("total_mapped") if meta else 0,
+        "coverage": meta.get("coverage") if meta else {},
+    })
 
 
 @app.get("/")

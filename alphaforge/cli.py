@@ -33,6 +33,8 @@ def main() -> None:
     screening_parser.add_argument("--out", type=str, default=None, help="Tulis JSON ke file (default: stdout)")
     screening_parser.add_argument("--limit", type=int, default=None,
                                    help="Batasi jumlah ticker yang di-screening (buat testing)")
+    screening_parser.add_argument("--sector", type=str, default=None,
+                                   help="Filter ke satu sektor GICS (butuh sector_map — lihat scripts/build_sector_map.py)")
 
     evidence_parser = sub.add_parser("evidence", help="Jalankan Evidence (Layer 2, tahap 2) — butuh Screening dulu")
     evidence_parser.add_argument("--screening-out", type=str, required=True,
@@ -111,7 +113,7 @@ def main() -> None:
         _write(json.dumps(package.to_dict(), indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "screening":
-        result, _ = run_screening(limit=args.limit)
+        result, _ = run_screening(limit=args.limit, sector=args.sector)
         print(
             f"Universe mentah: {result.universe_raw} · setelah filter tipe: "
             f"{result.universe_after_cheap_filter} · di-scan: {result.universe_scanned} · "

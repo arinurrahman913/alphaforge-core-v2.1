@@ -52,6 +52,12 @@ LOG_DIR.mkdir(exist_ok=True)
 _screening_limit_raw = os.environ.get("SCREENING_LIMIT")
 SCREENING_LIMIT = int(_screening_limit_raw) if _screening_limit_raw else None
 
+# SCREENING_SECTOR: filter ke satu sektor GICS (mis. "Technology") pakai
+# sector_map cache (lihat alphaforge/layer2/sources/sector_map.py +
+# scripts/build_sector_map.py) — supaya screening harian tidak harus scan
+# seluruh universe kalau user cuma mau fokus satu sektor lewat dashboard.
+SCREENING_SECTOR = os.environ.get("SCREENING_SECTOR") or None
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -74,8 +80,9 @@ def main() -> int:
     log.info("Full pipeline refresh started")
 
     try:
-        screening_result, price_cache = run_screening(limit=SCREENING_LIMIT)
-        log.info(f"Screening: {len(screening_result.passed)} passed / {screening_result.universe_scanned} scanned")
+        screening_result, price_cache = run_screening(limit=SCREENING_LIMIT, sector=SCREENING_SECTOR)
+        sector_note = f" (sektor: {SCREENING_SECTOR})" if SCREENING_SECTOR else ""
+        log.info(f"Screening{sector_note}: {len(screening_result.passed)} passed / {screening_result.universe_scanned} scanned")
 
         evidence_packages = run_evidence(screening_result)
         log.info(f"Evidence: {len(evidence_packages)} packages")

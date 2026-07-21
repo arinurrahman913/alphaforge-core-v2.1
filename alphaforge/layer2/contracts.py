@@ -29,6 +29,7 @@ class ScreeningCandidate:
     avg_dollar_volume_20d: float | None = None
     last_price: float | None = None
     price_history_days: int | None = None
+    sector: str | None = None  # dari sector_map cache, kalau sudah ter-klasifikasi
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -42,12 +43,16 @@ class ScreeningResult:
     passed: list[ScreeningCandidate]
     hard_excluded: list[ScreeningCandidate]
     generated_at: str
+    sector_filter: str | None = None            # sektor yang diminta, kalau screening di-filter per sektor
+    universe_after_sector_filter: int | None = None  # jumlah setelah filter sektor (sebelum --limit)
 
     def to_dict(self) -> dict:
         return {
             "universe_raw": self.universe_raw,
             "universe_after_cheap_filter": self.universe_after_cheap_filter,
             "universe_scanned": self.universe_scanned,
+            "sector_filter": self.sector_filter,
+            "universe_after_sector_filter": self.universe_after_sector_filter,
             "passed_count": len(self.passed),
             "hard_excluded_count": len(self.hard_excluded),
             "generated_at": self.generated_at,

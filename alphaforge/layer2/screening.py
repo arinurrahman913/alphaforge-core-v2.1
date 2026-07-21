@@ -16,6 +16,7 @@ import yfinance as yf
 from ..cache import CACHE_DIR, get as cache_get, set as cache_set
 from .contracts import ScreeningCandidate, ScreeningResult
 from .sources.listing import cheap_filter, fetch_universe
+from .sources.sector_map import load_sector_map
 
 BATCH_SIZE = int(os.environ.get("YF_BATCH_SIZE", "50"))
 BATCH_DELAY_SECONDS = float(os.environ.get("YF_BATCH_DELAY_SECONDS", "2.0"))
@@ -151,25 +152,26 @@ def fetch_fast_info(ticker: str) -> dict | None:
     return data
 
 
-def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | None) -> ScreeningCandidate:
+def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | None,
+                        sector: str | None = None) -> ScreeningCandidate:
     ticker = row.symbol
     exchange = row.exchange
 
     if price_df is None or price_df.empty:
         return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
-                                   hard_exclude_reason="no_price_data")
+                                   hard_exclude_reason="no_price_data", sector=sector)
 
     history_days = len(price_df)
     if history_days < MIN_PRICE_HISTORY_DAYS:
         return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
                                    hard_exclude_reason="insufficient_price_history",
-                                   price_history_days=history_days)
+                                   price_history_days=history_days, sector=sector)
 
     last_price = float(price_df["Close"].iloc[-1])
     if last_price < MIN_PRICE:
         return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
                                    hard_exclude_reason="price_below_minimum",
-                                   last_price=last_price, price_history_days=history_days)
+                                   last_price=last_price, price_history_days=history_days, sector=sector)
 
     window = price_df.iloc[-20:] if history_days >= 20 else price_df
     avg_dollar_volume = float((window["Close"] * window["Volume"]).mean())
@@ -177,7 +179,7 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
         return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
                                    hard_exclude_reason="avg_dollar_volume_below_minimum",
                                    last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
-                                   price_history_days=history_days)
+                                   price_history_days=history_days, sector=sector)
 
     # Get market cap dan categorize ke tier (no hard exclude by market cap anymore)
     market_cap = (fast_info or {}).get("market_cap")
@@ -195,18 +197,35 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
                                soft_flags=soft_flags, market_cap=market_cap,
                                market_cap_tier=market_cap_tier,
                                avg_dollar_volume_20d=avg_dollar_volume, last_price=last_price,
-                               price_history_days=history_days)
+                               price_history_days=history_days, sector=sector)
 
 
-def run_screening(limit: int | None = None) -> tuple[ScreeningResult, dict[str, pd.DataFrame]]:
+def run_screening(limit: int | None = None, sector: str | None = None) -> tuple[ScreeningResult, dict[str, pd.DataFrame]]:
+    """`sector` (opsional): filter ke satu sektor GICS SEBELUM tahap price/volume
+    yang mahal, pakai sector_map cache (lihat sources/sector_map.py) — kalau
+    map belum dibangun (scripts/build_sector_map.py), tickernya belum
+    ter-klasifikasi sama sekali sehingga filter sektor apapun akan hasilkan
+    0 kandidat (bukan silently full-scan)."""
     universe = fetch_universe()
     universe_raw = len(universe)
     survivors_cheap = cheap_filter(universe)
+    universe_after_cheap_filter = len(survivors_cheap)
+
+    sector_map: dict[str, str] = {}
+    universe_after_sector_filter: int | None = None
+    if sector:
+        sector_map = load_sector_map()
+        sector_lower = sector.lower()
+        survivors_cheap = [r for r in survivors_cheap if sector_map.get(r.symbol, "").lower() == sector_lower]
+        universe_after_sector_filter = len(survivors_cheap)
 
     scan_list = survivors_cheap[:limit] if limit else survivors_cheap
     tickers = [r.symbol for r in scan_list]
 
     price_data = fetch_price_history_batch(tickers)
+
+    if not sector:
+        sector_map = load_sector_map()  # non-filtering run masih mau tampilkan sector per kandidat kalau ada
 
     passed: list[ScreeningCandidate] = []
     hard_excluded: list[ScreeningCandidate] = []
@@ -222,7 +241,7 @@ def run_screening(limit: int | None = None) -> tuple[ScreeningResult, dict[str, 
             if last_price_check >= MIN_PRICE and avg_dv_check >= MIN_AVG_DOLLAR_VOLUME:
                 fast_info = fetch_fast_info(row.symbol)
 
-        candidate = evaluate_candidate(row, df, fast_info)
+        candidate = evaluate_candidate(row, df, fast_info, sector=sector_map.get(row.symbol))
         if candidate.passed:
             passed.append(candidate)
             if df is not None and not df.empty:
@@ -232,10 +251,12 @@ def run_screening(limit: int | None = None) -> tuple[ScreeningResult, dict[str, 
 
     result = ScreeningResult(
         universe_raw=universe_raw,
-        universe_after_cheap_filter=len(survivors_cheap),
+        universe_after_cheap_filter=universe_after_cheap_filter,
         universe_scanned=len(scan_list),
         passed=passed,
         hard_excluded=hard_excluded,
         generated_at=datetime.now(timezone.utc).isoformat(),
+        sector_filter=sector,
+        universe_after_sector_filter=universe_after_sector_filter,
     )
     return result, price_cache

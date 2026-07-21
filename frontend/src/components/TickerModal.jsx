@@ -296,6 +296,31 @@ function ModalBody({ data }) {
   )
 }
 
+const ID_MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+function fmtIdDate(d) {
+  return `${d.getUTCDate()} ${ID_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`
+}
+
+// 13F wajib dilaporkan institusi (>$100M AUM) paling lambat 45 hari setelah
+// kuartal tutup — jadi data kuartal berjalan belum akan ADA di manapun
+// (SEC, Yahoo, siapapun) sampai deadline itu lewat, bukan soal cache basi
+// di sisi kita. dateReportedStr = tanggal akhir kuartal yang datanya kita
+// punya (mis. "2026-03-31"); fungsi ini hitung kapan kuartal BERIKUTNYA
+// wajib dilaporkan.
+function nextFilingDeadline(dateReportedStr) {
+  const d = new Date(dateReportedStr + 'T00:00:00Z')
+  if (isNaN(d.getTime())) return null
+  // Date.UTC(year, month+4, 0) = hari terakhir bulan (month+3) — cara aman
+  // hitung "3 bulan lagi, akhir bulan" tanpa overflow kalau tanggal asal
+  // (mis. 31) tidak ada di bulan target (mis. Maret 31 -> Juni cuma 30 hari,
+  // setUTCMonth naif akan overflow diam-diam ke 1 Juli).
+  const nextQuarterEnd = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 4, 0))
+  const deadline = new Date(nextQuarterEnd)
+  deadline.setUTCDate(deadline.getUTCDate() + 45)
+  return deadline
+}
+
 // Yahoo pakai pct_change=100.0 sebagai sentinel "posisi baru" (nggak bisa
 // hitung % kenaikan dari basis 0 saham sebelumnya) — bukan literal "naik
 // 100%" dari posisi lama.
@@ -320,6 +345,9 @@ function InstitutionalHoldersSection({ ownership }) {
   const addedCount = holders.filter((h) => h.pct_change > 0 && h.pct_change < 99.5).length
   const reducedCount = holders.filter((h) => h.pct_change < 0).length
 
+  const latestReportDate = holders.find((h) => h.date_reported)?.date_reported
+  const deadline = latestReportDate ? nextFilingDeadline(latestReportDate) : null
+
   return (
     <div className="msection">
       <div className="msection-title">
@@ -330,6 +358,13 @@ function InstitutionalHoldersSection({ ownership }) {
         <p className="narrative">Detail per-institusi tidak tersedia (data mentah dari Yahoo Finance).</p>
       ) : (
         <>
+          {deadline && (
+            <p className="narrative" style={{ fontSize: 11, color: 'var(--faint)', marginBottom: 8 }}>
+              Data 13F per {fmtIdDate(new Date(latestReportDate + 'T00:00:00Z'))} — ini yang terbaru tersedia di manapun (SEC, Yahoo, dll).
+              13F wajib dilaporkan institusi maks. 45 hari setelah kuartal tutup, jadi kuartal berikutnya baru akan muncul
+              sekitar {fmtIdDate(deadline)}, bukan karena data kita basi.
+            </p>
+          )}
           <p className="narrative" style={{ marginBottom: 10 }}>
             {newCount > 0 && <span style={{ color: 'var(--good)' }}>{newCount} institusi baru masuk</span>}
             {newCount > 0 && (addedCount > 0 || reducedCount > 0) && ' · '}

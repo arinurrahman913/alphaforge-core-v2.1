@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from datetime import datetime, timezone
 
@@ -20,6 +21,8 @@ from .sources.sector_map import load_sector_map
 
 BATCH_SIZE = int(os.environ.get("YF_BATCH_SIZE", "50"))
 BATCH_DELAY_SECONDS = float(os.environ.get("YF_BATCH_DELAY_SECONDS", "2.0"))
+BATCH_FETCH_RETRIES = 2
+BATCH_FETCH_RETRY_BACKOFF_SECONDS = 5.0
 
 PRICE_CACHE_TTL_SECONDS = 6 * 3600
 INFO_CACHE_TTL_SECONDS = 24 * 3600
@@ -84,15 +87,29 @@ def fetch_price_history_batch(tickers: list[str]) -> dict[str, pd.DataFrame]:
     for i, batch in enumerate(_chunks(to_fetch, BATCH_SIZE)):
         if i > 0:
             time.sleep(BATCH_DELAY_SECONDS)
-        try:
-            # period="2y" (bukan "1y") supaya `recent_ipo` bisa membedakan IPO
-            # beneran baru dari perusahaan lama — dengan cap 1y, SEMUA ticker
-            # yang punya histori >=1y ke-cap di ~252 hari yang sama persis
-            # dengan RECENT_IPO_MAX_DAYS, jadi flag itu salah nembak ke hampir
-            # semua ticker (termasuk perusahaan puluhan tahun kayak AAL).
-            data = yf.download(batch, period="2y", group_by="ticker", threads=True,
-                                progress=False, auto_adjust=False)
-        except Exception:
+        data = None
+        last_exc = None
+        for attempt in range(1, BATCH_FETCH_RETRIES + 1):
+            try:
+                # period="2y" (bukan "1y") supaya `recent_ipo` bisa membedakan IPO
+                # beneran baru dari perusahaan lama — dengan cap 1y, SEMUA ticker
+                # yang punya histori >=1y ke-cap di ~252 hari yang sama persis
+                # dengan RECENT_IPO_MAX_DAYS, jadi flag itu salah nembak ke hampir
+                # semua ticker (termasuk perusahaan puluhan tahun kayak AAL).
+                data = yf.download(batch, period="2y", group_by="ticker", threads=True,
+                                    progress=False, auto_adjust=False)
+                break
+            except Exception as exc:  # noqa: BLE001
+                last_exc = exc
+                if attempt < BATCH_FETCH_RETRIES:
+                    time.sleep(BATCH_FETCH_RETRY_BACKOFF_SECONDS)
+        if data is None:
+            # Batch ini gagal total setelah retry — dulu di-skip diam-diam
+            # tanpa jejak sama sekali (sampai N=50 ticker hilang tak
+            # terlacak). Sekarang minimal ke-log supaya kelihatan di
+            # logs/refresh_full_pipeline.log kalau ada yang hilang & kenapa.
+            print(f"[screening] batch {i} ({len(batch)} ticker) gagal setelah {BATCH_FETCH_RETRIES}x percobaan: {last_exc} — dilewati: {batch}",
+                  file=sys.stderr)
             continue
         for t in batch:
             try:

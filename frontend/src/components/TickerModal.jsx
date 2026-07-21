@@ -296,11 +296,29 @@ function ModalBody({ data }) {
   )
 }
 
+// Yahoo pakai pct_change=100.0 sebagai sentinel "posisi baru" (nggak bisa
+// hitung % kenaikan dari basis 0 saham sebelumnya) — bukan literal "naik
+// 100%" dari posisi lama.
+function holderSignal(pctChange) {
+  if (pctChange === null || pctChange === undefined) return { label: '—', tone: 'neutral' }
+  if (pctChange >= 99.5) return { label: '🆕 Baru Masuk', tone: 'good' }
+  if (pctChange > 0) return { label: `▲ +${pctChange.toFixed(1)}%`, tone: 'good' }
+  if (pctChange < 0) return { label: `▼ ${pctChange.toFixed(1)}%`, tone: 'bad' }
+  return { label: '— Tetap', tone: 'neutral' }
+}
+
 function InstitutionalHoldersSection({ ownership }) {
   const holders = ownership.top_holders || []
   const pct = ownership.percentage
 
   if ((pct === null || pct === undefined) && holders.length === 0) return null
+
+  // Urutkan: posisi baru/nambah paling banyak duluan — lebih actionable
+  // daripada urutan default Yahoo (yang cuma berdasar % kepemilikan).
+  const sorted = [...holders].sort((a, b) => (b.pct_change ?? -Infinity) - (a.pct_change ?? -Infinity))
+  const newCount = holders.filter((h) => h.pct_change >= 99.5).length
+  const addedCount = holders.filter((h) => h.pct_change > 0 && h.pct_change < 99.5).length
+  const reducedCount = holders.filter((h) => h.pct_change < 0).length
 
   return (
     <div className="msection">
@@ -311,45 +329,53 @@ function InstitutionalHoldersSection({ ownership }) {
       {holders.length === 0 ? (
         <p className="narrative">Detail per-institusi tidak tersedia (data mentah dari Yahoo Finance).</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--sans)', fontSize: 12.5 }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid var(--rule)', color: 'var(--faint)', textAlign: 'left' }}>
-              <th style={{ padding: '4px 8px 8px 0', fontWeight: 600 }}>Institusi</th>
-              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>% Held</th>
-              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Shares</th>
-              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Value</th>
-              <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Δ vs Sebelumnya</th>
-              <th style={{ padding: '4px 0 8px 8px', fontWeight: 600, textAlign: 'right' }}>Dilaporkan</th>
-            </tr>
-          </thead>
-          <tbody>
-            {holders.map((h, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid var(--rule)' }}>
-                <td style={{ padding: '6px 8px 6px 0' }}>{h.holder}</td>
-                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
-                  {h.pct_held !== null && h.pct_held !== undefined ? `${h.pct_held.toFixed(2)}%` : '—'}
-                </td>
-                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
-                  {h.shares !== null && h.shares !== undefined ? h.shares.toLocaleString() : '—'}
-                </td>
-                <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>{fmtMoney(h.value_usd)}</td>
-                <td
-                  style={{
-                    padding: '6px 8px',
-                    textAlign: 'right',
-                    fontFamily: 'var(--mono)',
-                    color: h.pct_change > 0 ? 'var(--good)' : h.pct_change < 0 ? 'var(--bad)' : 'var(--dim)',
-                  }}
-                >
-                  {h.pct_change !== null && h.pct_change !== undefined ? fmtPct(h.pct_change) : '—'}
-                </td>
-                <td style={{ padding: '6px 0 6px 8px', textAlign: 'right', color: 'var(--faint)', fontSize: 11 }}>
-                  {h.date_reported || '—'}
-                </td>
+        <>
+          <p className="narrative" style={{ marginBottom: 10 }}>
+            {newCount > 0 && <span style={{ color: 'var(--good)' }}>{newCount} institusi baru masuk</span>}
+            {newCount > 0 && (addedCount > 0 || reducedCount > 0) && ' · '}
+            {addedCount > 0 && <span style={{ color: 'var(--good)' }}>{addedCount} nambah posisi</span>}
+            {addedCount > 0 && reducedCount > 0 && ' · '}
+            {reducedCount > 0 && <span style={{ color: 'var(--bad)' }}>{reducedCount} kurangi posisi</span>}
+            {newCount === 0 && addedCount === 0 && reducedCount === 0 && 'Tidak ada perubahan posisi signifikan dari laporan sebelumnya.'}
+            {' '}(dari {holders.length} institusi terbesar, laporan 13F kuartalan terakhir)
+          </p>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--sans)', fontSize: 12.5 }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--rule)', color: 'var(--faint)', textAlign: 'left' }}>
+                <th style={{ padding: '4px 8px 8px 0', fontWeight: 600 }}>Institusi</th>
+                <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>% Held</th>
+                <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Shares</th>
+                <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Value</th>
+                <th style={{ padding: '4px 8px 8px', fontWeight: 600, textAlign: 'right' }}>Aktivitas</th>
+                <th style={{ padding: '4px 0 8px 8px', fontWeight: 600, textAlign: 'right' }}>Dilaporkan</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sorted.map((h, i) => {
+                const signal = holderSignal(h.pct_change)
+                const toneColor = signal.tone === 'good' ? 'var(--good)' : signal.tone === 'bad' ? 'var(--bad)' : 'var(--dim)'
+                return (
+                  <tr key={i} style={{ borderBottom: '1px solid var(--rule)' }}>
+                    <td style={{ padding: '6px 8px 6px 0' }}>{h.holder}</td>
+                    <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
+                      {h.pct_held !== null && h.pct_held !== undefined ? `${h.pct_held.toFixed(2)}%` : '—'}
+                    </td>
+                    <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>
+                      {h.shares !== null && h.shares !== undefined ? h.shares.toLocaleString() : '—'}
+                    </td>
+                    <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)' }}>{fmtMoney(h.value_usd)}</td>
+                    <td style={{ padding: '6px 8px', textAlign: 'right', fontFamily: 'var(--mono)', fontWeight: 600, color: toneColor }}>
+                      {signal.label}
+                    </td>
+                    <td style={{ padding: '6px 0 6px 8px', textAlign: 'right', color: 'var(--faint)', fontSize: 11 }}>
+                      {h.date_reported || '—'}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   )

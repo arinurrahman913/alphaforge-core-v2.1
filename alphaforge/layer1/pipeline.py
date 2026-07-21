@@ -16,6 +16,7 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
+from .sources import yahoo
 from .components import (
     business_cycle_stage,
     commodity_signals,
@@ -397,6 +398,46 @@ def _build_context_summary(components: dict, conflicts_found: list[str], layer_s
     )
 
 
+def _get_spx_validation_history() -> list[dict] | None:
+    """Fetch S&P 500 last 90 days untuk validation chart overlay.
+    Normalisasi 0-100 relative ke 52-week min/max untuk compare dengan Layer Score."""
+    try:
+        df = yahoo.history("^GSPC", period="1y")
+        close = df["Close"]
+        ma50 = close.rolling(50).mean()
+        ma200 = close.rolling(200).mean()
+        # Ambil last 90 hari
+        end_idx = len(df) - 1
+        start_idx = max(0, end_idx - 90)
+        df_window = df.iloc[start_idx:end_idx+1]
+        close_window = close.iloc[start_idx:end_idx+1]
+        ma50_window = ma50.iloc[start_idx:end_idx+1]
+        ma200_window = ma200.iloc[start_idx:end_idx+1]
+
+        # Normalisasi harga ke 0-100: (price - min52w) / (max52w - min52w) * 100
+        min_52w = close.iloc[-252:].min()  # last 52w
+        max_52w = close.iloc[-252:].max()
+        price_range = max_52w - min_52w
+        if price_range == 0:
+            price_range = 1
+
+        history = []
+        for idx, (dt, row) in enumerate(df_window.iterrows()):
+            norm_price = (row["Close"] - min_52w) / price_range * 100.0
+            ma50_val = float(ma50_window.iloc[idx]) if ma50_window.iloc[idx] is not None else None
+            ma200_val = float(ma200_window.iloc[idx]) if ma200_window.iloc[idx] is not None else None
+            history.append({
+                "date": dt.strftime("%Y-%m-%d"),
+                "price": float(row["Close"]),
+                "ma50": ma50_val,
+                "ma200": ma200_val,
+                "norm_score": round(norm_price, 1),
+            })
+        return history if history else None
+    except Exception:
+        return None
+
+
 def build_market_context_package(price_cache: dict | None = None, session_id: str | None = None) -> MarketContextPackage:
     session_id = session_id or f"session-{uuid.uuid4().hex[:12]}"
     today = date.today()
@@ -448,10 +489,13 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
     layer_score = _build_layer_score(components)
     context_summary = _build_context_summary(components, conflicts_found, layer_score)
 
+    spx_history = _get_spx_validation_history()
+
     return MarketContextPackage(
         session_id=session_id,
         components=components,
         context_summary=context_summary,
         layer_score=layer_score,
         generated_at=now_iso(),
+        spx_history=spx_history,
     )

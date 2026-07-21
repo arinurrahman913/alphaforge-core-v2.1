@@ -146,6 +146,7 @@ class MarketContextPackage:
     context_summary: ContextSummary
     layer_score: LayerScore | None = None
     generated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    spx_history: list[dict] | None = None  # validation chart: [{date, price, ma50, ma200, norm_score}, ...] last 90 days
 
     def to_dict(self) -> dict:
         return {
@@ -154,6 +155,7 @@ class MarketContextPackage:
             "components": {k: v.to_dict() for k, v in self.components.items()},
             "context_summary": self.context_summary.to_dict(),
             "layer_score": self.layer_score.to_dict() if self.layer_score else None,
+            "spx_history": self.spx_history,
         }
 
 

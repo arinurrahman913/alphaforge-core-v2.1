@@ -57,6 +57,38 @@ export default function Layer1ComponentModal({ component, onClose }) {
             <div className="l1sum-interp"><span className="l1sum-so">So what?</span> {interp}</div>
           </div>
 
+          {c._key === "market_regime" && c.value?.aggregate_signals && (
+            <div className="msection">
+              <div className="msection-title">Agregasi Konteks</div>
+              <div className="agg-summary">
+                <span className="agg-bull">Bullish {c.value.aggregate_summary?.bullish_count ?? 0}</span>
+                <span className="agg-neutral">Neutral {c.value.aggregate_summary?.neutral_count ?? 0}</span>
+                <span className="agg-bear">Bearish {c.value.aggregate_summary?.bearish_count ?? 0}</span>
+              </div>
+              <div style={{ marginTop: 12 }}>
+                {Object.entries(c.value.aggregate_signals).map(([comp, dir]) => (
+                  <div key={comp} className="agg-signal">
+                    <span className="agg-comp">{prettyLabel(comp)}</span>
+                    <span className={`agg-dir ${dir}`}>{dir}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {c._key === "market_regime" && c.value?.triggers && (
+            <div className="msection">
+              <div className="msection-title">Apa yang bisa ubah regime ini?</div>
+              <ul style={{ paddingLeft: 18, marginTop: 8 }}>
+                {c.value.triggers.map((trigger, i) => (
+                  <li key={i} className="narrative" style={{ fontSize: 12.5, marginBottom: 6 }}>
+                    {trigger}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {c.narrative && (
             <div className="msection">
               <div className="msection-title">Reasoning</div>

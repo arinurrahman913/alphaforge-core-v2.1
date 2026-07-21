@@ -418,6 +418,17 @@ tbody tr:last-child td{border-bottom:none}
 .mcell-val{font-family:var(--mono);font-size:16px;font-weight:600}
 .msection{margin-bottom:20px}
 .msection-title{font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:12px}
+/* Market Regime aggregation section */
+.agg-summary{display:flex;gap:12px;margin-bottom:10px;font-family:var(--sans);font-size:12px;font-weight:700}
+.agg-bull{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent);padding:4px 8px;border-radius:6px}
+.agg-neutral{color:var(--gold-hi);background:color-mix(in srgb,var(--gold) 15%,transparent);padding:4px 8px;border-radius:6px}
+.agg-bear{color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent);padding:4px 8px;border-radius:6px}
+.agg-signal{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-family:var(--sans);font-size:12px;border-bottom:1px solid var(--rule-faint)}
+.agg-comp{color:var(--text);font-weight:600}
+.agg-dir{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:capitalize}
+.agg-dir.bullish{color:var(--good)}
+.agg-dir.bearish{color:var(--bad)}
+.agg-dir.neutral{color:var(--gold-hi)}
 .flag{background:rgba(251,113,133,.08);border-left:3px solid var(--bad);border-radius:0 8px 8px 0;padding:9px 12px;margin-bottom:7px;font-size:13px}
 .flag.medium{border-left-color:var(--warn);background:rgba(251,191,122,.08)}
 .factor{padding:3px 0;font-size:13px}

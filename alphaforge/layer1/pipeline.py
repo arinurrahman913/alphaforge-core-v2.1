@@ -31,6 +31,7 @@ from .components import (
     yield_curve,
 )
 from .components import market_sentiment as market_sentiment_mod
+from .components import market_regime as market_regime_mod
 from .contracts import (
     ComponentReading, Confidence, Contribution, ContextSummary, LayerScore,
     MarketContextPackage, ScoreContribution, now_iso,
@@ -430,6 +431,10 @@ def build_market_context_package(price_cache: dict | None = None, session_id: st
             name="market_sentiment", value=None, status="missing", kind="derived",
             note=f"Komponen gagal tak terduga: {type(exc).__name__}: {exc}",
         )
+
+    # Enrich market_regime dengan agregasi konteks (post-pass) — klasifikasi inti
+    # (MA50/MA200) tetap, cuma tambahkan aggregate_signals + triggers untuk reasoning.
+    market_regime_mod.enrich_regime_aggregation(components.get("market_regime"), components)
 
     # Post-processing terpusat: freshness -> confidence -> contribution,
     # urutannya penting karena confidence butuh freshness duluan.

@@ -34,18 +34,23 @@ export function describeComponent(key, c) {
         accent,
       }
 
-    case 'market_regime':
+    case 'market_regime': {
+      const agg = v.aggregate_summary
+      const bullish = agg?.bullish_count ?? '—'
+      const bearish = agg?.bearish_count ?? '—'
       return {
         hero: Math.round(v.price).toLocaleString(),
         unit: 'SPX',
         delta: { text: cap(v.regime), dir: v.regime === 'bull' ? 'up' : v.regime === 'bear' ? 'down' : 'flat' },
         stats: [
+          { l: 'Agregasi', v: `Bullish ${bullish} / Bearish ${bearish}` },
           { l: 'ke MA200', v: `${sgn(v.distance_to_ma200_pct)}%` },
           { l: 'MA50', v: Math.round(v.ma50).toLocaleString() },
         ],
         trend: v.regime === 'bull' ? 'up' : v.regime === 'bear' ? 'down' : 'flat',
         accent,
       }
+    }
 
     case 'volatility_index':
       return {

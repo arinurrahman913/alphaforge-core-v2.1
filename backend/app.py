@@ -137,12 +137,17 @@ def _run_refresh(mode: str) -> None:
     ok = False
     msg = ""
     try:
+        # mode="full" sekarang scan full-market (~5000+ ticker) secara default
+        # (lihat SCREENING_LIMIT di scripts/refresh_full_pipeline.py) — bisa
+        # makan waktu berjam-jam, jauh di atas 30 menit lama yang cukup untuk
+        # sample 60-ticker.
+        timeout = 4 * 3600 if mode == "full" else 1800
         proc = subprocess.run(
             [sys.executable, str(script)],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
-            timeout=1800,
+            timeout=timeout,
         )
         ok = proc.returncode == 0
         out = (proc.stdout or "").strip()

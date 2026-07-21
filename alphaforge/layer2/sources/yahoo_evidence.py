@@ -3,11 +3,17 @@
 Evidence stage: lengkap dari Yahoo fast_info, extended historical OHLCV,
 banyak fundamental fields. Dengan caching untuk performance.
 
+Batching & delay antar request mengikuti pola yang sama dengan
+sources/finnhub.py — perlu untuk full-market run (5000+ ticker) supaya
+tidak kena throttle/soft-block dari Yahoo karena panggilan serial tanpa jeda.
+
 Lihat 03_LAYER2_SPECS/02_EVIDENCE.md §1.1-1.2.
 """
 from __future__ import annotations
 
 import os
+import time
+from dataclasses import asdict
 from datetime import datetime, timezone
 import yfinance as yf
 from ...cache import get as cache_get, set as cache_set
@@ -19,10 +25,60 @@ PRICE_CACHE_TTL = 6 * 3600  # 6 jam
 FUNDAMENTAL_CACHE_TTL = 24 * 3600  # 24 jam
 OWNERSHIP_CACHE_TTL = 24 * 3600  # 24 jam
 
+YF_EVIDENCE_BATCH_SIZE = int(os.environ.get("YF_EVIDENCE_BATCH_SIZE", "20"))
+YF_EVIDENCE_BATCH_DELAY_SECONDS = float(os.environ.get("YF_EVIDENCE_BATCH_DELAY_SECONDS", "2.0"))
+
+_batch_counter = 0
+_batch_last_time = None
+
+
+def reset_batch_tracking():
+    """Reset batch counter (dipanggil di awal evidence run)."""
+    global _batch_counter, _batch_last_time
+    _batch_counter = 0
+    _batch_last_time = None
+
+
+def _apply_batch_delay():
+    """Jeda tiap YF_EVIDENCE_BATCH_SIZE panggilan network — hanya dipanggil
+    di jalur cache-miss supaya re-run yang kena cache tetap cepat."""
+    global _batch_counter, _batch_last_time
+    _batch_counter += 1
+    if _batch_counter >= YF_EVIDENCE_BATCH_SIZE:
+        if _batch_last_time is None:
+            _batch_last_time = time.time()
+        elapsed = time.time() - _batch_last_time
+        if elapsed < YF_EVIDENCE_BATCH_DELAY_SECONDS:
+            time.sleep(YF_EVIDENCE_BATCH_DELAY_SECONDS - elapsed)
+        _batch_counter = 0
+        _batch_last_time = time.time()
+
 
 def fetch_price_market_data(ticker: str) -> PriceMarketData:
-    """Ambil harga & 1-year historical OHLCV dari Yahoo Finance."""
+    """Ambil harga & 1-year historical OHLCV dari Yahoo Finance (cached 6h)."""
+    cached = cache_get("price_market_data", ticker, PRICE_CACHE_TTL)
+    if cached is not None:
+        meta = cached.get("_metadata", {})
+        return PriceMarketData(
+            metadata=SourceMetadata(**meta) if meta else SourceMetadata(
+                source="yahoo_finance", fetched_at=datetime.now(timezone.utc).isoformat(), status="ok"
+            ),
+            last_price=cached.get("last_price"),
+            open=cached.get("open"),
+            high=cached.get("high"),
+            low=cached.get("low"),
+            close=cached.get("close"),
+            volume=cached.get("volume"),
+            market_cap=cached.get("market_cap"),
+            shares_outstanding=cached.get("shares_outstanding"),
+            beta=cached.get("beta"),
+            high_52w=cached.get("high_52w"),
+            low_52w=cached.get("low_52w"),
+            price_history=[PriceBar(**b) for b in cached.get("price_history", [])]
+        )
+
     try:
+        _apply_batch_delay()
         t = yf.Ticker(ticker)
         fi = t.fast_info
 
@@ -66,7 +122,7 @@ def fetch_price_market_data(ticker: str) -> PriceMarketData:
             status="ok"
         )
 
-        return PriceMarketData(
+        result = PriceMarketData(
             metadata=metadata,
             last_price=last_price,
             open=open_price,
@@ -81,6 +137,13 @@ def fetch_price_market_data(ticker: str) -> PriceMarketData:
             low_52w=low_52w,
             price_history=price_history
         )
+
+        to_cache = asdict(result)
+        to_cache["_metadata"] = {"source": metadata.source, "fetched_at": metadata.fetched_at, "status": metadata.status}
+        del to_cache["metadata"]
+        cache_set("price_market_data", ticker, to_cache)
+
+        return result
     except Exception as e:
         metadata = SourceMetadata(
             source="yahoo_finance",
@@ -128,6 +191,7 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
         )
 
     try:
+        _apply_batch_delay()
         t = yf.Ticker(ticker)
         info = t.info
 
@@ -218,6 +282,7 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
         )
 
     try:
+        _apply_batch_delay()
         t = yf.Ticker(ticker)
         info = t.info
 

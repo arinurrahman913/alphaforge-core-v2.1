@@ -17,9 +17,10 @@ from .contracts import (
     NewsCollection, SecFilings, SourceMetadata
 )
 from .sources.yahoo_evidence import (
-    fetch_price_market_data, fetch_fundamental_data, fetch_institutional_ownership
+    fetch_price_market_data, fetch_fundamental_data, fetch_institutional_ownership,
+    reset_batch_tracking as reset_yahoo_batch_tracking
 )
-from .sources.finnhub import fetch_company_news, reset_batch_tracking
+from .sources.finnhub import fetch_company_news, reset_batch_tracking as reset_finnhub_batch_tracking
 from .sources.sec_edgar import fetch_sec_filings
 from .sources.sec_parser import fetch_quarterly_financials
 
@@ -61,7 +62,8 @@ def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage 
 def run_evidence(screening_result: ScreeningResult) -> list[EvidencePackage]:
     """Jalankan Evidence collection untuk semua kandidat dari Screening."""
     packages = []
-    reset_batch_tracking()  # Reset Finnhub rate limit tracking
+    reset_finnhub_batch_tracking()  # Reset Finnhub rate limit tracking
+    reset_yahoo_batch_tracking()  # Reset Yahoo Finance rate limit tracking
 
     passed_count = len(screening_result.passed)
     for i, candidate in enumerate(screening_result.passed, 1):

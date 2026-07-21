@@ -34,7 +34,13 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     """
 
     # 1. Identitas & Klasifikasi
-    screening_flags = candidate.soft_flags if candidate else []
+    screening_flags = list(candidate.soft_flags) if candidate else []
+    # no_institutional_data baru bisa diketahui di sini (Knowledge), bukan
+    # Screening — kepemilikan institusional cuma ada setelah Evidence fetch
+    # Yahoo .info, panggilan yang sengaja tidak dilakukan di Screening biar
+    # tetap murah di skala full-market (lihat sources/yahoo_evidence.py).
+    if not evidence.institutional_ownership.percentage:
+        screening_flags.append("no_institutional_data")
     size_category = infer_size_category(evidence.price_market.market_cap, screening_flags)
     sector = evidence.fundamental.sector
 

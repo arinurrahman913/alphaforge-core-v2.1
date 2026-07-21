@@ -27,8 +27,9 @@ INFO_CACHE_TTL_SECONDS = 24 * 3600
 MIN_AVG_DOLLAR_VOLUME = 300_000
 MIN_PRICE = 0.50
 MIN_PRICE_HISTORY_DAYS = 20
+MIN_MARKET_CAP = 30_000_000  # 03_LAYER2_SPECS/01_SCREENING.md — hard exclude, bukan cuma tier
 
-# Market cap tiers (no longer hard exclude by market cap, just categorize)
+# Market cap tiers (kategorisasi untuk kandidat yang lolos MIN_MARKET_CAP di atas)
 MICRO_CAP_THRESHOLD = 300_000_000
 SMALL_CAP_THRESHOLD = 2_000_000_000
 MID_CAP_THRESHOLD = 10_000_000_000
@@ -36,6 +37,13 @@ LARGE_CAP_THRESHOLD = 100_000_000_000
 
 RECENT_IPO_MAX_DAYS = 252
 LOW_LIQUIDITY_MAX = 1_000_000
+
+# Frasa nama sekuritas yang menandakan ADR (American Depositary Receipt/Shares)
+# — heuristik teks sama seperti NON_COMMON_STOCK_KEYWORDS di sources/listing.py,
+# dipakai sebagai soft flag (bukan exclude, ADR tetap sekuritas valid untuk
+# screening — cuma perlu ditandai karena nuansa regulasi/pelaporan beda dari
+# domestic issuer biasa).
+ADR_KEYWORDS = ["american depositary shares", "american depositary receipt"]
 
 
 def _chunks(seq: list, size: int):
@@ -77,7 +85,12 @@ def fetch_price_history_batch(tickers: list[str]) -> dict[str, pd.DataFrame]:
         if i > 0:
             time.sleep(BATCH_DELAY_SECONDS)
         try:
-            data = yf.download(batch, period="1y", group_by="ticker", threads=True,
+            # period="2y" (bukan "1y") supaya `recent_ipo` bisa membedakan IPO
+            # beneran baru dari perusahaan lama — dengan cap 1y, SEMUA ticker
+            # yang punya histori >=1y ke-cap di ~252 hari yang sama persis
+            # dengan RECENT_IPO_MAX_DAYS, jadi flag itu salah nembak ke hampir
+            # semua ticker (termasuk perusahaan puluhan tahun kayak AAL).
+            data = yf.download(batch, period="2y", group_by="ticker", threads=True,
                                 progress=False, auto_adjust=False)
         except Exception:
             continue
@@ -152,6 +165,11 @@ def fetch_fast_info(ticker: str) -> dict | None:
     return data
 
 
+def _is_adr(security_name: str) -> bool:
+    name_lower = (security_name or "").lower()
+    return any(kw in name_lower for kw in ADR_KEYWORDS)
+
+
 def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | None,
                         sector: str | None = None) -> ScreeningCandidate:
     ticker = row.symbol
@@ -181,9 +199,16 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
                                    last_price=last_price, avg_dollar_volume_20d=avg_dollar_volume,
                                    price_history_days=history_days, sector=sector)
 
-    # Get market cap dan categorize ke tier (no hard exclude by market cap anymore)
+    # Get market cap dan categorize ke tier
     market_cap = (fast_info or {}).get("market_cap")
     market_cap_tier = _get_market_cap_tier(market_cap)
+
+    if market_cap is not None and market_cap < MIN_MARKET_CAP:
+        return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=False,
+                                   hard_exclude_reason="market_cap_below_minimum",
+                                   market_cap=market_cap, market_cap_tier=market_cap_tier,
+                                   avg_dollar_volume_20d=avg_dollar_volume, last_price=last_price,
+                                   price_history_days=history_days, sector=sector)
 
     soft_flags = []
     if history_days < RECENT_IPO_MAX_DAYS:
@@ -192,6 +217,8 @@ def evaluate_candidate(row, price_df: pd.DataFrame | None, fast_info: dict | Non
         soft_flags.append("low_liquidity")
     if market_cap is None:
         soft_flags.append("market_cap_unavailable")
+    if _is_adr(row.security_name):
+        soft_flags.append("adr")
 
     return ScreeningCandidate(ticker=ticker, exchange=exchange, passed=True,
                                soft_flags=soft_flags, market_cap=market_cap,

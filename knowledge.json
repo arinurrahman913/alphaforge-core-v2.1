@@ -1,13 +1,13 @@
 {
   "evidence_count": 46,
   "knowledge_generated": 46,
-  "generated_at": "2026-07-20T09:24:48.461886+00:00",
+  "generated_at": "2026-07-21T09:57:02.005160+00:00",
   "profiles": [
     {
       "ticker": "AAL",
       "exchange": "NASDAQ",
       "sector": "Industrials",
-      "size_category": "mid",
+      "size_category": "large",
       "screening_flags": [
         "recent_ipo"
       ],
@@ -76,25 +76,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 19.74419878627984,
+        "return_1y": 22.889616220390423,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.046881103506268,
+        "volatility_daily": 3.0456968197205,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.71370006,
+        "institutional_pct": 0.71449,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 48.32258,
+        "pe_ratio_trailing": 48.83871,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.1769394785645458,
+        "ps_ratio": 0.1788293623548837,
         "ev_ebitda": null,
         "pb_ratio": -6.164,
-        "fcf_yield": 8.691604630948477
+        "fcf_yield": 8.599751019842612
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -104,7 +104,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:24:48.461886+00:00",
+        "evidence_date": "2026-07-21T09:57:02.005160+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -188,25 +188,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 257.701734767942,
+        "return_1y": 264.9309185745221,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 8.879946637149198,
+        "volatility_daily": 8.87879143258531,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.68873,
+        "institutional_pct": 0.6877,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 16.208406434571575,
+        "ps_ratio": 16.30494987568118,
         "ev_ebitda": null,
         "pb_ratio": 14.005,
-        "fcf_yield": -5.422263176806533
+        "fcf_yield": -5.390157347001341
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -216,7 +216,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:24:51.060322+00:00",
+        "evidence_date": "2026-07-21T09:57:06.310272+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -300,25 +300,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 42.19620254273809,
+        "return_1y": 38.43166228908776,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.954593845152555,
+        "volatility_daily": 3.969210126234195,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.87716,
+        "institutional_pct": 0.87685996,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 78.46479,
+        "pe_ratio_trailing": 73.15493,
         "pe_ratio_forward": null,
-        "ps_ratio": 5.644304211452481,
+        "ps_ratio": 5.262343525567924,
         "ev_ebitda": null,
         "pb_ratio": 11.413,
-        "fcf_yield": -2.3572229222900183
+        "fcf_yield": -2.5283190280091006
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -328,7 +328,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:24:53.625891+00:00",
+        "evidence_date": "2026-07-21T09:57:11.027216+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -412,25 +412,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 58.66276325419365,
+        "return_1y": 54.31364988654702,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5392005841911052,
+        "volatility_daily": 1.5460265066690935,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.66203004,
+        "institutional_pct": 0.66213,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 40.502426,
+        "pe_ratio_trailing": 39.53874,
         "pe_ratio_forward": null,
-        "ps_ratio": 10.858001407713767,
+        "ps_ratio": 10.625381266091985,
         "ev_ebitda": null,
         "pb_ratio": 7.26,
-        "fcf_yield": 2.062336520446281
+        "fcf_yield": 2.1074869956568927
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -440,7 +440,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:24:56.733508+00:00",
+        "evidence_date": "2026-07-21T09:57:14.859719+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -524,15 +524,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -49.5697057553589,
+        "return_1y": -53.916664918263756,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 7.807712889607018,
+        "volatility_daily": 7.813301123086699,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.56235003,
+        "institutional_pct": 0.56157,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -542,7 +542,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 3.987,
-        "fcf_yield": -26.85360428460406
+        "fcf_yield": -28.45607933504516
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -552,7 +552,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:24:58.584681+00:00",
+        "evidence_date": "2026-07-21T09:57:17.031900+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -636,25 +636,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -1.666674945089223,
+        "return_1y": -10.546874490682956,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 8.141440391827636,
+        "volatility_daily": 8.13409966294071,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.36328,
+        "institutional_pct": 0.3632,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 19.769601154961073,
+        "ps_ratio": 19.183215213182113,
         "ev_ebitda": null,
         "pb_ratio": 0.852,
-        "fcf_yield": -0.18028440766625586
+        "fcf_yield": -0.1857952795927093
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -664,7 +664,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:00.708408+00:00",
+        "evidence_date": "2026-07-21T09:57:19.709461+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -748,25 +748,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 44.308038505877605,
+        "return_1y": 12.621360841374058,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.90860197867579,
+        "volatility_daily": 4.864812911871198,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.42676997,
+        "institutional_pct": 0.42987,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 24.924906099656436,
+        "ps_ratio": 22.36109152668586,
         "ev_ebitda": null,
         "pb_ratio": 3.086,
-        "fcf_yield": -5.776326941812547
+        "fcf_yield": -6.438612643473752
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -776,7 +776,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:02.510535+00:00",
+        "evidence_date": "2026-07-21T09:57:22.108055+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -860,25 +860,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 6.221545340194,
+        "return_1y": -3.9999997174298323,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.252482307461453,
+        "volatility_daily": 3.283329855352535,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.70372003,
+        "institutional_pct": 0.70375997,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.368421,
+        "pe_ratio_trailing": 6.8210526,
         "pe_ratio_forward": null,
-        "ps_ratio": 27.439202751031637,
+        "ps_ratio": 25.40086205000661,
         "ev_ebitda": null,
         "pb_ratio": 2.549,
-        "fcf_yield": -14.18410362418645
+        "fcf_yield": -15.322334116829447
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -888,7 +888,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:04.466959+00:00",
+        "evidence_date": "2026-07-21T09:57:24.628989+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -972,10 +972,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 4.765321920596913,
+        "return_1y": 4.975733144603404,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.8950328994363506,
+        "volatility_daily": 1.8946762233531957,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -985,12 +985,12 @@
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 36.133663,
+        "pe_ratio_trailing": 35.87624,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.850624312910053,
+        "ps_ratio": 6.801818973139102,
         "ev_ebitda": null,
         "pb_ratio": 12.834,
-        "fcf_yield": 3.683062940162514
+        "fcf_yield": 3.7094901560149633
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1000,7 +1000,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:07.696707+00:00",
+        "evidence_date": "2026-07-21T09:57:27.040417+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1084,15 +1084,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 50.0,
+        "return_1y": 42.58065200869197,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.477328768607732,
+        "volatility_daily": 5.475531671539031,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.64204,
+        "institutional_pct": 0.64585996,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -1102,7 +1102,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 1.211,
-        "fcf_yield": -41.49392117403229
+        "fcf_yield": -42.24494164255928
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1112,7 +1112,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:09.714667+00:00",
+        "evidence_date": "2026-07-21T09:57:29.459961+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1196,25 +1196,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 165.86539681258802,
+        "return_1y": 132.47862876304842,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.67789491726565,
+        "volatility_daily": 6.636652788805357,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.73015,
+        "institutional_pct": 0.73032,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 765.3462827664596,
+        "ps_ratio": 752.8903548102181,
         "ev_ebitda": null,
         "pb_ratio": 1.107,
-        "fcf_yield": -2.9516147896372926
+        "fcf_yield": -3.000446735669549
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1224,7 +1224,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:11.524141+00:00",
+        "evidence_date": "2026-07-21T09:57:31.625660+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1308,22 +1308,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -94.2433861828355,
+        "return_1y": -93.6939890918836,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 7.002235153082106,
+        "volatility_daily": 7.014441705726114,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.23056,
+        "institutional_pct": 0.231,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.6902751471716388,
+        "ps_ratio": 1.7928101956535833,
         "ev_ebitda": null,
         "pb_ratio": 9.84,
         "fcf_yield": null
@@ -1336,7 +1336,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:13.548171+00:00",
+        "evidence_date": "2026-07-21T09:57:34.042598+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -1420,25 +1420,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 45.686893803646086,
+        "return_1y": 40.445850320972895,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.9394992296506826,
+        "volatility_daily": 2.9476990976752284,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.71919,
+        "institutional_pct": 0.72008,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 5.493976,
+        "pe_ratio_trailing": 5.313253,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.705121491487234,
+        "ps_ratio": 4.550347657869982,
         "ev_ebitda": null,
         "pb_ratio": 1.321,
-        "fcf_yield": -10.03657189499231
+        "fcf_yield": -10.377952120276078
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1448,7 +1448,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:15.878651+00:00",
+        "evidence_date": "2026-07-21T09:57:36.587428+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1533,10 +1533,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -62.68656610194437,
+        "return_1y": -65.90908936971475,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.560641203996039,
+        "volatility_daily": 5.5554633805392335,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -1551,7 +1551,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.43,
-        "fcf_yield": 3.557856439517451
+        "fcf_yield": 3.7061003105634835
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1561,7 +1561,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:18.293549+00:00",
+        "evidence_date": "2026-07-21T09:57:39.835601+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -1645,25 +1645,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 13.475181682147952,
+        "return_1y": 12.612205472806288,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.3334702149924373,
+        "volatility_daily": 2.3356488418924797,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.98910004,
+        "institutional_pct": 0.98925,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 11.583711,
+        "pe_ratio_trailing": 11.3529415,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.002408715093067,
+        "ps_ratio": 3.922673194375902,
         "ev_ebitda": null,
         "pb_ratio": 7.295,
-        "fcf_yield": 3.516225841162552
+        "fcf_yield": 3.587699574637526
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1673,7 +1673,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:20.574949+00:00",
+        "evidence_date": "2026-07-21T09:57:42.671969+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -1757,10 +1757,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -41.94260501916875,
+        "return_1y": -44.893616611140494,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.0626710177618115,
+        "volatility_daily": 4.056103327070167,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -1772,10 +1772,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.5081453903668488,
+        "ps_ratio": 0.5004169050066539,
         "ev_ebitda": null,
-        "pb_ratio": 6.1843886,
-        "fcf_yield": 5.515771610178431
+        "pb_ratio": 6.1888776,
+        "fcf_yield": 5.600957701441427
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1785,7 +1785,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:22.966068+00:00",
+        "evidence_date": "2026-07-21T09:57:45.040193+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1869,25 +1869,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -39.47036198435217,
+        "return_1y": -37.8096488464271,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.755056910731594,
+        "volatility_daily": 5.7514857059625655,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.16691999,
+        "institutional_pct": 0.16694,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.4848526790199371,
+        "ps_ratio": 0.48182232870353187,
         "ev_ebitda": null,
         "pb_ratio": 3.412,
-        "fcf_yield": 17.95934675086347
+        "fcf_yield": 18.072299407614246
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -1897,7 +1897,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:25.215494+00:00",
+        "evidence_date": "2026-07-21T09:57:47.402045+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -1982,10 +1982,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -33.22368431371995,
+        "return_1y": -33.361488472945126,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.704770298264671,
+        "volatility_daily": 4.705228216206697,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -2000,7 +2000,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 13.029,
-        "fcf_yield": -66.37437892010927
+        "fcf_yield": -68.30924693987463
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2010,7 +2010,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:27.641172+00:00",
+        "evidence_date": "2026-07-21T09:57:49.907077+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2094,25 +2094,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 14.71420512113294,
+        "return_1y": 16.31067764881153,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.3143707173779153,
+        "volatility_daily": 1.3131854235133456,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.94877,
+        "institutional_pct": 0.95162004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.7961535,
+        "pe_ratio_trailing": 7.791125,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.7904957901602554,
+        "ps_ratio": 1.7989757507206086,
         "ev_ebitda": null,
         "pb_ratio": 66.454,
-        "fcf_yield": 14.89983249836746
+        "fcf_yield": 14.829598093100232
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2122,7 +2122,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:30.924704+00:00",
+        "evidence_date": "2026-07-21T09:57:53.291455+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2206,25 +2206,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 57.390510401097494,
+        "return_1y": 59.10351791250734,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.190536476972697,
+        "volatility_daily": 4.189500040952416,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.46357,
+        "institutional_pct": 1.4641701,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.941204451673477,
+        "ps_ratio": 0.9392947698072642,
         "ev_ebitda": null,
         "pb_ratio": 21.576,
-        "fcf_yield": -6.836610810682102
+        "fcf_yield": -6.850510336274257
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2234,7 +2234,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:34.109039+00:00",
+        "evidence_date": "2026-07-21T09:57:56.111383+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -2318,15 +2318,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 133.9552173412148,
+        "return_1y": 134.58644999139094,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.734662654211308,
+        "volatility_daily": 5.734455010243588,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.63623,
+        "institutional_pct": 0.64205,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -2336,7 +2336,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.201,
-        "fcf_yield": -4.186466406879276
+        "fcf_yield": -4.206593790720426
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2346,7 +2346,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:36.606499+00:00",
+        "evidence_date": "2026-07-21T09:57:58.639115+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -2430,25 +2430,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 0.8990402583068543,
+        "return_1y": 2.822555410120587,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.9864390454547984,
+        "volatility_daily": 1.9849880021593571,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.36938,
+        "institutional_pct": 0.36975,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 4.7897196,
+        "pe_ratio_trailing": 4.817757,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.4852448974079464,
+        "ps_ratio": 1.4939390746838526,
         "ev_ebitda": null,
         "pb_ratio": 6.948,
-        "fcf_yield": -3.6272299732302384
+        "fcf_yield": -3.6061208256470834
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2458,7 +2458,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:39.426991+00:00",
+        "evidence_date": "2026-07-21T09:58:01.922510+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2543,10 +2543,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 6.28019896779725,
+        "return_1y": 8.173080890841884,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.919404328078295,
+        "volatility_daily": 4.921196338956618,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -2558,7 +2558,7 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 60.48132508183202,
+        "ps_ratio": 61.855899311183144,
         "ev_ebitda": null,
         "pb_ratio": 0.3956352,
         "fcf_yield": null
@@ -2571,7 +2571,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:41.759904+00:00",
+        "evidence_date": "2026-07-21T09:58:04.110049+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -2655,25 +2655,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 28.07675231450067,
+        "return_1y": 26.37777540418837,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.159194905667865,
+        "volatility_daily": 2.162918473500444,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.02564,
+        "institutional_pct": 1.02615,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 29.328283,
+        "pe_ratio_trailing": 29.314432,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.29625871520465,
+        "ps_ratio": 3.2281424246264026,
         "ev_ebitda": null,
         "pb_ratio": 14.804,
-        "fcf_yield": 4.432011673456804
+        "fcf_yield": 4.525530532071076
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2683,7 +2683,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:44.248210+00:00",
+        "evidence_date": "2026-07-21T09:58:07.127767+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2767,25 +2767,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 92.24915435321151,
+        "return_1y": 76.68365351577009,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.052533354620899,
+        "volatility_daily": 4.048622887809357,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.07318,
+        "institutional_pct": 1.07223,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 42.36646,
+        "pe_ratio_trailing": 42.347267,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.959208334400099,
+        "ps_ratio": 4.787624477881487,
         "ev_ebitda": null,
         "pb_ratio": 33.991,
-        "fcf_yield": 1.1713313888477248
+        "fcf_yield": 1.2133107792298057
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2795,7 +2795,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:46.774617+00:00",
+        "evidence_date": "2026-07-21T09:58:10.154993+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2879,25 +2879,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 178.98935632246443,
+        "return_1y": 171.4473607847234,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.337332855876871,
+        "volatility_daily": 5.33907525343353,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.72327006,
+        "institutional_pct": 0.72486,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 64.06107,
+        "pe_ratio_trailing": 63.96899,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.039905103011302,
+        "ps_ratio": 5.939143943038961,
         "ev_ebitda": null,
         "pb_ratio": 23.885,
-        "fcf_yield": -2.455660004116724
+        "fcf_yield": -2.4973217575420628
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -2907,7 +2907,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:49.159785+00:00",
+        "evidence_date": "2026-07-21T09:58:12.840217+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -2991,22 +2991,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 46.184424084325066,
+        "return_1y": 45.67182201683011,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.5460741620192997,
+        "volatility_daily": 1.5456841160370276,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.40997002,
+        "institutional_pct": 0.41032,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 12.212122,
+        "pe_ratio_trailing": 12.262627,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.8860229868004437,
+        "ps_ratio": 3.902094214830861,
         "ev_ebitda": null,
         "pb_ratio": 41.156,
         "fcf_yield": null
@@ -3019,7 +3019,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:52.255378+00:00",
+        "evidence_date": "2026-07-21T09:58:16.306235+00:00",
         "method_version": "1.1",
         "fields_completed": 6,
         "fields_expected": 50,
@@ -3103,25 +3103,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 18.98832301905523,
+        "return_1y": 17.62421959565246,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.1948218759899625,
+        "volatility_daily": 2.195730102735588,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.7511,
+        "institutional_pct": 0.75039,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.805942173560799,
+        "ps_ratio": 1.7894063642115285,
         "ev_ebitda": null,
         "pb_ratio": 8.862,
-        "fcf_yield": 19.67365848071668
+        "fcf_yield": 19.85546171577063
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3131,7 +3131,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:54.880170+00:00",
+        "evidence_date": "2026-07-21T09:58:19.123393+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3216,25 +3216,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -14.914912965522428,
+        "return_1y": -16.432860369459945,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.332009662866202,
+        "volatility_daily": 4.3336829668770145,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.54135,
+        "institutional_pct": 0.54142,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 17.09678710819415,
+        "ps_ratio": 16.774965540129635,
         "ev_ebitda": null,
         "pb_ratio": 2.639,
-        "fcf_yield": -11.708658732463869
+        "fcf_yield": -11.933285060559724
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3244,7 +3244,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:57.373263+00:00",
+        "evidence_date": "2026-07-21T09:58:21.325228+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3328,25 +3328,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 252.79501725906158,
+        "return_1y": 239.63415977112396,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.085971085171362,
+        "volatility_daily": 6.087695504077991,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.79651,
+        "institutional_pct": 0.79679,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 94.81172205391901,
+        "ps_ratio": 92.97558522467547,
         "ev_ebitda": null,
         "pb_ratio": 1.029,
-        "fcf_yield": -4.06041788718919
+        "fcf_yield": -4.140605420365465
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3356,7 +3356,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:25:59.709042+00:00",
+        "evidence_date": "2026-07-21T09:58:23.703091+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3441,15 +3441,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 29.629627340288035,
+        "return_1y": 24.285717083483373,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.8838954369160135,
+        "volatility_daily": 5.880121251229857,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.47377998,
+        "institutional_pct": 0.4739,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -3459,7 +3459,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 2.465,
-        "fcf_yield": -54.593586294476225
+        "fcf_yield": -54.90734223660701
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3469,7 +3469,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:01.587963+00:00",
+        "evidence_date": "2026-07-21T09:58:25.836251+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -3553,25 +3553,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 36.42319525864659,
+        "return_1y": 35.575129564871396,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.3911218709891116,
+        "volatility_daily": 1.3913008025862126,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.23091999,
+        "institutional_pct": 0.23095,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 10.069264,
+        "pe_ratio_trailing": 10.041125,
         "pe_ratio_forward": null,
-        "ps_ratio": 5.232553436657334,
+        "ps_ratio": 5.217930961828403,
         "ev_ebitda": null,
         "pb_ratio": 38.088,
-        "fcf_yield": 9.09777316615382
+        "fcf_yield": 9.12326832124395
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3581,7 +3581,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:03.695910+00:00",
+        "evidence_date": "2026-07-21T09:58:28.150735+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -3665,15 +3665,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 22.70270009037353,
+        "return_1y": 24.72527008272011,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.4850126008418028,
+        "volatility_daily": 2.482594616739744,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.88569,
+        "institutional_pct": 0.88577,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -3693,7 +3693,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:06.045318+00:00",
+        "evidence_date": "2026-07-21T09:58:30.884946+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -3778,15 +3778,15 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -75.0,
+        "return_1y": -75.26501742224858,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.031131188678597,
+        "volatility_daily": 6.032431085670597,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.58199,
+        "institutional_pct": 0.58094,
         "insider_pct": null,
         "insider_transactions": []
       },
@@ -3796,7 +3796,7 @@
         "ps_ratio": null,
         "ev_ebitda": null,
         "pb_ratio": 0.16,
-        "fcf_yield": -34.366448666032014
+        "fcf_yield": -35.34834920594313
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3806,7 +3806,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:08.209005+00:00",
+        "evidence_date": "2026-07-21T09:58:32.985754+00:00",
         "method_version": "1.1",
         "fields_completed": 8,
         "fields_expected": 50,
@@ -3890,10 +3890,10 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 105.14285223824638,
+        "return_1y": 87.56476600729104,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 6.237451157691608,
+        "volatility_daily": 6.2064477288183895,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
@@ -3905,10 +3905,10 @@
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 30.92212712259181,
+        "ps_ratio": 31.180529058850144,
         "ev_ebitda": null,
         "pb_ratio": 0.746,
-        "fcf_yield": -4.321489788228398
+        "fcf_yield": -4.285676369966918
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -3918,7 +3918,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:10.257144+00:00",
+        "evidence_date": "2026-07-21T09:58:35.088955+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4002,22 +4002,22 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 52.51913714921166,
+        "return_1y": 48.85727135961762,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.048795188306253,
+        "volatility_daily": 2.051842832108373,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.56261003,
+        "institutional_pct": 0.56256,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 7.6752133,
+        "pe_ratio_trailing": 7.678261,
         "pe_ratio_forward": null,
-        "ps_ratio": 2.4951923412686665,
+        "ps_ratio": 2.4535132857643105,
         "ev_ebitda": null,
         "pb_ratio": 10.193,
         "fcf_yield": null
@@ -4030,7 +4030,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:13.258563+00:00",
+        "evidence_date": "2026-07-21T09:58:38.271618+00:00",
         "method_version": "1.1",
         "fields_completed": 9,
         "fields_expected": 50,
@@ -4114,25 +4114,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -35.14038260810947,
+        "return_1y": -36.15643761716541,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.2711801926208994,
+        "volatility_daily": 2.271514042041608,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.89024,
+        "institutional_pct": 0.88992,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 13.564895,
+        "pe_ratio_trailing": 13.421384,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.742633324904474,
+        "ps_ratio": 3.7030380073634355,
         "ev_ebitda": null,
         "pb_ratio": 28.867,
-        "fcf_yield": 9.774870237191086
+        "fcf_yield": 9.879389577849865
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4142,7 +4142,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:16.212822+00:00",
+        "evidence_date": "2026-07-21T09:58:41.517188+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4226,25 +4226,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 85.75902682495276,
+        "return_1y": 91.54890772883094,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.010401869538544,
+        "volatility_daily": 4.014441852473357,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.01105,
+        "institutional_pct": 1.01132,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 23.284403,
+        "pe_ratio_trailing": 23.401785,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.07888860742908,
+        "ps_ratio": 6.272896025983775,
         "ev_ebitda": null,
         "pb_ratio": 4.232,
-        "fcf_yield": 6.126647277614049
+        "fcf_yield": 5.9371630238018485
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4254,7 +4254,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:18.662490+00:00",
+        "evidence_date": "2026-07-21T09:58:43.965635+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4338,25 +4338,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 57.28703749171352,
+        "return_1y": 56.96099500107387,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.2071672202202683,
+        "volatility_daily": 2.20749372820352,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.94635004,
+        "institutional_pct": 0.94649005,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 55.857143,
+        "pe_ratio_trailing": 55.591045,
         "pe_ratio_forward": null,
-        "ps_ratio": 14.350879942014187,
+        "ps_ratio": 14.240006471572093,
         "ev_ebitda": null,
         "pb_ratio": 69.273,
-        "fcf_yield": 2.1161141360476967
+        "fcf_yield": 2.132590316629747
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4366,7 +4366,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:19.505034+00:00",
+        "evidence_date": "2026-07-21T09:58:47.216476+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4450,25 +4450,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -47.937834569822755,
+        "return_1y": -48.92002084833482,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 3.406277058830636,
+        "volatility_daily": 3.402578453842028,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.93588996,
+        "institutional_pct": 0.93581,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 12.808824,
+        "pe_ratio_trailing": 12.867647,
         "pe_ratio_forward": null,
-        "ps_ratio": 3.9593702565614115,
+        "ps_ratio": 3.9775533402044467,
         "ev_ebitda": null,
         "pb_ratio": 1.68,
-        "fcf_yield": 2.8906205700182026
+        "fcf_yield": 2.877406317157368
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4478,7 +4478,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:20.189990+00:00",
+        "evidence_date": "2026-07-21T09:58:49.854951+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4562,25 +4562,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -13.064087308742941,
+        "return_1y": -12.817177290719956,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.6242648381638563,
+        "volatility_daily": 1.6241874354488557,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.91936994,
+        "institutional_pct": 0.91933995,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 23.812033,
+        "pe_ratio_trailing": 23.809702,
         "pe_ratio_forward": null,
-        "ps_ratio": 4.723994689790268,
+        "ps_ratio": 4.723439536142261,
         "ev_ebitda": null,
         "pb_ratio": 15.851,
-        "fcf_yield": 4.654428914393723
+        "fcf_yield": 4.654975957109405
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4590,7 +4590,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:21.170470+00:00",
+        "evidence_date": "2026-07-21T09:58:53.348825+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4674,25 +4674,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 120.59672106771133,
+        "return_1y": 112.0271553894298,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.330323277707628,
+        "volatility_daily": 4.341345812108892,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.96296,
+        "institutional_pct": 0.96146005,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 12.417503232863108,
+        "ps_ratio": 11.84322108838848,
         "ev_ebitda": null,
         "pb_ratio": 1.355,
-        "fcf_yield": 0.4389768355235561
+        "fcf_yield": 0.46026298365823193
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4702,7 +4702,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:21.777887+00:00",
+        "evidence_date": "2026-07-21T09:58:55.771210+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -4786,25 +4786,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": -26.48890448747,
+        "return_1y": -26.209513365811937,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 2.131713089615632,
+        "volatility_daily": 2.131471235731123,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.98277,
+        "institutional_pct": 0.98300004,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 31.829447,
+        "pe_ratio_trailing": 31.842106,
         "pe_ratio_forward": null,
-        "ps_ratio": 6.14141042010512,
+        "ps_ratio": 6.1259407870447316,
         "ev_ebitda": null,
         "pb_ratio": 15.114,
-        "fcf_yield": 6.639399390331478
+        "fcf_yield": 6.656165643202712
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4814,7 +4814,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:22.572410+00:00",
+        "evidence_date": "2026-07-21T09:58:59.232795+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,
@@ -4898,25 +4898,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 23.80446129055143,
+        "return_1y": 22.75132926560113,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 4.229349135163069,
+        "volatility_daily": 4.229493638372325,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.0721099,
+        "institutional_pct": 1.0784,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 0.8409113592125179,
+        "ps_ratio": 0.8373023525367326,
         "ev_ebitda": null,
         "pb_ratio": 1.707,
-        "fcf_yield": 4.871888931059913
+        "fcf_yield": 4.892888131196651
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -4926,7 +4926,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:23.455486+00:00",
+        "evidence_date": "2026-07-21T09:59:02.770010+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5010,25 +5010,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 13.047214656951468,
+        "return_1y": 16.724740007436665,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 5.1745367872958035,
+        "volatility_daily": 5.174430884380027,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 0.02406,
+        "institutional_pct": 0.025899999,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
         "pe_ratio_trailing": null,
         "pe_ratio_forward": null,
-        "ps_ratio": 1929.872731416588,
+        "ps_ratio": 1963.5758325729164,
         "ev_ebitda": null,
         "pb_ratio": 0.84727335,
-        "fcf_yield": -1.8970442721675627
+        "fcf_yield": -1.8644831283898253
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -5038,7 +5038,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:24.020591+00:00",
+        "evidence_date": "2026-07-21T09:59:04.716370+00:00",
         "method_version": "1.1",
         "fields_completed": 10,
         "fields_expected": 50,
@@ -5122,25 +5122,25 @@
         "acceleration_signal": null
       },
       "historical_trend": {
-        "return_1y": 6.998036017186561,
+        "return_1y": 3.81750318051268,
         "return_3y": null,
         "return_5y": null,
-        "volatility_daily": 1.9387049725158267,
+        "volatility_daily": 1.9459880895118298,
         "beta": null,
         "earnings_beat_miss_streak": null
       },
       "ownership": {
-        "institutional_pct": 1.05718,
+        "institutional_pct": 1.05722,
         "insider_pct": null,
         "insider_transactions": []
       },
       "valuation": {
-        "pe_ratio_trailing": 21.12915,
+        "pe_ratio_trailing": 20.571955,
         "pe_ratio_forward": null,
-        "ps_ratio": 1.4757258702654286,
+        "ps_ratio": 1.4368096346303687,
         "ev_ebitda": null,
         "pb_ratio": 61.046,
-        "fcf_yield": 4.813566375282923
+        "fcf_yield": 4.943942646982759
       },
       "governance": {
         "shares_outstanding_change_12m": null,
@@ -5150,7 +5150,7 @@
         "unusual_filings": []
       },
       "metadata": {
-        "evidence_date": "2026-07-20T09:26:24.645578+00:00",
+        "evidence_date": "2026-07-21T09:59:07.400665+00:00",
         "method_version": "1.1",
         "fields_completed": 11,
         "fields_expected": 50,

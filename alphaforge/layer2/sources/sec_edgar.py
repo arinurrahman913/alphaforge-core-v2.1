@@ -9,13 +9,18 @@ Lihat 03_LAYER2_SPECS/02_EVIDENCE.md §1.5 & 04_DATA_SOURCES/01_PROVIDERS_OVERVI
 """
 from __future__ import annotations
 
+import sys
 from datetime import datetime, timezone
 
 import requests
 
 from ... import cache
 from ..contracts import SecFiling, SecFilings, SourceMetadata
-from .sec_parser import SEC_USER_AGENT, get_cik_from_ticker
+from ._retry import retry
+from .sec_parser import (
+    SEC_USER_AGENT, SEC_RETRIES, SEC_RETRY_BACKOFF_SECONDS,
+    apply_sec_rate_limit, get_cik_from_ticker,
+)
 
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
 _SUBMISSIONS_TTL = 24 * 3600  # 24 jam
@@ -41,12 +46,19 @@ def fetch_sec_filings(ticker: str, max_filings: int = 10) -> SecFilings:
     cache_key = f"submissions_{cik}"
     data = cache.get("sec_edgar", cache_key, _SUBMISSIONS_TTL)
     if data is None:
+        apply_sec_rate_limit()
+
+        def _do_fetch():
+            r = requests.get(SUBMISSIONS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
+            r.raise_for_status()
+            return r.json()
+
         try:
-            resp = requests.get(SUBMISSIONS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
-            resp.raise_for_status()
-            data = resp.json()
+            data = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
+                        label=f"sec_submissions:{cik}")
             cache.set("sec_edgar", cache_key, data)
-        except Exception:
+        except Exception as exc:
+            print(f"[sec_submissions:{cik}] gagal (final): {exc}", file=sys.stderr)
             data = None
 
     if not data:

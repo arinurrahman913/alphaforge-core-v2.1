@@ -22,7 +22,7 @@ from .sources.yahoo_evidence import (
 )
 from .sources.finnhub import fetch_company_news, reset_batch_tracking as reset_finnhub_batch_tracking
 from .sources.sec_edgar import fetch_sec_filings
-from .sources.sec_parser import fetch_quarterly_financials
+from .sources.sec_parser import fetch_quarterly_financials, reset_sec_rate_limit
 
 
 def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage | None:
@@ -64,6 +64,7 @@ def run_evidence(screening_result: ScreeningResult) -> list[EvidencePackage]:
     packages = []
     reset_finnhub_batch_tracking()  # Reset Finnhub rate limit tracking
     reset_yahoo_batch_tracking()  # Reset Yahoo Finance rate limit tracking
+    reset_sec_rate_limit()  # Reset SEC EDGAR/XBRL rate limit tracking
 
     passed_count = len(screening_result.passed)
     for i, candidate in enumerate(screening_result.passed, 1):

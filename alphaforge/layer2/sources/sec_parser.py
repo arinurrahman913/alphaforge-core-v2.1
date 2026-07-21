@@ -14,11 +14,15 @@ Lihat: 03_LAYER2_SPECS/02_EVIDENCE.md §1.5.
 """
 from __future__ import annotations
 
+import os
+import sys
+import time
 from datetime import datetime, timezone
 
 import requests
 
 from ... import cache
+from ._retry import retry
 
 SEC_USER_AGENT = "AlphaForge Research research@alphaforge.local"
 TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
@@ -26,6 +30,37 @@ FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
 _TICKER_MAP_TTL = 7 * 24 * 3600  # 7 hari — mapping ticker->CIK nyaris tidak berubah
 _FACTS_TTL = 24 * 3600  # 24 jam, selaras kebijakan fundamental cache lain
+
+# SEC.gov limit resmi 10 req/detik — sebelumnya sec_edgar.py & sec_parser.py
+# sama sekali tidak ada throttle (beda dari Yahoo/Finnhub yang sudah).
+# Interval minimal ~150ms antar panggilan (~6.7/detik) kasih buffer aman,
+# dipakai bersama oleh sec_parser.py & sec_edgar.py (lihat apply_sec_rate_limit).
+SEC_MIN_INTERVAL_SECONDS = float(os.environ.get("SEC_MIN_INTERVAL_SECONDS", "0.15"))
+SEC_RETRIES = 2
+SEC_RETRY_BACKOFF_SECONDS = 3.0
+
+_last_call_time = None
+
+
+def reset_sec_rate_limit():
+    """Reset rate-limit tracking (dipanggil di awal evidence run)."""
+    global _last_call_time
+    _last_call_time = None
+
+
+def apply_sec_rate_limit():
+    """Jeda minimal antar SETIAP panggilan ke data.sec.gov / www.sec.gov —
+    dipakai sec_parser.py & sec_edgar.py, dua-duanya sama-sama hit domain
+    yang sama jadi harus berbagi satu tracker, bukan masing-masing punya
+    timer sendiri (kalau tidak, throughput gabungan bisa 2x lipat dari yang
+    dikira)."""
+    global _last_call_time
+    now = time.time()
+    if _last_call_time is not None:
+        elapsed = now - _last_call_time
+        if elapsed < SEC_MIN_INTERVAL_SECONDS:
+            time.sleep(SEC_MIN_INTERVAL_SECONDS - elapsed)
+    _last_call_time = time.time()
 
 # us-gaap tags, urutan = prioritas fallback (perusahaan beda-beda pakai tag berbeda).
 REVENUE_TAGS = [
@@ -50,10 +85,17 @@ def _get_ticker_cik_map() -> dict[str, str]:
         return cached
 
     try:
-        resp = requests.get(TICKERS_URL, headers=_HEADERS, timeout=10)
-        resp.raise_for_status()
-        raw = resp.json()
-    except Exception:
+        apply_sec_rate_limit()
+
+        def _do_fetch():
+            r = requests.get(TICKERS_URL, headers=_HEADERS, timeout=10)
+            r.raise_for_status()
+            return r.json()
+
+        raw = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
+                    label="sec_ticker_map")
+    except Exception as exc:
+        print(f"[sec_ticker_map] gagal (final): {exc}", file=sys.stderr)
         return {}
 
     mapping = {
@@ -77,15 +119,24 @@ def _fetch_company_facts(cik: str) -> dict | None:
     if cached is not None:
         return cached
 
+    apply_sec_rate_limit()
+
+    def _do_fetch():
+        r = requests.get(FACTS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
+        if r.status_code == 404:
+            return None  # Perusahaan tanpa XBRL facts (mis. foreign private issuer) — bukan error, jangan diretry
+        r.raise_for_status()
+        return r.json()
+
     try:
-        resp = requests.get(FACTS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
-        if resp.status_code == 404:
-            return None  # Perusahaan tanpa XBRL facts (mis. foreign private issuer)
-        resp.raise_for_status()
-        data = resp.json()
-    except Exception:
+        data = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
+                     label=f"sec_facts:{cik}")
+    except Exception as exc:
+        print(f"[sec_facts:{cik}] gagal (final): {exc}", file=sys.stderr)
         return None
 
+    if data is None:
+        return None  # 404 — hasil valid, bukan kegagalan
     cache.set("sec_edgar", cache_key, data)
     return data
 

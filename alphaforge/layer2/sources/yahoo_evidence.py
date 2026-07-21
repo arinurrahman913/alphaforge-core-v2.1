@@ -12,6 +12,7 @@ Lihat 03_LAYER2_SPECS/02_EVIDENCE.md §1.1-1.2.
 from __future__ import annotations
 
 import os
+import sys
 import time
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -20,10 +21,14 @@ from ...cache import get as cache_get, set as cache_set
 from ..contracts import (
     SourceMetadata, PriceMarketData, PriceBar, FundamentalData, InstitutionalOwnership
 )
+from ._retry import retry
 
 PRICE_CACHE_TTL = 6 * 3600  # 6 jam
 FUNDAMENTAL_CACHE_TTL = 24 * 3600  # 24 jam
 OWNERSHIP_CACHE_TTL = 24 * 3600  # 24 jam
+
+YF_EVIDENCE_RETRIES = 2
+YF_EVIDENCE_RETRY_BACKOFF_SECONDS = 3.0
 
 YF_EVIDENCE_BATCH_SIZE = int(os.environ.get("YF_EVIDENCE_BATCH_SIZE", "20"))
 YF_EVIDENCE_BATCH_DELAY_SECONDS = float(os.environ.get("YF_EVIDENCE_BATCH_DELAY_SECONDS", "2.0"))
@@ -79,13 +84,18 @@ def fetch_price_market_data(ticker: str) -> PriceMarketData:
 
     try:
         _apply_batch_delay()
-        t = yf.Ticker(ticker)
-        fi = t.fast_info
 
-        # Fetch 1-year history
-        hist = t.history(period="1y")
-        if hist is None or hist.empty:
-            raise ValueError(f"no price data for {ticker}")
+        def _do_fetch():
+            t = yf.Ticker(ticker)
+            fi = t.fast_info
+            hist = t.history(period="1y")
+            if hist is None or hist.empty:
+                raise ValueError(f"no price data for {ticker}")
+            return fi, hist
+
+        fi, hist = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
+                          backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
+                          label=f"yahoo_price:{ticker}")
 
         last_price = fi.get("lastPrice") or (hist["Close"].iloc[-1] if not hist.empty else None)
         market_cap = fi.get("marketCap")
@@ -145,6 +155,7 @@ def fetch_price_market_data(ticker: str) -> PriceMarketData:
 
         return result
     except Exception as e:
+        print(f"[yahoo_price:{ticker}] gagal (post-processing/final): {e}", file=sys.stderr)
         metadata = SourceMetadata(
             source="yahoo_finance",
             fetched_at=datetime.now(timezone.utc).isoformat(),
@@ -192,8 +203,13 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
 
     try:
         _apply_batch_delay()
-        t = yf.Ticker(ticker)
-        info = t.info
+
+        def _do_fetch():
+            return yf.Ticker(ticker).info
+
+        info = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
+                     backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
+                     label=f"yahoo_fundamental:{ticker}")
 
         metadata = SourceMetadata(
             source="yahoo_finance",
@@ -253,6 +269,7 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
 
         return data
     except Exception as e:
+        print(f"[yahoo_fundamental:{ticker}] gagal (post-processing/final): {e}", file=sys.stderr)
         metadata = SourceMetadata(
             source="yahoo_finance",
             fetched_at=datetime.now(timezone.utc).isoformat(),
@@ -283,8 +300,13 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
 
     try:
         _apply_batch_delay()
-        t = yf.Ticker(ticker)
-        info = t.info
+
+        def _do_fetch():
+            return yf.Ticker(ticker).info
+
+        info = retry(_do_fetch, retries=YF_EVIDENCE_RETRIES,
+                     backoff_seconds=YF_EVIDENCE_RETRY_BACKOFF_SECONDS,
+                     label=f"yahoo_ownership:{ticker}")
 
         percentage = info.get("heldPercentInstitutions")
 
@@ -305,6 +327,7 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
 
         return data
     except Exception as e:
+        print(f"[yahoo_ownership:{ticker}] gagal (post-processing/final): {e}", file=sys.stderr)
         metadata = SourceMetadata(
             source="yahoo_finance",
             fetched_at=datetime.now(timezone.utc).isoformat(),

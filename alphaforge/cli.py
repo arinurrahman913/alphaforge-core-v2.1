@@ -159,7 +159,8 @@ def main() -> None:
         from .layer2.contracts import (
             EvidencePackage, PriceBar, SourceMetadata,
             PriceMarketData, FundamentalData, InstitutionalOwnership,
-            NewsCollection, SecFilings, QuarterlyFundamental
+            NewsCollection, SecFilings, QuarterlyFundamental,
+            CompanyNews, SecFiling
         )
         evidence_packages = []
         for pkg_dict in evidence_dict.get("packages", []):
@@ -206,15 +207,20 @@ def main() -> None:
                 percentage=inst_dict.get("percentage")
             )
 
+            # news/filings ada di JSON di bawah key "items" (lihat
+            # EvidencePackage.to_dict() di contracts.py) — sebelumnya di sini
+            # selalu di-set ke [] tanpa dibaca dari JSON sama sekali, jadi
+            # news & sec_filings selalu hilang tiap kali direkonstruksi lewat
+            # CLI `knowledge` subcommand (round-trip evidence.json -> Knowledge).
             news_dict = pkg_dict["news"]
             news = NewsCollection(
-                news=[],
+                news=[CompanyNews(**n) for n in news_dict.get("items", [])],
                 metadata=SourceMetadata(**news_dict.get("metadata")) if news_dict.get("metadata") else None
             )
 
             sec_dict = pkg_dict["sec_filings"]
             sec_filings = SecFilings(
-                filings=[],
+                filings=[SecFiling(**f) for f in sec_dict.get("items", [])],
                 metadata=SourceMetadata(**sec_dict.get("metadata")) if sec_dict.get("metadata") else None
             )
 

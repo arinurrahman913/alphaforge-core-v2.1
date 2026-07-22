@@ -64,7 +64,16 @@ def calculate_metric_comparison(
 
     Returns: PeerMetricComparison atau None jika group terlalu kecil.
     """
-    group_size = len(peer_tickers)
+    # Ambang minimum dihitung dari jumlah peer yang PUNYA nilai valid untuk
+    # metrik ini (len(peer_values)), bukan dari total peer group (peer_tickers).
+    # peer_tickers ukurannya sama untuk semua metrik seorang ticker, sementara
+    # tiap metrik bisa punya null berbeda-beda di antar peer -- pakai
+    # len(peer_tickers) di sini membuat median/percentile bisa dihitung dari
+    # cuma 1-2 nilai valid sambil tetap dilabeli "ok"/"low_sample_size" seolah
+    # didukung oleh seluruh peer group (lihat bug: pe_ratio_comparison AAL di
+    # peer_results.json -- peer_group_count=4 tapi median==min==max, cuma 1
+    # nilai valid yang masuk kalkulasi).
+    group_size = len(peer_values)
 
     # Check minimum group size
     if group_size < min_group_size:
@@ -97,7 +106,7 @@ def calculate_metric_comparison(
 def build_peer_comparison(
     target_profile: KnowledgeProfile,
     peer_profiles: list[KnowledgeProfile],
-    basis: str = "sector"
+    basis: str = "screening_universe"
 ) -> PeerComparisonResult:
     """Bangun Peer Comparison untuk satu ticker terhadap peer group-nya.
 
@@ -190,7 +199,12 @@ def run_peer_comparison(profiles: list[KnowledgeProfile]) -> list[PeerComparison
             sector_group = sectors.get(sector, [])
 
             if len(sector_group) >= 2:
-                peer_group, basis = sector_group, "sector"
+                # peer_group_basis kontraknya cuma "screening_universe" | "manual"
+                # (lihat peer_contracts.py) -- narrowing per-sektor tetap masih
+                # bersumber dari populasi screening yang sama, jadi basis-nya
+                # tetap "screening_universe", bukan label "sector" yang bukan
+                # bagian dari kontrak.
+                peer_group, basis = sector_group, "screening_universe"
             else:
                 # Sektor tidak diketahui atau kepesertaannya terlalu kecil di
                 # universe ini untuk perbandingan bermakna (mis. cuma 1

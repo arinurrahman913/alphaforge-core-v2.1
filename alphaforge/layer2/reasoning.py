@@ -32,7 +32,7 @@ def run_quality_lens(
 
     # Section 2: Financial Health
     fh = profile.financial_health
-    if fh.net_margin_trend.q4 is not None and fh.net_margin_trend.q4 > 0.05:
+    if fh.net_margin_trend.q4 is not None and fh.net_margin_trend.q4 > 5:
         score += 15
         positive.append("Strong net margins (>5%)")
         metrics["net_margin_q4"] = fh.net_margin_trend.q4
@@ -106,7 +106,7 @@ def run_quality_lens(
         score -= 15
         negative.append(f"High-risk flags ({risk.high_severity_count})")
 
-    score = max(-50, min(100, score + 50))  # Normalize to 0-100
+    score = max(0, min(100, score + 50))  # Normalize to 0-100
 
     stance = _score_to_stance(score)
 
@@ -120,9 +120,9 @@ def run_quality_lens(
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Quality score {score:.0f}: " + (positive[0] if positive else "Mixed signals"),
+        reasoning_notes=f"Quality score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Mixed signals")),
         assessed_at=datetime.now(timezone.utc).isoformat(),
-        fields_accessed=["identity", "financial_health", "competitive_structure", "historical_trend", "valuation", "governance"],
+        fields_accessed=["identity", "financial_health", "historical_trend", "valuation", "governance"],
     )
 
 
@@ -182,7 +182,7 @@ def run_speculative_lens(
         score -= 15
         negative.append("Insufficient price data for technical analysis")
 
-    score = max(-50, min(100, score + 50))  # Normalize to 0-100
+    score = max(0, min(100, score + 50))  # Normalize to 0-100
 
     stance = _score_to_stance(score)
 
@@ -196,9 +196,9 @@ def run_speculative_lens(
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Speculative score {score:.0f}: " + (positive[0] if positive else "Neutral momentum"),
+        reasoning_notes=f"Speculative score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Neutral momentum")),
         assessed_at=datetime.now(timezone.utc).isoformat(),
-        fields_accessed=["identity", "competitive_structure", "historical_trend", "ownership"],
+        fields_accessed=["identity", "historical_trend", "ownership"],
     )
 
 
@@ -263,7 +263,7 @@ def run_multibagger_lens(
         score -= 12
         negative.append("Insufficient data for growth thesis")
 
-    score = max(-50, min(100, score + 50))  # Normalize to 0-100
+    score = max(0, min(100, score + 50))  # Normalize to 0-100
 
     stance = _score_to_stance(score)
 
@@ -277,7 +277,7 @@ def run_multibagger_lens(
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Multibagger score {score:.0f}: " + (positive[0] if positive else "Modest growth profile"),
+        reasoning_notes=f"Multibagger score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Modest growth profile")),
         assessed_at=datetime.now(timezone.utc).isoformat(),
         fields_accessed=["identity", "competitive_structure", "competitive_momentum", "historical_trend", "valuation"],
     )

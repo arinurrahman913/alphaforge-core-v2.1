@@ -38,7 +38,7 @@ def load_historical_timeline(timeline_file: str) -> dict[str, HistoricalTimeline
         timeline_file: Path ke historical_timeline.json
 
     Returns:
-        Dict mapping ticker → HistoricalTimeline
+        Dict mapping ticker -> HistoricalTimeline
     """
     if not Path(timeline_file).exists():
         return {}
@@ -88,8 +88,28 @@ def update_timeline(
 
         # Create record
         record = create_decision_record(rec)
-        timeline.records.append(record)
-        timeline.total_recommendations += 1
+
+        # The pipeline is meant to run once/day (see scripts/refresh_full_
+        # pipeline.py docstring), but nothing prevents a manual re-run or a
+        # scheduler double-trigger on the same UTC calendar day. Without this
+        # check, every re-run appended a brand-new record (aggregator.py
+        # mints a fresh tracking_id each call, so nothing dedups downstream
+        # either), inflating total_recommendations and drowning out real
+        # history in calculate_recommendation_confidence_trend's recent-5
+        # window. A same-UTC-day re-run now replaces the existing entry for
+        # that day instead of duplicating it; a genuinely new day still
+        # appends as before.
+        same_day = (
+            timeline.records
+            and datetime.fromisoformat(timeline.records[-1].recommendation_date).date()
+            == datetime.fromisoformat(record.recommendation_date).date()
+        )
+        if same_day:
+            timeline.records[-1] = record
+        else:
+            timeline.records.append(record)
+            timeline.total_recommendations += 1
+
         timeline.last_recommendation_date = record.recommendation_date
         if not timeline.first_recommendation_date:
             timeline.first_recommendation_date = record.recommendation_date
@@ -101,7 +121,7 @@ def save_historical_timeline(timelines: dict[str, HistoricalTimeline], output_fi
     """Save historical timelines ke file.
 
     Args:
-        timelines: Dict mapping ticker → HistoricalTimeline
+        timelines: Dict mapping ticker -> HistoricalTimeline
         output_file: Path ke output file
     """
     data = {}

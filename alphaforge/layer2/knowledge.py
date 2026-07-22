@@ -16,7 +16,8 @@ from .contracts import EvidencePackage, ScreeningCandidate
 from .knowledge_contracts import (
     KnowledgeProfile, KnowledgeMetadata, FinancialHealth, Ownership,
     RevenueTrend, MarginTrend, BalanceSheet, CashFlowTrend, CapExInfo,
-    CompetitiveStructure, CompetitiveMomentum, HistoricalTrend, Valuation, Governance
+    CompetitiveStructure, CompetitiveMomentum, HistoricalTrend, Valuation, Governance,
+    GovernanceEvent
 )
 from .knowledge_helpers import (
     calculate_returns, calculate_volatility,
@@ -130,8 +131,20 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
         total_revenue_ttm=evidence.fundamental.revenue
     )
 
-    # 3b. Momentum
-    competitive_momentum = CompetitiveMomentum()
+    # 3b. Momentum — spec 03_KNOWLEDGE.md §3b.
+    # Hanya acceleration_signal yang derivable dari Evidence saat ini: dibangun
+    # dari revenue_yoy_q3/q4 (trends, dihitung di atas via compute_financial_trends)
+    # — deskripsi faktual murni ("growth accelerating/decelerating"), sama
+    # seperti contoh di spec, tanpa kata sifat evaluatif.
+    # segment_growth & guidance_trend tetap None: Evidence tidak mengumpulkan
+    # revenue per segmen (butuh parsing 10-K segment reporting) atau data
+    # guidance vs konsensus analis — dua-duanya sumber data yang belum ada di
+    # Evidence stage, bukan bug di Knowledge.
+    competitive_momentum = CompetitiveMomentum(
+        segment_growth=None,
+        guidance_trend=None,
+        acceleration_signal=_compute_acceleration_signal(trends)
+    )
 
     # 4. Tren Historis
     # #1: use calculated returns & volatility
@@ -160,11 +173,11 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
         fcf_yield=metrics['fcf_yield_pct']
     )
 
-    # 7. Governance
-    governance = Governance()
+    # 7. Governance — spec 03_KNOWLEDGE.md §7.
+    governance = _build_governance(evidence)
 
     # Count completed fields untuk Confidence downstream
-    completed_fields = _count_completed_fields(
+    completed_fields, expected_fields = _count_completed_fields(
         returns, volatility, financial_health, ownership, valuation
     )
 
@@ -173,7 +186,7 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
         evidence_date=evidence.generated_at,
         method_version="1.1",
         fields_completed=completed_fields,
-        fields_expected=50,
+        fields_expected=expected_fields,
         sources_used=_extract_sources(evidence),
         data_quality_notes=_generate_quality_notes(evidence, returns, volatility)
     )
@@ -202,34 +215,32 @@ def _fcf_margin_pct(fcf: float | None, revenue: float | None) -> float | None:
     return (fcf / revenue) * 100
 
 
-def _count_completed_fields(returns: dict, volatility: float | None, financial_health, ownership, valuation) -> int:
-    """#5: Count non-null fields untuk data quality tracking."""
-    count = 0
+def _count_completed_fields(returns: dict, volatility: float | None, financial_health, ownership, valuation) -> tuple[int, int]:
+    """#5: Count non-null fields untuk data quality tracking.
 
-    # Returns
-    if returns.get('return_1y'): count += 1
-    if returns.get('return_3y'): count += 1
-    if returns.get('return_5y'): count += 1
-
-    # Volatility
-    if volatility: count += 1
-
-    # Financial
-    if financial_health.balance_sheet.debt_to_equity: count += 1
-    if financial_health.balance_sheet.current_ratio: count += 1
-    if financial_health.balance_sheet.quick_ratio: count += 1
-    if financial_health.cash_flow_trend.fcf_q4: count += 1
-
-    # Ownership
-    if ownership.institutional_pct: count += 1
-
-    # Valuation
-    if valuation.pe_ratio_trailing: count += 1
-    if valuation.ps_ratio: count += 1
-    if valuation.pb_ratio: count += 1
-    if valuation.fcf_yield: count += 1
-
-    return count
+    Returns (fields_completed, fields_expected) — keduanya dihitung dari list
+    checks yang sama, supaya fields_expected otomatis selalu sama dengan
+    jumlah field yang benar-benar dicek di sini (sebelumnya fields_expected
+    di-hardcode ke 50 di caller padahal cuma ~13 field yang pernah dicek).
+    """
+    checks = [
+        returns.get('return_1y'),
+        returns.get('return_3y'),
+        returns.get('return_5y'),
+        volatility,
+        financial_health.balance_sheet.debt_to_equity,
+        financial_health.balance_sheet.current_ratio,
+        financial_health.balance_sheet.quick_ratio,
+        financial_health.cash_flow_trend.fcf_q4,
+        ownership.institutional_pct,
+        valuation.pe_ratio_trailing,
+        valuation.ps_ratio,
+        valuation.pb_ratio,
+        valuation.fcf_yield,
+    ]
+    fields_completed = sum(1 for v in checks if v)
+    fields_expected = len(checks)
+    return fields_completed, fields_expected
 
 
 def _extract_sources(evidence: EvidencePackage) -> list[str]:
@@ -277,6 +288,66 @@ def _generate_quality_notes(evidence: EvidencePackage, returns: dict, volatility
         notes.append("No news data")
 
     return " | ".join(notes) if notes else None
+
+
+def _compute_acceleration_signal(trends: dict) -> str | None:
+    """#3b Momentum: bandingkan revenue YoY growth kuartal terakhir (q4) vs
+    kuartal sebelumnya (q3) — sinyal deskriptif murni angka, tanpa kata sifat
+    evaluatif (spec 03_KNOWLEDGE.md §3b, contoh: "QoQ growth accelerating").
+
+    trends di sini adalah dict hasil compute_financial_trends() yang sudah
+    dihitung di build_knowledge_for_ticker (bukan panggilan baru ke Evidence —
+    invariant Knowledge murni per-ticker tetap utuh).
+    """
+    yoy_q3 = trends.get('revenue_yoy_q3')
+    yoy_q4 = trends.get('revenue_yoy_q4')
+    if yoy_q3 is None or yoy_q4 is None:
+        return None
+
+    delta = yoy_q4 - yoy_q3
+    if delta > 0:
+        return f"Revenue YoY growth accelerating: {yoy_q3:.1f}% (Q-1) -> {yoy_q4:.1f}% (Q terkini)"
+    elif delta < 0:
+        return f"Revenue YoY growth decelerating: {yoy_q3:.1f}% (Q-1) -> {yoy_q4:.1f}% (Q terkini)"
+    else:
+        return f"Revenue YoY growth flat: {yoy_q4:.1f}% (Q terkini, tidak berubah dari Q-1)"
+
+
+def _build_governance(evidence: EvidencePackage) -> Governance:
+    """#7 Governance & Filing Events (spec 03_KNOWLEDGE.md §7).
+
+    Derivable dari Evidence saat ini:
+      - unusual_filings: filing amandemen (form_type diakhiri "/A" — 10-K/A,
+        10-Q/A, 8-K/A) dari sec_edgar.py fetch_sec_filings(). Amandemen filing
+        itu sendiri adalah fakta ("filing tidak biasa"), bukan interpretasi —
+        cocok dengan contoh spec ("filing tidak biasa lainnya").
+
+    TIDAK derivable dari Evidence saat ini (sengaja dibiarkan kosong/None,
+    bukan bug — butuh data yang belum dikumpulkan di Evidence stage):
+      - shares_outstanding_change_12m: Evidence cuma simpan shares_outstanding
+        snapshot SAAT INI (Yahoo fast_info, lihat sources/yahoo_evidence.py),
+        bukan angka 12 bulan lalu — tidak ada baseline untuk hitung % perubahan.
+      - auditor_changes / restatements / material_litigation: butuh parsing isi
+        filing (mis. item number 8-K 4.01 untuk auditor change, 4.02 untuk
+        restatement, atau teks litigation disclosure). sec_edgar.py cuma
+        menyimpan form_type + tanggal + URL filing, bukan isi/item filing.
+    """
+    unusual_filings: list[GovernanceEvent] = []
+    for f in evidence.sec_filings.filings or []:
+        if f.form_type and f.form_type.endswith("/A"):
+            unusual_filings.append(GovernanceEvent(
+                event_type="filing_amendment",
+                date=f.filing_date,
+                description=f"{f.form_type} filed (amended filing)"
+            ))
+
+    return Governance(
+        shares_outstanding_change_12m=None,
+        auditor_changes=[],
+        restatements=[],
+        material_litigation=[],
+        unusual_filings=unusual_filings
+    )
 
 
 def run_knowledge(evidence_packages: list[EvidencePackage], screening_candidates: list[ScreeningCandidate] | None = None) -> list[KnowledgeProfile]:

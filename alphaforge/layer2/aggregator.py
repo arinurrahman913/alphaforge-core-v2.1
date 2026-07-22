@@ -126,6 +126,27 @@ def aggregate_recommendation(
             quality_notes_parts.append("Limited price history")
         if confidence.missing_recent_data:
             quality_notes_parts.append("Data >30 days old")
+    else:
+        # Confidence stage never ran for this ticker (partial/degraded
+        # pipeline run) — confidence_score above silently defaulted to a
+        # neutral 50, which otherwise looks identical to a genuinely
+        # assessed medium confidence. Surface the distinction instead of
+        # letting it read as "checked, and fine".
+        quality_notes_parts.append("Confidence assessment unavailable (stage skipped)")
+
+    if risk is None:
+        # Same issue: risk_score defaulted to the neutral midpoint (100-50)
+        # above and high_severity_count-driven bear_case/red_flags checks
+        # were silently skipped — this ticker was never actually screened
+        # for red flags, it's not that none were found.
+        quality_notes_parts.append("Risk assessment unavailable (stage skipped)")
+
+    if reasoning is None:
+        # reasoning_score defaulted to neutral 50 and carries the largest
+        # weight (55%) in final_score — a "hold" driven by this default
+        # should not look the same as a "hold" the reasoning modules
+        # actually concluded.
+        quality_notes_parts.append("Reasoning unavailable (stage skipped)")
 
     data_quality_notes = " • ".join(quality_notes_parts) if quality_notes_parts else "Sufficient data quality"
 

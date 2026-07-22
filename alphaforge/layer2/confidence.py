@@ -101,7 +101,7 @@ def assess_confidence(
         ),
         DataQualityScore(
             category="fundamentals",
-            field_count=18,
+            field_count=9,
             field_completed=_count_fundamental_fields(knowledge_profile),
             completion_pct=fundamental_score,
             data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
@@ -116,7 +116,7 @@ def assess_confidence(
         DataQualityScore(
             category="news",
             field_count=1,  # news_collection
-            field_completed=1 if knowledge_profile.metadata.data_quality_notes else 0,
+            field_completed=1 if news_score >= 70 else 0,
             completion_pct=news_score,
             data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
         ),
@@ -256,7 +256,7 @@ def _score_news_data(profile: KnowledgeProfile) -> float:
     # Fallback: check if news was attempted
     if "No news data" in (profile.metadata.data_quality_notes or ""):
         return 0.0
-    elif "news" in (profile.metadata.sources_used or []):
+    elif "finnhub" in (profile.metadata.sources_used or []):
         return 70.0  # News data available
     else:
         return 30.0  # Attempted but limited
@@ -272,19 +272,19 @@ def _score_governance_data(profile: KnowledgeProfile) -> float:
         score += 25
     count += 25
 
-    if len(gov.auditor_changes or []) >= 0:
+    if len(gov.auditor_changes or []) > 0:
         score += 15
     count += 15
 
-    if len(gov.restatements or []) >= 0:
+    if len(gov.restatements or []) > 0:
         score += 20
     count += 20
 
-    if len(gov.material_litigation or []) >= 0:
+    if len(gov.material_litigation or []) > 0:
         score += 20
     count += 20
 
-    if len(gov.unusual_filings or []) >= 0:
+    if len(gov.unusual_filings or []) > 0:
         score += 20
     count += 20
 
@@ -368,10 +368,18 @@ def _count_ownership_fields(profile: KnowledgeProfile) -> int:
 
 
 def _count_governance_fields(profile: KnowledgeProfile) -> int:
-    """Count governance data points."""
+    """Count non-null/non-empty governance fields."""
     gov = profile.governance
-    count = 4  # Assume auditor, restatements, litigation, filings tracked
+    count = 0
     if gov.shares_outstanding_change_12m is not None:
+        count += 1
+    if len(gov.auditor_changes or []) > 0:
+        count += 1
+    if len(gov.restatements or []) > 0:
+        count += 1
+    if len(gov.material_litigation or []) > 0:
+        count += 1
+    if len(gov.unusual_filings or []) > 0:
         count += 1
     return count
 

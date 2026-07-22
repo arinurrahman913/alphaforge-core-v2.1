@@ -16,7 +16,8 @@ class RedFlag:
     """Satu warning sign yang terdeteksi."""
     flag_type: Literal[
         "auditor_change", "restatement", "litigation", "unusual_filing",
-        "high_debt", "declining_margin", "valuation_extreme",
+        "high_debt", "low_liquidity", "declining_margin", "negative_fcf",
+        "valuation_extreme", "severe_drawdown",
         "guidance_miss", "earnings_streak_break", "high_volatility"
     ]
     severity: Literal["high", "medium", "low"]  # Risk level

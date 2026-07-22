@@ -178,7 +178,7 @@ def _detect_financial_extremes(profile: KnowledgeProfile, existing_flags: list[R
     # Poor current ratio
     if fh.balance_sheet.current_ratio is not None and fh.balance_sheet.current_ratio < 1.0:
         flags.append(RedFlag(
-            flag_type="high_debt",
+            flag_type="low_liquidity",
             severity="high" if fh.balance_sheet.current_ratio < 0.5 else "medium",
             description=f"Low current ratio ({fh.balance_sheet.current_ratio:.2f}) - liquidity concern",
             affected_metrics=["liquidity", "working_capital"]
@@ -198,7 +198,7 @@ def _detect_financial_extremes(profile: KnowledgeProfile, existing_flags: list[R
     # Negative FCF
     if fh.cash_flow_trend.fcf_q4 is not None and fh.cash_flow_trend.fcf_q4 < 0:
         flags.append(RedFlag(
-            flag_type="declining_margin",
+            flag_type="negative_fcf",
             severity="high",
             description="Negative free cash flow - burn rate concern",
             affected_metrics=["cash_generation", "sustainability"]
@@ -269,7 +269,7 @@ def _detect_valuation_extremes(profile: KnowledgeProfile, existing_flags: list[R
     # Extreme negative returns
     if ht.return_1y is not None and ht.return_1y < -50:
         flags.append(RedFlag(
-            flag_type="valuation_extreme",
+            flag_type="severe_drawdown",
             severity="high",
             description=f"Severe drawdown ({ht.return_1y:.1f}%) - distressed situation",
             affected_metrics=["valuation", "distress_signal"]

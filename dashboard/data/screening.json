@@ -1,0 +1,68 @@
+{
+  "universe_raw": 8493,
+  "universe_after_cheap_filter": 5238,
+  "universe_scanned": 4,
+  "sector_filter": "Consumer Cyclical",
+  "universe_after_sector_filter": 4,
+  "passed_count": 3,
+  "hard_excluded_count": 1,
+  "generated_at": "2026-07-21T15:50:14.678757+00:00",
+  "passed": [
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [],
+      "market_cap": 86022604988.60663,
+      "market_cap_tier": "large_cap",
+      "avg_dollar_volume_20d": 502794673.02676314,
+      "last_price": 144.11500549316406,
+      "price_history_days": 501,
+      "sector": "Consumer Cyclical"
+    },
+    {
+      "ticker": "AHMA",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [
+        "recent_ipo"
+      ],
+      "market_cap": 48451749.858260155,
+      "market_cap_tier": "micro_cap",
+      "avg_dollar_volume_20d": 1990660.1066638113,
+      "last_price": 1.6589000225067139,
+      "price_history_days": 187,
+      "sector": "Consumer Cyclical"
+    },
+    {
+      "ticker": "AIIO",
+      "exchange": "NASDAQ",
+      "passed": true,
+      "hard_exclude_reason": null,
+      "soft_flags": [],
+      "market_cap": 592656083.939424,
+      "market_cap_tier": "small_cap",
+      "avg_dollar_volume_20d": 11293905.50128441,
+      "last_price": 3.3299999237060547,
+      "price_history_days": 501,
+      "sector": "Consumer Cyclical"
+    }
+  ],
+  "hard_excluded": [
+    {
+      "ticker": "ABLV",
+      "exchange": "NASDAQ",
+      "passed": false,
+      "hard_exclude_reason": "avg_dollar_volume_below_minimum",
+      "soft_flags": [],
+      "market_cap": null,
+      "market_cap_tier": null,
+      "avg_dollar_volume_20d": 88392.50789790749,
+      "last_price": 1.0149999856948853,
+      "price_history_days": 501,
+      "sector": "Consumer Cyclical"
+    }
+  ]
+}

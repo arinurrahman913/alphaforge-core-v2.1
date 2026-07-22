@@ -1,0 +1,172 @@
+{
+  "knowledge_count": 3,
+  "confidence_scores_generated": 3,
+  "generated_at": "2026-07-21T15:50:18.992834+00:00",
+  "scores": [
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "overall_confidence": 56.8,
+      "confidence_rating": "medium",
+      "price_data_confidence": 45.0,
+      "fundamental_data_confidence": 100.0,
+      "ownership_data_confidence": 40.0,
+      "news_data_confidence": 0.0,
+      "governance_data_confidence": 75.0,
+      "peer_group_confidence": 20.0,
+      "low_sample_size_peer": true,
+      "insufficient_price_history": true,
+      "missing_recent_data": false,
+      "incomplete_fundamentals": true,
+      "quality_scores": [
+        {
+          "category": "price",
+          "field_count": 5,
+          "field_completed": 2,
+          "completion_pct": 45.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "fundamentals",
+          "field_count": 18,
+          "field_completed": 9,
+          "completion_pct": 100.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "ownership",
+          "field_count": 3,
+          "field_completed": 1,
+          "completion_pct": 40.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "news",
+          "field_count": 1,
+          "field_completed": 1,
+          "completion_pct": 0.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "governance",
+          "field_count": 5,
+          "field_completed": 4,
+          "completion_pct": 75.0,
+          "data_age_days": 0
+        }
+      ],
+      "confidence_notes": "Peer group sample size too small (<3) | Limited price history | Low fundamental completeness (11/50)",
+      "assessed_at": "2026-07-21T15:50:18.992834+00:00"
+    },
+    {
+      "ticker": "AHMA",
+      "exchange": "NASDAQ",
+      "overall_confidence": 56.8,
+      "confidence_rating": "medium",
+      "price_data_confidence": 45.0,
+      "fundamental_data_confidence": 100.0,
+      "ownership_data_confidence": 40.0,
+      "news_data_confidence": 0.0,
+      "governance_data_confidence": 75.0,
+      "peer_group_confidence": 20.0,
+      "low_sample_size_peer": true,
+      "insufficient_price_history": true,
+      "missing_recent_data": false,
+      "incomplete_fundamentals": true,
+      "quality_scores": [
+        {
+          "category": "price",
+          "field_count": 5,
+          "field_completed": 2,
+          "completion_pct": 45.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "fundamentals",
+          "field_count": 18,
+          "field_completed": 9,
+          "completion_pct": 100.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "ownership",
+          "field_count": 3,
+          "field_completed": 1,
+          "completion_pct": 40.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "news",
+          "field_count": 1,
+          "field_completed": 1,
+          "completion_pct": 0.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "governance",
+          "field_count": 5,
+          "field_completed": 4,
+          "completion_pct": 75.0,
+          "data_age_days": 0
+        }
+      ],
+      "confidence_notes": "Peer group sample size too small (<3) | Limited price history | Low fundamental completeness (11/50)",
+      "assessed_at": "2026-07-21T15:50:18.992984+00:00"
+    },
+    {
+      "ticker": "AIIO",
+      "exchange": "NASDAQ",
+      "overall_confidence": 50.1,
+      "confidence_rating": "medium",
+      "price_data_confidence": 45.0,
+      "fundamental_data_confidence": 78.0,
+      "ownership_data_confidence": 40.0,
+      "news_data_confidence": 0.0,
+      "governance_data_confidence": 75.0,
+      "peer_group_confidence": 20.0,
+      "low_sample_size_peer": true,
+      "insufficient_price_history": true,
+      "missing_recent_data": false,
+      "incomplete_fundamentals": true,
+      "quality_scores": [
+        {
+          "category": "price",
+          "field_count": 5,
+          "field_completed": 2,
+          "completion_pct": 45.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "fundamentals",
+          "field_count": 18,
+          "field_completed": 7,
+          "completion_pct": 77.96610169491525,
+          "data_age_days": 0
+        },
+        {
+          "category": "ownership",
+          "field_count": 3,
+          "field_completed": 1,
+          "completion_pct": 40.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "news",
+          "field_count": 1,
+          "field_completed": 1,
+          "completion_pct": 0.0,
+          "data_age_days": 0
+        },
+        {
+          "category": "governance",
+          "field_count": 5,
+          "field_completed": 4,
+          "completion_pct": 75.0,
+          "data_age_days": 0
+        }
+      ],
+      "confidence_notes": "Peer group sample size too small (<3) | Limited price history | Low fundamental completeness (9/50)",
+      "assessed_at": "2026-07-21T15:50:18.993053+00:00"
+    }
+  ]
+}

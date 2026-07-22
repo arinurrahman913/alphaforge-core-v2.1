@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: alphaforge-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/app.py
+    envVars:
+      - key: FRED_API_KEY
+        sync: false

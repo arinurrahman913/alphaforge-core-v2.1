@@ -1,0 +1,141 @@
+{
+  "knowledge_count": 3,
+  "risk_assessments_generated": 3,
+  "generated_at": "2026-07-21T15:50:18.996427+00:00",
+  "assessments": [
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "risk_score": 8.8,
+      "risk_rating": "low",
+      "governance_risk_score": 0.0,
+      "financial_risk_score": 25.0,
+      "momentum_risk_score": 0.0,
+      "valuation_risk_score": 0.0,
+      "red_flags": [
+        {
+          "flag_type": "high_debt",
+          "severity": "high",
+          "description": "High debt-to-equity ratio (33.19)",
+          "context": null,
+          "affected_metrics": [
+            "leverage",
+            "financial_stability"
+          ]
+        }
+      ],
+      "high_severity_count": 1,
+      "medium_severity_count": 0,
+      "low_severity_count": 0,
+      "risk_notes": "1 high-risk flag(s)",
+      "recommended_risk_adjustment": -0.2,
+      "assessed_at": "2026-07-21T15:50:18.996427+00:00"
+    },
+    {
+      "ticker": "AHMA",
+      "exchange": "NASDAQ",
+      "risk_score": 14.8,
+      "risk_rating": "low",
+      "governance_risk_score": 0.0,
+      "financial_risk_score": 25.0,
+      "momentum_risk_score": 0.0,
+      "valuation_risk_score": 30.0,
+      "red_flags": [
+        {
+          "flag_type": "declining_margin",
+          "severity": "high",
+          "description": "Negative free cash flow - burn rate concern",
+          "context": null,
+          "affected_metrics": [
+            "cash_generation",
+            "sustainability"
+          ]
+        },
+        {
+          "flag_type": "high_volatility",
+          "severity": "medium",
+          "description": "High daily volatility (23.48%) - illiquid or risky",
+          "context": null,
+          "affected_metrics": [
+            "market_risk",
+            "trading_risk"
+          ]
+        },
+        {
+          "flag_type": "valuation_extreme",
+          "severity": "high",
+          "description": "Severe drawdown (-64.3%) - distressed situation",
+          "context": null,
+          "affected_metrics": [
+            "valuation",
+            "distress_signal"
+          ]
+        }
+      ],
+      "high_severity_count": 2,
+      "medium_severity_count": 1,
+      "low_severity_count": 0,
+      "risk_notes": "2 high-risk flag(s) | 1 medium-risk flag(s)",
+      "recommended_risk_adjustment": -0.2,
+      "assessed_at": "2026-07-21T15:50:18.996528+00:00"
+    },
+    {
+      "ticker": "AIIO",
+      "exchange": "NASDAQ",
+      "risk_score": 18.2,
+      "risk_rating": "low",
+      "governance_risk_score": 0.0,
+      "financial_risk_score": 35.0,
+      "momentum_risk_score": 0.0,
+      "valuation_risk_score": 30.0,
+      "red_flags": [
+        {
+          "flag_type": "high_debt",
+          "severity": "high",
+          "description": "Low current ratio (0.06) - liquidity concern",
+          "context": null,
+          "affected_metrics": [
+            "liquidity",
+            "working_capital"
+          ]
+        },
+        {
+          "flag_type": "declining_margin",
+          "severity": "medium",
+          "description": "Negative net margin Q4 (-1761494.74%)",
+          "context": null,
+          "affected_metrics": [
+            "profitability",
+            "operational_efficiency"
+          ]
+        },
+        {
+          "flag_type": "high_volatility",
+          "severity": "medium",
+          "description": "High daily volatility (15.14%) - illiquid or risky",
+          "context": null,
+          "affected_metrics": [
+            "market_risk",
+            "trading_risk"
+          ]
+        },
+        {
+          "flag_type": "valuation_extreme",
+          "severity": "high",
+          "description": "Severe drawdown (-90.0%) - distressed situation",
+          "context": null,
+          "affected_metrics": [
+            "valuation",
+            "distress_signal"
+          ]
+        }
+      ],
+      "high_severity_count": 2,
+      "medium_severity_count": 2,
+      "low_severity_count": 0,
+      "risk_notes": "2 high-risk flag(s) | 2 medium-risk flag(s)",
+      "recommended_risk_adjustment": -0.2,
+      "assessed_at": "2026-07-21T15:50:18.996590+00:00"
+    }
+  ]
+}

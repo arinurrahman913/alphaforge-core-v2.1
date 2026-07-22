@@ -1,0 +1,80 @@
+{
+  "profiles_count": 3,
+  "recommendations_generated": 3,
+  "generated_at": "2026-07-21T15:50:18.997885+00:00",
+  "recommendations": [
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "recommendation": "hold",
+      "conviction": 57.0,
+      "reasoning_summary": "Sell (+ Quality bearish)",
+      "confidence_score": 56.8,
+      "risk_score": 91.2,
+      "reasoning_score": 37.6,
+      "bull_case": "Mixed signals",
+      "bear_case": "Fundamental weakness • High-risk issues detected",
+      "key_catalysts": [],
+      "peer_group_size": 2,
+      "percentile_vs_peer": null,
+      "red_flags": [
+        "high_debt: High debt-to-equity ratio (33.19)",
+        "Incomplete fundamental data"
+      ],
+      "data_quality_notes": "Limited price history",
+      "recommended_at": "2026-07-21T15:50:18.997885+00:00",
+      "next_review_date": "2026-08-20T15:50:18.997885+00:00",
+      "tracking_id": "ae8be9bf-a1c9-4798-b88b-32e6d596c17a"
+    },
+    {
+      "ticker": "AHMA",
+      "exchange": "NASDAQ",
+      "recommendation": "hold",
+      "conviction": 62.0,
+      "reasoning_summary": "Hold (+ Quality bullish)",
+      "confidence_score": 56.8,
+      "risk_score": 85.2,
+      "reasoning_score": 46.5,
+      "bull_case": "Strong fundamentals",
+      "bear_case": "High-risk issues detected",
+      "key_catalysts": [],
+      "peer_group_size": 2,
+      "percentile_vs_peer": null,
+      "red_flags": [
+        "declining_margin: Negative free cash flow - burn rate concern",
+        "high_volatility: High daily volatility (23.48%) - illiquid or risky",
+        "valuation_extreme: Severe drawdown (-64.3%) - distressed situation",
+        "Incomplete fundamental data"
+      ],
+      "data_quality_notes": "Limited price history",
+      "recommended_at": "2026-07-21T15:50:18.998030+00:00",
+      "next_review_date": "2026-08-20T15:50:18.998030+00:00",
+      "tracking_id": "a197da5f-475a-41b1-8546-2324917d03ce"
+    },
+    {
+      "ticker": "AIIO",
+      "exchange": "NASDAQ",
+      "recommendation": "hold",
+      "conviction": 61.0,
+      "reasoning_summary": "Strong Sell (+ Quality bearish)",
+      "confidence_score": 50.1,
+      "risk_score": 81.8,
+      "reasoning_score": 22.5,
+      "bull_case": "Mixed signals",
+      "bear_case": "Fundamental weakness • High-risk issues detected",
+      "key_catalysts": [],
+      "peer_group_size": 2,
+      "percentile_vs_peer": null,
+      "red_flags": [
+        "high_debt: Low current ratio (0.06) - liquidity concern",
+        "declining_margin: Negative net margin Q4 (-1761494.74%)",
+        "high_volatility: High daily volatility (15.14%) - illiquid or risky",
+        "Incomplete fundamental data"
+      ],
+      "data_quality_notes": "Limited price history",
+      "recommended_at": "2026-07-21T15:50:18.998090+00:00",
+      "next_review_date": "2026-08-20T15:50:18.998090+00:00",
+      "tracking_id": "0e75ddd5-5b51-44ba-a4ed-d3239b925c8d"
+    }
+  ]
+}

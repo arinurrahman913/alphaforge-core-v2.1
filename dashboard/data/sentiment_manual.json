@@ -1,0 +1,7 @@
+{
+  "_readme": "Diisi manual dari sumber resmi (lihat _put_call_source/_aaii_source). AAII belum diisi — situs aaii.com memblokir akses otomatis via bot-protection (Incapsula), tidak dipaksa bypass. Update AAII manual tiap Kamis dari https://www.aaii.com/sentimentsurvey kalau mau lengkapi ke 4/4.",
+
+  "_put_call_source": "https://www.cboe.com/us/options/market_statistics/ — Total Put/Call Ratio, diambil langsung dari halaman resmi.",
+  "put_call_score": 38.8,
+  "put_call_as_of": "2026-07-20"
+}

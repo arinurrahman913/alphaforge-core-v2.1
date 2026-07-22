@@ -9,11 +9,26 @@ from pathlib import Path
 
 CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 
+# Windows treats these as reserved device names regardless of extension —
+# a ticker literally named "CON" (a real NYSE symbol) produces a cache key
+# "CON.json" that Windows refuses to create at all
+# (OSError: [WinError 6] The handle is invalid), crashing full-market
+# screening runs partway through since the ticker list is scanned
+# alphabetically. Case-insensitive, matched on the stem only (extension
+# doesn't save it — "CON.json" is just as reserved as "CON").
+_WINDOWS_RESERVED_NAMES = {
+    "CON", "PRN", "AUX", "NUL",
+    *(f"COM{i}" for i in range(1, 10)),
+    *(f"LPT{i}" for i in range(1, 10)),
+}
+
 
 def _path(namespace: str, key: str) -> Path:
     d = CACHE_DIR / namespace
     d.mkdir(parents=True, exist_ok=True)
     safe_key = key.replace("/", "_").replace("\\", "_")
+    if safe_key.upper() in _WINDOWS_RESERVED_NAMES:
+        safe_key = f"_{safe_key}"
     return d / f"{safe_key}.json"
 
 

@@ -24,6 +24,29 @@ from ..contracts import (
 )
 from ._retry import retry
 
+def _safe_float(value) -> float | None:
+    """Yahoo's .info dict occasionally returns non-numeric junk for fields
+    that are supposed to be numeric (seen live on a full-market run:
+    trailingPE came back as the literal string "Infinity" for 6 real
+    tickers — BILL/CAL/CPSH/CRON/TALK/ZSQR, all loss-making — crashing
+    Risk's `val.pe_ratio_trailing > 100` downstream with a str/int
+    TypeError). Coerce to float or None instead of trusting the API's type
+    contract. inf/-inf/nan are explicitly rejected too, not just non-numeric
+    strings — float("Infinity") succeeds and would silently produce a real
+    Python inf, but 03_KNOWLEDGE.md §6 is explicit that a ratio which is
+    mathematically meaningless (P/E for a loss-making company) must be
+    null+missing, not an extreme number."""
+    if value is None:
+        return None
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return None
+    if f != f or f in (float("inf"), float("-inf")):  # f != f catches NaN
+        return None
+    return f
+
+
 PRICE_CACHE_TTL = 6 * 3600  # 6 jam
 FUNDAMENTAL_CACHE_TTL = 24 * 3600  # 24 jam
 OWNERSHIP_CACHE_TTL = 24 * 3600  # 24 jam
@@ -237,24 +260,24 @@ def fetch_fundamental_data(ticker: str) -> FundamentalData:
 
         data = FundamentalData(
             metadata=metadata,
-            revenue=info.get("totalRevenue"),
-            net_income=info.get("netIncomeToCommon"),
-            eps=info.get("trailingEps"),
-            pe_ratio=info.get("trailingPE"),
-            debt_to_equity=info.get("debtToEquity"),
-            current_ratio=info.get("currentRatio"),
-            quick_ratio=info.get("quickRatio"),
-            roe=info.get("returnOnEquity"),
-            roa=info.get("returnOnAssets"),
-            operating_margin=info.get("operatingMargins"),
-            gross_margin=info.get("grossMargins"),
-            free_cash_flow=info.get("freeCashflow"),
-            dividend_yield=info.get("dividendYield"),
-            payout_ratio=info.get("payoutRatio"),
-            book_value_per_share=info.get("bookValue"),
-            asset_turnover=info.get("assetTurnover"),
-            inventory_turnover=info.get("inventoryTurnover"),
-            interest_coverage=info.get("interestCoverage"),
+            revenue=_safe_float(info.get("totalRevenue")),
+            net_income=_safe_float(info.get("netIncomeToCommon")),
+            eps=_safe_float(info.get("trailingEps")),
+            pe_ratio=_safe_float(info.get("trailingPE")),
+            debt_to_equity=_safe_float(info.get("debtToEquity")),
+            current_ratio=_safe_float(info.get("currentRatio")),
+            quick_ratio=_safe_float(info.get("quickRatio")),
+            roe=_safe_float(info.get("returnOnEquity")),
+            roa=_safe_float(info.get("returnOnAssets")),
+            operating_margin=_safe_float(info.get("operatingMargins")),
+            gross_margin=_safe_float(info.get("grossMargins")),
+            free_cash_flow=_safe_float(info.get("freeCashflow")),
+            dividend_yield=_safe_float(info.get("dividendYield")),
+            payout_ratio=_safe_float(info.get("payoutRatio")),
+            book_value_per_share=_safe_float(info.get("bookValue")),
+            asset_turnover=_safe_float(info.get("assetTurnover")),
+            inventory_turnover=_safe_float(info.get("inventoryTurnover")),
+            interest_coverage=_safe_float(info.get("interestCoverage")),
             sector=info.get("sector"),
             industry=info.get("industry")
         )
@@ -348,7 +371,7 @@ def fetch_institutional_ownership(ticker: str) -> InstitutionalOwnership:
 
     try:
         info = _fetch_yahoo_info(ticker)
-        percentage = info.get("heldPercentInstitutions")
+        percentage = _safe_float(info.get("heldPercentInstitutions"))
 
         try:
             holders_raw = _fetch_institutional_holders_detail(ticker)

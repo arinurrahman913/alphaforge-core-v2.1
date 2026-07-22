@@ -154,7 +154,8 @@ class KnowledgeMetadata:
     method_version: str  # Version dari Knowledge calculation (mis. "1.0")
     fields_completed: int  # Jumlah field berhasil diisi
     fields_expected: int  # Total field yang diharapkan
-    sources_used: list[str]  # List sumber dari Evidence (yahoo_finance, finnhub, sec_edgar)
+    missing_fields: list[str] = field(default_factory=list)  # Nama field (dotted path) yang kosong — Data Contracts §4/§6 V4
+    sources_used: list[str] = field(default_factory=list)  # List sumber dari Evidence (yahoo_finance, finnhub, sec_edgar)
     data_quality_notes: str | None = None
 
 

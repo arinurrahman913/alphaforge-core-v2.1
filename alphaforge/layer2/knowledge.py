@@ -177,7 +177,7 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     governance = _build_governance(evidence)
 
     # Count completed fields untuk Confidence downstream
-    completed_fields, expected_fields = _count_completed_fields(
+    completed_fields, expected_fields, missing_fields = _count_completed_fields(
         returns, volatility, financial_health, ownership, valuation
     )
 
@@ -187,6 +187,7 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
         method_version="1.1",
         fields_completed=completed_fields,
         fields_expected=expected_fields,
+        missing_fields=missing_fields,
         sources_used=_extract_sources(evidence),
         data_quality_notes=_generate_quality_notes(evidence, returns, volatility)
     )
@@ -215,32 +216,38 @@ def _fcf_margin_pct(fcf: float | None, revenue: float | None) -> float | None:
     return (fcf / revenue) * 100
 
 
-def _count_completed_fields(returns: dict, volatility: float | None, financial_health, ownership, valuation) -> tuple[int, int]:
+def _count_completed_fields(returns: dict, volatility: float | None, financial_health, ownership, valuation) -> tuple[int, int, list[str]]:
     """#5: Count non-null fields untuk data quality tracking.
 
-    Returns (fields_completed, fields_expected) — keduanya dihitung dari list
-    checks yang sama, supaya fields_expected otomatis selalu sama dengan
-    jumlah field yang benar-benar dicek di sini (sebelumnya fields_expected
-    di-hardcode ke 50 di caller padahal cuma ~13 field yang pernah dicek).
+    Returns (fields_completed, fields_expected, missing_fields) — semuanya
+    dihitung dari list checks yang sama, supaya fields_expected otomatis
+    selalu sama dengan jumlah field yang benar-benar dicek di sini
+    (sebelumnya fields_expected di-hardcode ke 50 di caller padahal cuma
+    ~13 field yang pernah dicek). missing_fields membawa NAMA field yang
+    kosong, bukan cuma hitungannya — dibutuhkan Data Contracts §4/§6 (V4:
+    field Knowledge yang missing dan relevan untuk suatu modul reasoning
+    wajib muncul di knowledge_gaps modul itu; tidak bisa dipenuhi dari
+    angka completeness saja).
     """
     checks = [
-        returns.get('return_1y'),
-        returns.get('return_3y'),
-        returns.get('return_5y'),
-        volatility,
-        financial_health.balance_sheet.debt_to_equity,
-        financial_health.balance_sheet.current_ratio,
-        financial_health.balance_sheet.quick_ratio,
-        financial_health.cash_flow_trend.fcf_q4,
-        ownership.institutional_pct,
-        valuation.pe_ratio_trailing,
-        valuation.ps_ratio,
-        valuation.pb_ratio,
-        valuation.fcf_yield,
+        ("historical_trend.return_1y", returns.get('return_1y')),
+        ("historical_trend.return_3y", returns.get('return_3y')),
+        ("historical_trend.return_5y", returns.get('return_5y')),
+        ("historical_trend.volatility_daily", volatility),
+        ("financial_health.balance_sheet.debt_to_equity", financial_health.balance_sheet.debt_to_equity),
+        ("financial_health.balance_sheet.current_ratio", financial_health.balance_sheet.current_ratio),
+        ("financial_health.balance_sheet.quick_ratio", financial_health.balance_sheet.quick_ratio),
+        ("financial_health.cash_flow_trend.fcf_q4", financial_health.cash_flow_trend.fcf_q4),
+        ("ownership.institutional_pct", ownership.institutional_pct),
+        ("valuation.pe_ratio_trailing", valuation.pe_ratio_trailing),
+        ("valuation.ps_ratio", valuation.ps_ratio),
+        ("valuation.pb_ratio", valuation.pb_ratio),
+        ("valuation.fcf_yield", valuation.fcf_yield),
     ]
-    fields_completed = sum(1 for v in checks if v)
+    fields_completed = sum(1 for _, v in checks if v)
     fields_expected = len(checks)
-    return fields_completed, fields_expected
+    missing_fields = [name for name, v in checks if not v]
+    return fields_completed, fields_expected, missing_fields
 
 
 def _extract_sources(evidence: EvidencePackage) -> list[str]:

@@ -11,11 +11,34 @@ from typing import TYPE_CHECKING
 from .aggregator_contracts import FinalRecommendation
 
 if TYPE_CHECKING:
-    from .confidence_contracts import ConfidenceScore
+    from .confidence_contracts import ConfidenceReport
     from .knowledge_contracts import KnowledgeProfile
     from .peer_contracts import PeerComparisonResult
-    from .reasoning_contracts import AggregatedReasoning
+    from .reasoning_contracts import ReasoningBundle
     from .risk_contracts import RiskAssessment
+
+# INTERIM shim — dipakai cuma untuk mengisi FinalRecommendation.final_score/
+# stance lama (D-04 sebenarnya MELARANG Aggregator punya skor tunggal macam
+# ini sama sekali, lihat 11_AGGREGATOR_OUTPUT.md — belum dibongkar total di
+# sini karena itu scope Fase 6/Synthesis, bukan Fase 4/reasoning). Urutan di
+# dalam SATU kosakata modul memang sah dibandingkan (D-04: "Di dalam satu
+# kosakata urutan tetap ada... satu lensa, satu sumbu") — yang tidak sah itu
+# membandingkan ANTAR kosakata, dan pemetaan angka ini cuma dipakai untuk
+# rata-rata sementara, bukan claim bahwa "ruang_terbuka" == "compounding_kuat".
+_STANCE_ORDINAL = {
+    "ruang_terbuka": 100, "ruang_sempit": 60, "ruang_tertutup": 20, "ruang_tak_terbaca": 50,
+    "compounding_kuat": 100, "compounding_rapuh": 60, "bukan_compounder": 20, "mesin_tak_terbaca": 50,
+    "asimetri_berkatalis": 100, "asimetri_tanpa_katalis": 70, "tanpa_asimetri": 30, "asimetri_tak_terbaca": 50,
+}
+
+
+def _reasoning_bundle_score(bundle: ReasoningBundle) -> float:
+    values = [
+        _STANCE_ORDINAL.get(bundle.quality_compound.stance, 50),
+        _STANCE_ORDINAL.get(bundle.multibagger.stance, 50),
+        _STANCE_ORDINAL.get(bundle.speculative.stance, 50),
+    ]
+    return sum(values) / len(values)
 
 
 def aggregate_recommendation(
@@ -23,9 +46,9 @@ def aggregate_recommendation(
     exchange: str,
     knowledge: KnowledgeProfile | None = None,
     peer: PeerComparisonResult | None = None,
-    confidence: ConfidenceScore | None = None,
+    confidence: ConfidenceReport | None = None,
     risk: RiskAssessment | None = None,
-    reasoning: AggregatedReasoning | None = None,
+    reasoning: ReasoningBundle | None = None,
 ) -> FinalRecommendation:
     """Aggregate all outputs menjadi final recommendation.
 
@@ -34,17 +57,17 @@ def aggregate_recommendation(
         exchange: Exchange
         knowledge: KnowledgeProfile dari Fase A
         peer: PeerComparisonResult dari Fase B-1
-        confidence: ConfidenceScore dari Fase B-2
+        confidence: ConfidenceReport dari Fase B-2
         risk: RiskAssessment dari Fase B-3
-        reasoning: AggregatedReasoning dari Fase B-4
+        reasoning: ReasoningBundle (3 ModuleOutput independen) dari Fase B-4
 
     Returns:
         FinalRecommendation dengan stance + conviction
     """
     # Extract base scores
-    confidence_score = confidence.overall_confidence if confidence else 50.0
+    confidence_score = confidence.overall.score if confidence else 50.0
     risk_score = 100 - (risk.risk_score if risk else 50.0)  # Invert: lower risk = higher score
-    reasoning_score = reasoning.final_score if reasoning else 50.0
+    reasoning_score = _reasoning_bundle_score(reasoning) if reasoning else 50.0
 
     # Weighted aggregate
     final_score = (
@@ -82,23 +105,22 @@ def aggregate_recommendation(
     bull_parts = []
     bear_parts = []
 
-    if reasoning and reasoning.quality_output:
-        if "strong_buy" in reasoning.quality_output.stance or "buy" in reasoning.quality_output.stance:
-            bull_parts.append("Strong fundamentals" if reasoning.quality_output.positive_factors else "Fundamentals acceptable")
-        else:
+    if reasoning:
+        if reasoning.quality_compound.stance == "compounding_kuat":
+            bull_parts.append("Strong fundamentals" if reasoning.quality_compound.positive_factors else "Fundamentals acceptable")
+        elif reasoning.quality_compound.stance == "bukan_compounder":
             bear_parts.append("Fundamental weakness")
 
-    if reasoning and reasoning.multibagger_output:
-        if "strong_buy" in reasoning.multibagger_output.stance or "buy" in reasoning.multibagger_output.stance:
+        if reasoning.multibagger.stance == "ruang_terbuka":
             bull_parts.append("High growth potential")
-        if reasoning.multibagger_output.negative_factors:
-            for factor in reasoning.multibagger_output.negative_factors[:1]:
+        if reasoning.multibagger.negative_factors:
+            for factor in reasoning.multibagger.negative_factors[:1]:
                 bear_parts.append(factor)
 
     if risk and risk.high_severity_count > 0:
         bear_parts.append(f"High-risk issues detected")
 
-    if confidence and confidence.confidence_rating == "low":
+    if confidence and confidence.overall.band == "low":
         bear_parts.append("Insufficient data for conviction")
 
     bull_case = " • ".join(bull_parts) if bull_parts else "Mixed signals"
@@ -110,22 +132,19 @@ def aggregate_recommendation(
         for flag in risk.red_flags[:3]:
             red_flags.append(f"{flag.flag_type}: {flag.description}")
 
-    if confidence and confidence.incomplete_fundamentals:
+    if confidence and confidence.by_section["financial_health"].score < 50:
         red_flags.append("Incomplete fundamental data")
 
     # Peer percentile
     percentile = None
     peer_group_size = peer.peer_group.group_size if peer else 0
 
-    # Data quality notes
+    # Data quality notes — ConfidenceReport.overall.limiters sudah membawa
+    # alasan yang sama persis (section lemah, peer/context penalty, data
+    # basi), jadi tinggal dipakai langsung, bukan dihitung ulang di sini.
     quality_notes_parts = []
     if confidence:
-        if confidence.overall_confidence < 40:
-            quality_notes_parts.append(f"Low data confidence ({confidence.overall_confidence}%)")
-        if confidence.insufficient_price_history:
-            quality_notes_parts.append("Limited price history")
-        if confidence.missing_recent_data:
-            quality_notes_parts.append("Data >30 days old")
+        quality_notes_parts.extend(confidence.overall.limiters)
     else:
         # Confidence stage never ran for this ticker (partial/degraded
         # pipeline run) — confidence_score above silently defaulted to a
@@ -155,10 +174,14 @@ def aggregate_recommendation(
     now = datetime.now(timezone.utc)
     review_date = now + timedelta(days=30)
 
-    # Summary
-    reasoning_summary = ""
+    # Summary — 3 lens punya kosakata stance sendiri-sendiri (D-09), jadi gak
+    # ada satu "reasoning.recommendation" gabungan lagi seperti versi lama.
     if reasoning:
-        reasoning_summary = reasoning.recommendation
+        reasoning_summary = (
+            f"Quality: {reasoning.quality_compound.stance} · "
+            f"Multibagger: {reasoning.multibagger.stance} · "
+            f"Speculative: {reasoning.speculative.stance}"
+        )
     else:
         reasoning_summary = f"{stance.replace('_', ' ').title()} based on available data"
 
@@ -187,18 +210,18 @@ def aggregate_recommendation(
 def run_aggregator(
     profiles: list[KnowledgeProfile],
     peers: list[PeerComparisonResult] | None = None,
-    confidences: list[ConfidenceScore] | None = None,
+    confidences: list[ConfidenceReport] | None = None,
     risks: list[RiskAssessment] | None = None,
-    reasonings: list[AggregatedReasoning] | None = None,
+    reasonings: list[ReasoningBundle] | None = None,
 ) -> list[FinalRecommendation]:
     """Run aggregator untuk semua profiles.
 
     Args:
         profiles: List of KnowledgeProfile
         peers: List of PeerComparisonResult (optional)
-        confidences: List of ConfidenceScore (optional)
+        confidences: List of ConfidenceReport (optional)
         risks: List of RiskAssessment (optional)
-        reasonings: List of AggregatedReasoning (optional)
+        reasonings: List of ReasoningBundle (optional)
 
     Returns:
         List of FinalRecommendation

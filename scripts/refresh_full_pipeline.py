@@ -33,6 +33,7 @@ from alphaforge.layer1.pipeline import build_market_context_package  # noqa: E40
 from alphaforge.layer2.screening import run_screening  # noqa: E402
 from alphaforge.layer2.evidence import run_evidence  # noqa: E402
 from alphaforge.layer2.knowledge import run_knowledge  # noqa: E402
+from alphaforge.layer2.catalyst import run_catalyst  # noqa: E402
 from alphaforge.layer2.peer import run_peer_comparison  # noqa: E402
 from alphaforge.layer2.confidence import run_confidence  # noqa: E402
 from alphaforge.layer2.risk import run_risk_assessment  # noqa: E402
@@ -84,16 +85,34 @@ def main() -> int:
         sector_note = f" (sektor: {SCREENING_SECTOR})" if SCREENING_SECTOR else ""
         log.info(f"Screening{sector_note}: {len(screening_result.passed)} passed / {screening_result.universe_scanned} scanned")
 
+        # Layer 1 dipindah ke sini (sebelumnya dihitung paling akhir) supaya
+        # Confidence bisa membaca komponen mana yang degraded/missing saat
+        # profil-profil ini disusun (ConfidenceReport.context_penalty, Data
+        # Contracts §5c) — build_market_context_package cuma butuh
+        # price_cache dari Screening, jadi tidak ada dependency baru yang
+        # dibutuhkan lebih awal dari ini.
+        layer1_pkg = build_market_context_package(price_cache=price_cache)
+        n_ok = sum(1 for c in layer1_pkg.components.values() if c.status == "ok")
+        log.info(f"Layer 1: {n_ok}/{len(layer1_pkg.components)} ok")
+        components_degraded = [
+            name for name, c in layer1_pkg.components.items() if c.status != "ok"
+        ]
+
         evidence_packages = run_evidence(screening_result)
         log.info(f"Evidence: {len(evidence_packages)} packages")
 
         profiles = run_knowledge(evidence_packages, screening_result.passed)
         log.info(f"Knowledge: {len(profiles)} profiles")
 
+        catalysts = run_catalyst([p.ticker for p in profiles])
+        catalyst_map = {c.ticker: c for c in catalysts}
+        n_cat = sum(1 for c in catalysts if c.has_upcoming)
+        log.info(f"Catalyst: {len(catalysts)} sets ({n_cat} with upcoming catalyst)")
+
         comparisons = run_peer_comparison(profiles)
         log.info(f"Peer: {len(comparisons)} comparisons")
 
-        confidences = run_confidence(profiles, comparisons)
+        confidences = run_confidence(profiles, comparisons, components_degraded)
         log.info(f"Confidence: {len(confidences)} scores")
 
         risks = run_risk_assessment(profiles)
@@ -101,8 +120,12 @@ def main() -> int:
 
         confidence_map = {c.ticker: c for c in confidences}
         risk_map = {r.ticker: r for r in risks}
+        peer_map = {c.ticker: c for c in comparisons}
         reasonings = [
-            run_reasoning_pipeline(p, confidence_map.get(p.ticker), risk_map.get(p.ticker))
+            run_reasoning_pipeline(
+                p, confidence_map.get(p.ticker), risk_map.get(p.ticker),
+                peer_map.get(p.ticker), catalyst_map.get(p.ticker),
+            )
             for p in profiles
         ]
         log.info(f"Reasoning: {len(reasonings)} outputs")
@@ -113,10 +136,6 @@ def main() -> int:
         timelines = load_historical_timeline(str(DATA_DIR / "historical_timeline.json"))
         timelines = update_timeline(timelines, recommendations)
         log.info(f"Historical: {len(timelines)} tickers tracked")
-
-        layer1_pkg = build_market_context_package(price_cache=price_cache)
-        n_ok = sum(1 for c in layer1_pkg.components.values() if c.status == "ok")
-        log.info(f"Layer 1: {n_ok}/{len(layer1_pkg.components)} ok")
     except Exception:
         log.exception("Pipeline failed — dashboard/data left untouched")
         return 1
@@ -137,6 +156,12 @@ def main() -> int:
         "knowledge_generated": len(profiles),
         "generated_at": profiles[0].metadata.evidence_date if profiles else None,
         "profiles": [p.to_dict() for p in profiles],
+    }
+    catalyst_data = {
+        "knowledge_count": len(profiles),
+        "catalyst_sets_generated": len(catalysts),
+        "with_upcoming": sum(1 for c in catalysts if c.has_upcoming),
+        "catalyst_sets": [c.to_dict() for c in catalysts],
     }
     peer_data = {
         "knowledge_count": len(profiles),
@@ -159,7 +184,7 @@ def main() -> int:
     reasoning_data = {
         "knowledge_count": len(profiles),
         "reasoning_outputs_generated": len(reasonings),
-        "generated_at": reasonings[0].aggregated_at if reasonings else None,
+        "generated_at": reasonings[0].generated_at if reasonings else None,
         "reasoning_outputs": [r.to_dict() for r in reasonings],
     }
     aggregator_data = {
@@ -174,6 +199,7 @@ def main() -> int:
     _atomic_write(DATA_DIR / "screening.json", screening_data)
     _atomic_write(DATA_DIR / "evidence.json", evidence_data)
     _atomic_write(DATA_DIR / "knowledge.json", knowledge_data)
+    _atomic_write(DATA_DIR / "catalysts.json", catalyst_data)
     _atomic_write(DATA_DIR / "peer_results.json", peer_data)
     _atomic_write(DATA_DIR / "confidence_scores.json", confidence_data)
     _atomic_write(DATA_DIR / "risk_assessments.json", risk_data)

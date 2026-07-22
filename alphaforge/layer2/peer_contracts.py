@@ -44,6 +44,7 @@ class PeerComparisonResult:
     peer_group: PeerGroupInfo
     generated_at: str  # ISO datetime
     peer_group_basis: Literal["screening_universe", "manual"] = "screening_universe"
+    low_sample_size: bool = False  # True kalau peer_group.group_size < 3 (Data Contracts §5)
 
     # Metric comparisons (TBD: mana saja yang dibandingkan)
     pe_ratio_comparison: PeerMetricComparison | None = None

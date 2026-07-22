@@ -1,60 +1,66 @@
-"""Confidence module contracts — Layer 2 Fase B, stage 2: Data Quality Scoring
+"""Confidence Report contracts — Layer 2 Fase B, stage 2: Data Quality Scoring
 
-Setiap KnowledgeProfile dievaluasi untuk confidence level berdasarkan:
-- Field completeness (berapa persen field terisi)
-- Data freshness (kapan terakhir diupdate)
-- Peer group quality (sample size, data availability)
+Shape dikunci di 01_ARCHITECTURE/04_DATA_CONTRACTS.md §5c (bukan lagi TBD
+seperti versi awal 05_CONFIDENCE_DATA_QUALITY.md). Mengukur seberapa kuat
+DATA saham ini — beda dari ModuleOutput.confidence yang mengukur seberapa
+yakin MODUL pada kesimpulannya sendiri (lihat aturan V6, ModuleOutput.
+confidence.score <= ConfidenceReport.overall.score).
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Literal
 
-
-@dataclass
-class DataQualityScore:
-    """Skor kualitas data per kategori."""
-    category: str  # "price", "fundamentals", "ownership", "news", "peer_group"
-    field_count: int  # Berapa field di-scan
-    field_completed: int  # Berapa field terisi
-    completion_pct: float  # 0-100
-    data_age_days: int | None  # Berapa hari lalu data terakhir diupdate
+Band = Literal["low", "medium", "high"]
 
 
 @dataclass
-class ConfidenceScore:
-    """Confidence assessment untuk satu ticker — Fase B output.
+class OverallConfidence:
+    """Skor & kategori confidence keseluruhan."""
+    score: float  # 0-100
+    band: Band
+    limiters: list[str] = field(default_factory=list)  # WAJIB terisi kalau band != "high"
 
-    Mengukur seberapa terpercaya (dan siap untuk reasoning) Knowledge profile ini.
+
+@dataclass
+class SectionScore:
+    """Kelengkapan + skor satu bagian Knowledge (financial_health, valuation, dll)."""
+    filled: int
+    expected: int
+    score: float  # 0-100 = filled/expected*100
+
+
+@dataclass
+class PeerPenalty:
+    """Penalti dari kualitas peer group (low_sample_size / peer_failures)."""
+    applied: bool
+    reason: str | None = None
+
+
+@dataclass
+class ContextPenalty:
+    """Penalti dari komponen Layer 1 yang degraded/missing saat profil ini disusun."""
+    applied: bool
+    components_degraded: list[str] = field(default_factory=list)
+
+
+@dataclass
+class ConfidenceReport:
+    """Confidence Report untuk satu ticker — Data Contracts §5c.
+
+    Satu per ticker (beda dari ModuleOutput.confidence yang tiga per ticker,
+    satu per modul reasoning).
     """
     ticker: str
     exchange: str
+    method_version: str
 
-    # Overall confidence
-    overall_confidence: float  # 0-100, weighted average
-    confidence_rating: Literal["high", "medium", "low"]  # Kategorisasi
+    overall: OverallConfidence
+    by_section: dict[str, SectionScore]  # key = nama section Knowledge
+    peer_penalty: PeerPenalty
+    context_penalty: ContextPenalty
+    evidence_age_days: int | None
 
-    # Breakdown by data category
-    price_data_confidence: float  # 0-100
-    fundamental_data_confidence: float  # 0-100
-    ownership_data_confidence: float  # 0-100
-    news_data_confidence: float  # 0-100
-    governance_data_confidence: float  # 0-100
-    peer_group_confidence: float  # 0-100
-
-    # Flags (non-default)
-    low_sample_size_peer: bool  # Peer group < 3
-    insufficient_price_history: bool  # Price history < 200 days
-    missing_recent_data: bool  # Data > 30 hari lalu
-    incomplete_fundamentals: bool  # < 50% fundamental fields
-
-    # Detailed scores (with default)
-    quality_scores: list[DataQualityScore] = field(default_factory=list)
-
-    # Notes for downstream stages
-    confidence_notes: str = ""  # Catatan kualitas data
-
-    # Metadata
     assessed_at: str = ""  # ISO datetime
 
     def to_dict(self) -> dict:

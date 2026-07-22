@@ -175,7 +175,8 @@ def build_peer_comparison(
         roe_comparison=roe_comp,
         debt_to_equity_comparison=dte_comp,
         generated_at=datetime.now(timezone.utc).isoformat(),
-        peer_group_basis=basis
+        peer_group_basis=basis,
+        low_sample_size=len(peers) < 3
     )
 
 

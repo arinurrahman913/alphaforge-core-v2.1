@@ -4,10 +4,10 @@ Mendeteksi governance anomalies, financial extremes, momentum reversals.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 
-from .risk_contracts import RiskAssessment, RedFlag
+from .risk_contracts import RiskAssessment, RedFlag, Flag
 
 if TYPE_CHECKING:
     from .knowledge_contracts import KnowledgeProfile
@@ -42,6 +42,13 @@ def assess_risk(knowledge_profile: KnowledgeProfile) -> RiskAssessment:
     # Deteksi valuation extremes
     val_flags, val_score = _detect_valuation_extremes(knowledge_profile, red_flags)
     red_flags.extend(val_flags)
+
+    # 04_RISK_REDFLAG_CHECK.md v2.0.0 — 6 pemeriksaan spec, terpisah dari
+    # red_flags di atas (lihat docstring Flag di risk_contracts.py)
+    flags = _check_spec_flags(knowledge_profile)
+    triggered_ekstrem = [f for f in flags if f.severity == "ekstrem" and f.status == "triggered"]
+    halted = len(triggered_ekstrem) > 0
+    halt_reason = triggered_ekstrem[0].evidence_note if halted else None
 
     # Calculate overall risk (weighted average)
     weights = {
@@ -107,6 +114,9 @@ def assess_risk(knowledge_profile: KnowledgeProfile) -> RiskAssessment:
         risk_notes=risk_notes,
         recommended_risk_adjustment=risk_adjustment,
         assessed_at=datetime.now(timezone.utc).isoformat(),
+        flags=flags,
+        halted=halted,
+        halt_reason=halt_reason,
     )
 
 
@@ -277,6 +287,159 @@ def _detect_valuation_extremes(profile: KnowledgeProfile, existing_flags: list[R
         risk_score += 20
 
     return flags, min(risk_score, 100.0)
+
+
+# Ambang kuantitatif di bawah ini kalibrasi awal — spec sendiri bilang
+# "ambang kuantitatif spesifik ... belum final" (04_RISK_REDFLAG_CHECK.md).
+DILUTION_THRESHOLD_PCT = 10.0  # % kenaikan shares outstanding dalam 12 bulan
+INSIDER_SELLING_THRESHOLD_USD = 1_000_000.0  # total nilai jual insider dalam 90 hari
+AUDITOR_CHANGE_WINDOW_YEARS = 3
+AUDITOR_CHANGE_MIN_COUNT = 1  # > 1 kali dalam window = flag
+RESTATEMENT_WINDOW_YEARS = 2
+
+
+def _parse_event_date(date_str: str | None) -> datetime | None:
+    if not date_str:
+        return None
+    try:
+        d = datetime.fromisoformat(date_str)
+        return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _events_within(events: list, years: float | None = None, days: float | None = None) -> list:
+    """Filter GovernanceEvent/insider-transaction dict yang tanggalnya dalam window."""
+    now = datetime.now(timezone.utc)
+    delta = timedelta(days=days) if days else timedelta(days=365 * years)
+    cutoff = now - delta
+    result = []
+    for e in events:
+        raw_date = e.date if hasattr(e, "date") else e.get("date")
+        parsed = _parse_event_date(raw_date)
+        if parsed and parsed >= cutoff:
+            result.append(e)
+    return result
+
+
+def _check_dilution(profile: KnowledgeProfile) -> Flag | None:
+    change = profile.governance.shares_outstanding_change_12m
+    if change is None:
+        return Flag(
+            flag_id="dilution_12m", category="dilution", severity="tinggi", status="undetermined",
+            knowledge_refs=["governance.shares_outstanding_change_12m"],
+            evidence_note="Shares outstanding 12-month baseline not available from current Evidence sources",
+        )
+    if change > DILUTION_THRESHOLD_PCT:
+        return Flag(
+            flag_id="dilution_12m", category="dilution", severity="tinggi", status="triggered",
+            knowledge_refs=["governance.shares_outstanding_change_12m"],
+            evidence_note=f"Shares outstanding increased {change:.1f}% in the last 12 months",
+        )
+    return None
+
+
+def _check_auditor_change(profile: KnowledgeProfile) -> Flag | None:
+    changes = profile.governance.auditor_changes
+    if not changes:
+        return Flag(
+            flag_id="auditor_change_3y", category="governance", severity="tinggi", status="undetermined",
+            knowledge_refs=["governance.auditor_changes"],
+            evidence_note="Auditor change history not available — Evidence tracks filing form_type/date only, not item-level content",
+        )
+    recent = _events_within(changes, years=AUDITOR_CHANGE_WINDOW_YEARS)
+    if len(recent) > AUDITOR_CHANGE_MIN_COUNT:
+        return Flag(
+            flag_id="auditor_change_3y", category="governance", severity="tinggi", status="triggered",
+            knowledge_refs=["governance.auditor_changes"],
+            evidence_note=f"{len(recent)} auditor change(s) in the last {AUDITOR_CHANGE_WINDOW_YEARS} years",
+        )
+    return None
+
+
+def _check_restatement(profile: KnowledgeProfile) -> Flag | None:
+    restatements = profile.governance.restatements
+    if not restatements:
+        return Flag(
+            flag_id="restatement_2y", category="accounting", severity="tinggi", status="undetermined",
+            knowledge_refs=["governance.restatements"],
+            evidence_note="Restatement history not available — Evidence tracks filing form_type/date only, not item-level content",
+        )
+    recent = _events_within(restatements, years=RESTATEMENT_WINDOW_YEARS)
+    if recent:
+        return Flag(
+            flag_id="restatement_2y", category="accounting", severity="tinggi", status="triggered",
+            knowledge_refs=["governance.restatements"],
+            evidence_note=f"{len(recent)} restatement(s) in the last {RESTATEMENT_WINDOW_YEARS} years",
+        )
+    return None
+
+
+def _check_litigation(profile: KnowledgeProfile) -> Flag | None:
+    litigation = profile.governance.material_litigation
+    if not litigation:
+        return Flag(
+            flag_id="litigation_material", category="litigation", severity="tinggi", status="undetermined",
+            knowledge_refs=["governance.material_litigation"],
+            evidence_note="Material litigation status not available — Evidence tracks filing form_type/date only, not item-level content",
+        )
+    return Flag(
+        flag_id="litigation_material", category="litigation", severity="tinggi", status="triggered",
+        knowledge_refs=["governance.material_litigation"],
+        evidence_note=f"{len(litigation)} material litigation record(s) on file",
+    )
+
+
+def _check_insider_selling(profile: KnowledgeProfile) -> Flag | None:
+    transactions = profile.ownership.insider_transactions
+    if not transactions:
+        return Flag(
+            flag_id="insider_selling_90d", category="insider", severity="tinggi", status="undetermined",
+            knowledge_refs=["ownership.insider_transactions"],
+            evidence_note="Insider transaction data not available — SEC EDGAR fetcher excludes Form 3/4/144",
+        )
+    recent_sells = [
+        t for t in _events_within(transactions, days=90)
+        if (t.get("type") if isinstance(t, dict) else None) == "sell"
+    ]
+    total_usd = sum((t.get("amount_usd") or 0) for t in recent_sells)
+    if total_usd > INSIDER_SELLING_THRESHOLD_USD:
+        return Flag(
+            flag_id="insider_selling_90d", category="insider", severity="tinggi", status="triggered",
+            knowledge_refs=["ownership.insider_transactions"],
+            evidence_note=f"${total_usd:,.0f} in insider selling over the last 90 days ({len(recent_sells)} transaction(s))",
+        )
+    return None
+
+
+def _check_fraud_or_delisting(profile: KnowledgeProfile) -> Flag | None:
+    """Severity ekstrem — hard-gate. Knowledge saat ini tidak punya field
+    konfirmasi fraud atau status delisting/bankruptcy (SEC EDGAR fetcher
+    cuma menyimpan form_type + tanggal, bukan item number 8-K seperti 1.03
+    "Bankruptcy or Receivership", dan tidak menarik Form 15 deregistrasi) —
+    jadi status ini selalu undetermined sampai Evidence diperluas. Mekanisme
+    hard-gate (assess_risk di atas) tetap benar & siap dipakai begitu field-
+    nya ada."""
+    return Flag(
+        flag_id="confirmed_fraud_or_delisting", category="listing_status", severity="ekstrem", status="undetermined",
+        knowledge_refs=["governance.unusual_filings", "identity.instrument_status"],
+        evidence_note="Confirmed fraud / delisting / bankruptcy status not available — Evidence does not fetch 8-K item numbers or Form 15",
+    )
+
+
+def _check_spec_flags(profile: KnowledgeProfile) -> list[Flag]:
+    """6 pemeriksaan 04_RISK_REDFLAG_CHECK.md v2.0.0. Mengembalikan flag
+    kalau triggered ATAU undetermined — hanya diam (None) kalau field-nya
+    benar-benar ada isinya dan tidak melewati ambang (checked & clean)."""
+    checks = [
+        _check_dilution(profile),
+        _check_auditor_change(profile),
+        _check_restatement(profile),
+        _check_litigation(profile),
+        _check_insider_selling(profile),
+        _check_fraud_or_delisting(profile),
+    ]
+    return [f for f in checks if f is not None]
 
 
 def run_risk_assessment(profiles: list[KnowledgeProfile]) -> list[RiskAssessment]:

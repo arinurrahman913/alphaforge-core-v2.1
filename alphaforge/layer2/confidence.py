@@ -1,398 +1,270 @@
 """Confidence module — Layer 2 Fase B, stage 2: Data Quality Scoring.
 
-Menilai confidence level setiap Knowledge profile untuk downstream reasoning stages.
+Menghasilkan ConfidenceReport (Data Contracts §5c) per Knowledge profile:
+seberapa kuat DATA yang menopang saham ini, dipecah per section Knowledge
+(bukan per-provider seperti versi sebelumnya) plus penalti eksplisit dari
+kualitas peer group dan kondisi Layer 1 saat profil ini disusun.
+
+Bobot & ambang di bawah adalah kalibrasi awal (05_CONFIDENCE_DATA_QUALITY.md
+sendiri menandainya "perlu dikalibrasi saat implementasi", bukan angka
+final) — dipertahankan dari versi sebelumnya sejauh strukturnya masih pas
+dengan 7 section Knowledge yang baru.
 """
 from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from .confidence_contracts import ConfidenceScore, DataQualityScore
+from .confidence_contracts import (
+    ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty,
+)
 
 if TYPE_CHECKING:
     from .knowledge_contracts import KnowledgeProfile
     from .peer_contracts import PeerComparisonResult
 
+METHOD_VERSION = "2.0"
+
+# Bobot tiap section Knowledge dalam overall.score — 03_KNOWLEDGE.md bagian
+# 1 (Identitas) sengaja tidak diberi bobot: isinya kategorikal (sector,
+# size_category, screening_flags), bukan field numerik yang "lengkap/tidak
+# lengkap" secara bermakna.
+SECTION_WEIGHTS = {
+    "financial_health": 0.20,
+    "valuation": 0.15,
+    "historical_trend": 0.15,
+    "competitive_structure": 0.15,
+    "competitive_momentum": 0.05,
+    "ownership": 0.15,
+    "governance": 0.15,
+}
+
+PEER_PENALTY_POINTS = 10.0
+CONTEXT_PENALTY_PER_COMPONENT = 5.0
+CONTEXT_PENALTY_CAP = 15.0
+
 
 def assess_confidence(
     knowledge_profile: KnowledgeProfile,
     peer_comparison: PeerComparisonResult | None = None,
-) -> ConfidenceScore:
-    """Assess confidence level untuk satu Knowledge profile.
+    components_degraded: list[str] | None = None,
+) -> ConfidenceReport:
+    """Assess confidence untuk satu Knowledge profile.
 
     Args:
         knowledge_profile: KnowledgeProfile dari Fase A
         peer_comparison: PeerComparisonResult dari Fase B stage 1 (optional)
+        components_degraded: nama komponen Layer 1 yang status != "ok" saat
+            profil ini disusun (optional — kalau tidak diisi, context_penalty
+            tidak diterapkan, bukan dianggap "semua ok").
 
     Returns:
-        ConfidenceScore dengan breakdown per kategori
+        ConfidenceReport (Data Contracts §5c)
     """
     ticker = knowledge_profile.ticker
     exchange = knowledge_profile.exchange
 
-    # Score masing-masing kategori
-    price_score = _score_price_data(knowledge_profile)
-    fundamental_score = _score_fundamental_data(knowledge_profile)
-    ownership_score = _score_ownership_data(knowledge_profile)
-    news_score = _score_news_data(knowledge_profile)
-    governance_score = _score_governance_data(knowledge_profile)
-    peer_score = _score_peer_group(peer_comparison)
-
-    # Weighted average untuk overall confidence
-    weights = {
-        "price": 0.25,
-        "fundamentals": 0.30,
-        "ownership": 0.15,
-        "news": 0.10,
-        "governance": 0.10,
-        "peer_group": 0.10,
+    by_section = {
+        "financial_health": _score_financial_health(knowledge_profile),
+        "valuation": _score_valuation(knowledge_profile),
+        "historical_trend": _score_historical_trend(knowledge_profile),
+        "competitive_structure": _score_competitive_structure(knowledge_profile),
+        "competitive_momentum": _score_competitive_momentum(knowledge_profile),
+        "ownership": _score_ownership(knowledge_profile),
+        "governance": _score_governance(knowledge_profile),
     }
+    _apply_screening_flag_penalties(by_section, knowledge_profile.screening_flags)
 
-    overall = (
-        price_score * weights["price"]
-        + fundamental_score * weights["fundamentals"]
-        + ownership_score * weights["ownership"]
-        + news_score * weights["news"]
-        + governance_score * weights["governance"]
-        + peer_score * weights["peer_group"]
+    base_score = sum(
+        by_section[name].score * weight for name, weight in SECTION_WEIGHTS.items()
     )
 
-    # Rating
-    if overall >= 70:
-        rating = "high"
-    elif overall >= 40:
-        rating = "medium"
-    else:
-        rating = "low"
+    peer_penalty = _assess_peer_penalty(peer_comparison)
+    context_penalty = _assess_context_penalty(components_degraded)
 
-    # Flags
-    low_sample_peer = peer_comparison and peer_comparison.peer_group.group_size < 3
-    insufficient_price = len(knowledge_profile.metadata.evidence_date or "") == 0 or price_score < 50
-    missing_recent = knowledge_profile.metadata.evidence_date and _is_data_stale(
-        knowledge_profile.metadata.evidence_date, days=30
-    )
-    incomplete_fundamentals = (
-        knowledge_profile.metadata.fields_completed / knowledge_profile.metadata.fields_expected < 0.5
-    )
-
-    # Notes
-    notes_parts = []
-    if low_sample_peer:
-        notes_parts.append("Peer group sample size too small (<3)")
-    if insufficient_price:
-        notes_parts.append("Limited price history")
-    if missing_recent:
-        notes_parts.append("Data > 30 days old")
-    if incomplete_fundamentals:
-        notes_parts.append(
-            f"Low fundamental completeness ({knowledge_profile.metadata.fields_completed}/{knowledge_profile.metadata.fields_expected})"
+    score = base_score
+    if peer_penalty.applied:
+        score -= PEER_PENALTY_POINTS
+    if context_penalty.applied:
+        score -= min(
+            len(context_penalty.components_degraded) * CONTEXT_PENALTY_PER_COMPONENT,
+            CONTEXT_PENALTY_CAP,
         )
+    score = max(0.0, min(100.0, score))
 
-    confidence_notes = " | ".join(notes_parts) if notes_parts else "Sufficient data for reasoning"
+    if score >= 70:
+        band = "high"
+    elif score >= 40:
+        band = "medium"
+    else:
+        band = "low"
 
-    # Quality scores breakdown
-    quality_scores = [
-        DataQualityScore(
-            category="price",
-            field_count=5,  # return_1y, return_3y, return_5y, volatility, beta
-            field_completed=_count_price_fields(knowledge_profile),
-            completion_pct=price_score,
-            data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
-        ),
-        DataQualityScore(
-            category="fundamentals",
-            field_count=9,
-            field_completed=_count_fundamental_fields(knowledge_profile),
-            completion_pct=fundamental_score,
-            data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
-        ),
-        DataQualityScore(
-            category="ownership",
-            field_count=3,  # institutional, insider, transactions
-            field_completed=_count_ownership_fields(knowledge_profile),
-            completion_pct=ownership_score,
-            data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
-        ),
-        DataQualityScore(
-            category="news",
-            field_count=1,  # news_collection
-            field_completed=1 if news_score >= 70 else 0,
-            completion_pct=news_score,
-            data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
-        ),
-        DataQualityScore(
-            category="governance",
-            field_count=5,  # shares_change, auditor_changes, restatements, litigation, filings
-            field_completed=_count_governance_fields(knowledge_profile),
-            completion_pct=governance_score,
-            data_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
-        ),
-    ]
+    limiters: list[str] = []
+    if band != "high":
+        # Section-section paling lemah (< 50% lengkap) — bukan semua yang
+        # kurang dari 100%, biar limiters tidak berisik untuk profil yang
+        # sebenarnya wajar (data itu memang tidak semuanya pernah 100%).
+        for name, sec in by_section.items():
+            if sec.score < 50:
+                limiters.append(f"{name} data incomplete ({sec.filled}/{sec.expected})")
+        if peer_penalty.applied:
+            limiters.append(peer_penalty.reason)
+        if context_penalty.applied:
+            limiters.append(
+                f"Layer 1 context degraded: {', '.join(context_penalty.components_degraded)}"
+            )
+        evidence_age = _get_data_age_days(knowledge_profile.metadata.evidence_date)
+        if evidence_age is not None and evidence_age > 30:
+            limiters.append(f"Evidence data {evidence_age} days old")
 
-    return ConfidenceScore(
+    return ConfidenceReport(
         ticker=ticker,
         exchange=exchange,
-        overall_confidence=round(overall, 1),
-        confidence_rating=rating,
-        price_data_confidence=round(price_score, 1),
-        fundamental_data_confidence=round(fundamental_score, 1),
-        ownership_data_confidence=round(ownership_score, 1),
-        news_data_confidence=round(news_score, 1),
-        governance_data_confidence=round(governance_score, 1),
-        peer_group_confidence=round(peer_score, 1),
-        quality_scores=quality_scores,
-        low_sample_size_peer=bool(low_sample_peer),
-        insufficient_price_history=insufficient_price,
-        missing_recent_data=bool(missing_recent),
-        incomplete_fundamentals=incomplete_fundamentals,
-        confidence_notes=confidence_notes,
+        method_version=METHOD_VERSION,
+        overall=OverallConfidence(score=round(score, 1), band=band, limiters=limiters),
+        by_section=by_section,
+        peer_penalty=peer_penalty,
+        context_penalty=context_penalty,
+        evidence_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
         assessed_at=datetime.now(timezone.utc).isoformat(),
     )
 
 
-def _score_price_data(profile: KnowledgeProfile) -> float:
-    """Score harga/trend data (returns, volatility, beta)."""
-    ht = profile.historical_trend
-    score = 0.0
-    count = 0
-
-    if ht.return_1y is not None:
-        score += 25
-    count += 25
-
-    if ht.return_3y is not None:
-        score += 20
-    count += 20
-
-    if ht.return_5y is not None:
-        score += 20
-    count += 20
-
-    if ht.volatility_daily is not None:
-        score += 20
-    count += 20
-
-    if ht.beta is not None:
-        score += 15
-    count += 15
-
-    return (score / count * 100) if count > 0 else 0.0
+def _section_score(checks: list[bool]) -> SectionScore:
+    filled = sum(1 for c in checks if c)
+    expected = len(checks)
+    pct = (filled / expected * 100) if expected > 0 else 0.0
+    return SectionScore(filled=filled, expected=expected, score=round(pct, 1))
 
 
-def _score_fundamental_data(profile: KnowledgeProfile) -> float:
-    """Score financial data completeness."""
+def _score_financial_health(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 2."""
     fh = profile.financial_health
+    return _section_score([
+        fh.revenue_trend.yoy_q4 is not None,
+        fh.gross_margin_trend.q4 is not None,
+        fh.operating_margin_trend.q4 is not None,
+        fh.net_margin_trend.q4 is not None,
+        fh.balance_sheet.debt_to_equity is not None,
+        fh.balance_sheet.current_ratio is not None,
+        fh.balance_sheet.quick_ratio is not None,
+        fh.cash_flow_trend.fcf_q4 is not None,
+        fh.capex_info.capex_nominal_q4 is not None,
+    ])
+
+
+def _score_valuation(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 6. Rasio yang null karena secara matematis
+    tidak bermakna (mis. P/E rugi) tetap dihitung sebagai "missing" di sini
+    — Confidence tidak tahu bedanya dari sini, itu keputusan modul reasoning
+    yang membacanya (lihat catatan spec bagian 6)."""
     val = profile.valuation
-    score = 0.0
-    count = 0
-
-    # Balance sheet
-    if fh.balance_sheet.current_ratio is not None:
-        score += 5
-    count += 5
-
-    if fh.balance_sheet.debt_to_equity is not None:
-        score += 5
-    count += 5
-
-    # Cash flow
-    if fh.cash_flow_trend.fcf_q4 is not None:
-        score += 8
-    count += 8
-
-    # Margins
-    if fh.net_margin_trend.q4 is not None:
-        score += 5
-    count += 5
-
-    # Valuation
-    if val.pe_ratio_trailing is not None:
-        score += 8
-    count += 8
-
-    if val.ps_ratio is not None:
-        score += 7
-    count += 7
-
-    if val.pb_ratio is not None:
-        score += 7
-    count += 7
-
-    if val.fcf_yield is not None:
-        score += 6
-    count += 6
-
-    # Revenue
-    if profile.competitive_structure.total_revenue_ttm is not None:
-        score += 8
-    count += 8
-
-    return (score / count * 100) if count > 0 else 0.0
+    return _section_score([
+        val.pe_ratio_trailing is not None,
+        val.pe_ratio_forward is not None,
+        val.ps_ratio is not None,
+        val.ev_ebitda is not None,
+        val.pb_ratio is not None,
+        val.fcf_yield is not None,
+    ])
 
 
-def _score_ownership_data(profile: KnowledgeProfile) -> float:
-    """Score ownership data completeness."""
-    own = profile.ownership
-    score = 0.0
-    count = 0
-
-    if own.institutional_pct is not None:
-        score += 40
-    count += 40
-
-    if own.insider_pct is not None:
-        score += 35
-    count += 35
-
-    if len(own.insider_transactions or []) > 0:
-        score += 25
-    count += 25
-
-    return (score / count * 100) if count > 0 else 0.0
-
-
-def _score_news_data(profile: KnowledgeProfile) -> float:
-    """Score news/sentiment data availability."""
-    # Fallback: check if news was attempted
-    if "No news data" in (profile.metadata.data_quality_notes or ""):
-        return 0.0
-    elif "finnhub" in (profile.metadata.sources_used or []):
-        return 70.0  # News data available
-    else:
-        return 30.0  # Attempted but limited
-
-
-def _score_governance_data(profile: KnowledgeProfile) -> float:
-    """Score governance data completeness."""
-    gov = profile.governance
-    score = 0.0
-    count = 0
-
-    if gov.shares_outstanding_change_12m is not None:
-        score += 25
-    count += 25
-
-    if len(gov.auditor_changes or []) > 0:
-        score += 15
-    count += 15
-
-    if len(gov.restatements or []) > 0:
-        score += 20
-    count += 20
-
-    if len(gov.material_litigation or []) > 0:
-        score += 20
-    count += 20
-
-    if len(gov.unusual_filings or []) > 0:
-        score += 20
-    count += 20
-
-    return (score / count * 100) if count > 0 else 50.0  # Governance assumed ok if no data
-
-
-def _score_peer_group(peer_comparison: PeerComparisonResult | None) -> float:
-    """Score peer group quality."""
-    if not peer_comparison:
-        return 20.0  # No peer data yet
-
-    group_size = peer_comparison.peer_group.group_size
-
-    if group_size >= 10:
-        return 100.0
-    elif group_size >= 5:
-        return 80.0
-    elif group_size >= 3:
-        return 60.0
-    else:
-        return 20.0  # Too small to be useful
-
-
-def _count_price_fields(profile: KnowledgeProfile) -> int:
-    """Count non-null price/trend fields."""
+def _score_historical_trend(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 4."""
     ht = profile.historical_trend
-    count = 0
-    if ht.return_1y is not None:
-        count += 1
-    if ht.return_3y is not None:
-        count += 1
-    if ht.return_5y is not None:
-        count += 1
-    if ht.volatility_daily is not None:
-        count += 1
-    if ht.beta is not None:
-        count += 1
-    return count
+    return _section_score([
+        ht.return_1y is not None,
+        ht.return_3y is not None,
+        ht.return_5y is not None,
+        ht.volatility_daily is not None,
+        ht.beta is not None,
+        ht.earnings_beat_miss_streak is not None,
+    ])
 
 
-def _count_fundamental_fields(profile: KnowledgeProfile) -> int:
-    """Count non-null fundamental fields."""
-    count = 0
-    fh = profile.financial_health
-    val = profile.valuation
+def _score_competitive_structure(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 3a."""
     cs = profile.competitive_structure
-
-    if fh.balance_sheet.current_ratio is not None:
-        count += 1
-    if fh.balance_sheet.debt_to_equity is not None:
-        count += 1
-    if fh.cash_flow_trend.fcf_q4 is not None:
-        count += 1
-    if fh.net_margin_trend.q4 is not None:
-        count += 1
-    if val.pe_ratio_trailing is not None:
-        count += 1
-    if val.ps_ratio is not None:
-        count += 1
-    if val.pb_ratio is not None:
-        count += 1
-    if val.fcf_yield is not None:
-        count += 1
-    if cs.total_revenue_ttm is not None:
-        count += 1
-
-    return count
+    return _section_score([
+        cs.business_model is not None,
+        bool(cs.revenue_by_segment),
+        cs.total_revenue_ttm is not None,
+        cs.employees_count is not None,
+        cs.tam_estimate is not None,
+    ])
 
 
-def _count_ownership_fields(profile: KnowledgeProfile) -> int:
-    """Count non-null ownership fields."""
+def _score_competitive_momentum(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 3b."""
+    cm = profile.competitive_momentum
+    return _section_score([
+        bool(cm.segment_growth),
+        cm.guidance_trend is not None,
+        cm.acceleration_signal is not None,
+    ])
+
+
+def _score_ownership(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 5."""
     own = profile.ownership
-    count = 0
-    if own.institutional_pct is not None:
-        count += 1
-    if own.insider_pct is not None:
-        count += 1
-    if len(own.insider_transactions or []) > 0:
-        count += 1
-    return count
+    return _section_score([
+        own.institutional_pct is not None,
+        own.insider_pct is not None,
+        len(own.insider_transactions or []) > 0,
+    ])
 
 
-def _count_governance_fields(profile: KnowledgeProfile) -> int:
-    """Count non-null/non-empty governance fields."""
+def _score_governance(profile: KnowledgeProfile) -> SectionScore:
+    """03_KNOWLEDGE.md bagian 7."""
     gov = profile.governance
-    count = 0
-    if gov.shares_outstanding_change_12m is not None:
-        count += 1
-    if len(gov.auditor_changes or []) > 0:
-        count += 1
-    if len(gov.restatements or []) > 0:
-        count += 1
-    if len(gov.material_litigation or []) > 0:
-        count += 1
-    if len(gov.unusual_filings or []) > 0:
-        count += 1
-    return count
+    return _section_score([
+        gov.shares_outstanding_change_12m is not None,
+        len(gov.auditor_changes or []) > 0,
+        len(gov.restatements or []) > 0,
+        len(gov.material_litigation or []) > 0,
+        len(gov.unusual_filings or []) > 0,
+    ])
 
 
-def _is_data_stale(iso_datetime: str, days: int = 30) -> bool:
-    """Check if ISO datetime is older than N days."""
-    try:
-        data_time = datetime.fromisoformat(iso_datetime.replace("+00:00", "+00:00"))
-        now = datetime.now(timezone.utc)
-        age = (now - data_time).days
-        return age > days
-    except (ValueError, AttributeError):
-        return False
+# 05_CONFIDENCE_DATA_QUALITY.md komponen #4: flag Screening menurunkan
+# confidence pada BAGIAN data yang terkait, bukan skor keseluruhan — dua
+# contoh eksplisit di spec dipetakan di sini. Flag lain (low_liquidity, adr,
+# market_cap_unavailable) sengaja tidak dipetakan: tidak ada section target
+# yang jelas tanpa membuat keputusan pemetaan sendiri di luar yang dicontohkan
+# spec.
+SCREENING_FLAG_SECTION_PENALTY = {
+    "no_institutional_data": ("ownership", 30.0),
+    "recent_ipo": ("historical_trend", 20.0),
+}
+
+
+def _apply_screening_flag_penalties(by_section: dict[str, SectionScore], screening_flags: list[str]) -> None:
+    for flag_name, (section, penalty) in SCREENING_FLAG_SECTION_PENALTY.items():
+        if flag_name in (screening_flags or []) and section in by_section:
+            sec = by_section[section]
+            sec.score = max(0.0, round(sec.score - penalty, 1))
+
+
+def _assess_peer_penalty(peer_comparison: PeerComparisonResult | None) -> PeerPenalty:
+    if peer_comparison is None:
+        return PeerPenalty(applied=True, reason="No peer comparison available")
+    if peer_comparison.low_sample_size:
+        return PeerPenalty(
+            applied=True,
+            reason=f"Peer group too small ({peer_comparison.peer_group.group_size} peers)",
+        )
+    if peer_comparison.peer_group.peer_failures:
+        return PeerPenalty(
+            applied=True,
+            reason=f"{len(peer_comparison.peer_group.peer_failures)} peer(s) failed to be retrieved",
+        )
+    return PeerPenalty(applied=False)
+
+
+def _assess_context_penalty(components_degraded: list[str] | None) -> ContextPenalty:
+    if not components_degraded:
+        return ContextPenalty(applied=False)
+    return ContextPenalty(applied=True, components_degraded=list(components_degraded))
 
 
 def _get_data_age_days(iso_datetime: str | None) -> int | None:
@@ -401,33 +273,40 @@ def _get_data_age_days(iso_datetime: str | None) -> int | None:
         return None
 
     try:
-        data_time = datetime.fromisoformat(iso_datetime.replace("+00:00", "+00:00"))
+        data_time = datetime.fromisoformat(iso_datetime)
+        if data_time.tzinfo is None:
+            data_time = data_time.replace(tzinfo=timezone.utc)
         now = datetime.now(timezone.utc)
         return (now - data_time).days
     except (ValueError, AttributeError):
         return None
 
 
-def run_confidence(profiles: list[KnowledgeProfile], comparisons: list[PeerComparisonResult] | None = None) -> list[ConfidenceScore]:
+def run_confidence(
+    profiles: list[KnowledgeProfile],
+    comparisons: list[PeerComparisonResult] | None = None,
+    components_degraded: list[str] | None = None,
+) -> list[ConfidenceReport]:
     """Run confidence scoring untuk semua profiles.
 
     Args:
         profiles: List of KnowledgeProfile dari Fase A
         comparisons: List of PeerComparisonResult dari Fase B stage 1 (optional)
+        components_degraded: nama komponen Layer 1 yang degraded/missing di
+            sesi ini (optional, sama untuk semua ticker dalam satu sesi)
 
     Returns:
-        List of ConfidenceScore
+        List of ConfidenceReport
     """
-    # Build lookup map untuk peer comparisons
     peer_map = {}
     if comparisons:
         for comp in comparisons:
             peer_map[comp.ticker] = comp
 
-    scores = []
+    reports = []
     for profile in profiles:
         peer_comp = peer_map.get(profile.ticker)
-        score = assess_confidence(profile, peer_comp)
-        scores.append(score)
+        report = assess_confidence(profile, peer_comp, components_degraded)
+        reports.append(report)
 
-    return scores
+    return reports

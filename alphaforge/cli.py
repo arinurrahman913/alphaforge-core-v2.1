@@ -605,14 +605,18 @@ def main() -> None:
         if args.confidence_out:
             with open(args.confidence_out, "r", encoding="utf-8") as f:
                 confidence_dict = json.load(f)
-            from .layer2.confidence_contracts import ConfidenceScore, DataQualityScore
+            from .layer2.confidence_contracts import (
+                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty
+            )
             for score_dict in confidence_dict.get("scores", []):
-                quality_scores = [
-                    DataQualityScore(**qs) for qs in score_dict.get("quality_scores", [])
-                ]
                 score_dict_copy = score_dict.copy()
-                score_dict_copy["quality_scores"] = quality_scores
-                confidence = ConfidenceScore(**score_dict_copy)
+                score_dict_copy["overall"] = OverallConfidence(**score_dict["overall"])
+                score_dict_copy["by_section"] = {
+                    name: SectionScore(**sec) for name, sec in score_dict.get("by_section", {}).items()
+                }
+                score_dict_copy["peer_penalty"] = PeerPenalty(**score_dict["peer_penalty"])
+                score_dict_copy["context_penalty"] = ContextPenalty(**score_dict["context_penalty"])
+                confidence = ConfidenceReport(**score_dict_copy)
                 confidence_map[confidence.ticker] = confidence
 
         # Load risk assessments if provided
@@ -620,13 +624,17 @@ def main() -> None:
         if args.risk_out:
             with open(args.risk_out, "r", encoding="utf-8") as f:
                 risk_dict = json.load(f)
-            from .layer2.risk_contracts import RiskAssessment, RedFlag
+            from .layer2.risk_contracts import RiskAssessment, RedFlag, Flag
             for assess_dict in risk_dict.get("assessments", []):
                 red_flags = [
                     RedFlag(**rf) for rf in assess_dict.get("red_flags", [])
                 ]
+                spec_flags = [
+                    Flag(**f) for f in assess_dict.get("flags", [])
+                ]
                 assess_dict_copy = assess_dict.copy()
                 assess_dict_copy["red_flags"] = red_flags
+                assess_dict_copy["flags"] = spec_flags
                 risk = RiskAssessment(**assess_dict_copy)
                 risk_map[risk.ticker] = risk
 
@@ -646,7 +654,7 @@ def main() -> None:
         result_dict = {
             "knowledge_count": len(profiles),
             "reasoning_outputs_generated": len(reasonings),
-            "generated_at": reasonings[0].aggregated_at if reasonings else None,
+            "generated_at": reasonings[0].generated_at if reasonings else None,
             "reasoning_outputs": [r.to_dict() for r in reasonings],
         }
         _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
@@ -733,42 +741,60 @@ def main() -> None:
                     peer_group=peer_group,
                     generated_at=comp_dict["generated_at"],
                     peer_group_basis=comp_dict.get("peer_group_basis", "screening_universe"),
+                    low_sample_size=comp_dict.get("low_sample_size", False),
                     **metric_comparisons
                 ))
 
         if args.confidence_out:
             with open(args.confidence_out, "r", encoding="utf-8") as f:
                 conf_dict = json.load(f)
-            from .layer2.confidence_contracts import ConfidenceScore, DataQualityScore
+            from .layer2.confidence_contracts import (
+                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty
+            )
             confidences = []
             for score_dict in conf_dict.get("scores", []):
-                quality_scores = [DataQualityScore(**qs) for qs in score_dict.get("quality_scores", [])]
                 score_dict_copy = score_dict.copy()
-                score_dict_copy["quality_scores"] = quality_scores
-                confidences.append(ConfidenceScore(**score_dict_copy))
+                score_dict_copy["overall"] = OverallConfidence(**score_dict["overall"])
+                score_dict_copy["by_section"] = {
+                    name: SectionScore(**sec) for name, sec in score_dict.get("by_section", {}).items()
+                }
+                score_dict_copy["peer_penalty"] = PeerPenalty(**score_dict["peer_penalty"])
+                score_dict_copy["context_penalty"] = ContextPenalty(**score_dict["context_penalty"])
+                confidences.append(ConfidenceReport(**score_dict_copy))
 
         if args.risk_out:
             with open(args.risk_out, "r", encoding="utf-8") as f:
                 risk_dict = json.load(f)
-            from .layer2.risk_contracts import RiskAssessment, RedFlag
+            from .layer2.risk_contracts import RiskAssessment, RedFlag, Flag
             risks = []
             for assess_dict in risk_dict.get("assessments", []):
                 red_flags = [RedFlag(**rf) for rf in assess_dict.get("red_flags", [])]
+                spec_flags = [Flag(**f) for f in assess_dict.get("flags", [])]
                 assess_dict_copy = assess_dict.copy()
                 assess_dict_copy["red_flags"] = red_flags
+                assess_dict_copy["flags"] = spec_flags
                 risks.append(RiskAssessment(**assess_dict_copy))
 
         if args.reasoning_out:
             with open(args.reasoning_out, "r", encoding="utf-8") as f:
                 reason_dict = json.load(f)
-            from .layer2.reasoning_contracts import AggregatedReasoning, ReasoningOutput
+            from .layer2.reasoning_contracts import (
+                ReasoningBundle, ModuleOutput, ModuleConfidence, FlagResponse, ContextUsage
+            )
+
+            def _rebuild_module_output(d: dict) -> ModuleOutput:
+                d = d.copy()
+                d["confidence"] = ModuleConfidence(**d["confidence"])
+                d["flag_responses"] = [FlagResponse(**r) for r in d.get("flag_responses", [])]
+                d["context_used"] = [ContextUsage(**c) for c in d.get("context_used", [])]
+                return ModuleOutput(**d)
+
             reasonings = []
-            for out_dict in reason_dict.get("reasoning_outputs", []):
-                # Reconstruct ReasoningOutput objects (simplified)
-                for key in ["quality_output", "speculative_output", "multibagger_output"]:
-                    if out_dict.get(key):
-                        out_dict[key] = ReasoningOutput(**out_dict[key])
-                reasonings.append(AggregatedReasoning(**out_dict))
+            for bundle_dict in reason_dict.get("reasoning_outputs", []):
+                bundle_dict = bundle_dict.copy()
+                for key in ["multibagger", "quality_compound", "speculative"]:
+                    bundle_dict[key] = _rebuild_module_output(bundle_dict[key])
+                reasonings.append(ReasoningBundle(**bundle_dict))
 
         # Apply limit
         if args.limit:

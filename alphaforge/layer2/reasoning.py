@@ -1,36 +1,134 @@
 """Reasoning modules — Layer 2 Fase B, stage 4
 
-3 independent reasoning lens dengan field access control.
+3 independent reasoning lens dengan field access control (D-12) + output
+dalam bentuk ModuleOutput yang dikunci Data Contracts §6 (D-04).
+
+Skor & kriteria internal (fh.net_margin_trend.q4 > 5, dst) DIPERTAHANKAN
+dari versi sebelumnya — 07/08/09_MODULE_*.md menandai bobot & kriteria ini
+"didiskusikan terpisah, belum final", jadi Fase 4 ini cuma membungkusnya ke
+kontrak ModuleOutput yang baru (stance per-modul, confidence terpisah dari
+stance, flag_responses, knowledge_gaps), TIDAK mengkalibrasi ulang angkanya.
 """
 from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from .reasoning_contracts import AggregatedReasoning, ReasoningOutput
+from .reasoning_contracts import (
+    ModuleOutput, ModuleConfidence, FlagResponse, ReasoningBundle,
+    MULTIBAGGER_STANCES, QUALITY_STANCES, SPECULATIVE_STANCES,
+    validate_module_output,
+)
 
 if TYPE_CHECKING:
-    from .confidence_contracts import ConfidenceScore
+    from .catalyst_contracts import CatalystSet
+    from .confidence_contracts import ConfidenceReport
     from .knowledge_contracts import KnowledgeProfile
+    from .peer_contracts import PeerComparisonResult
     from .risk_contracts import RiskAssessment
+
+METHOD_VERSION = "2.0"
+
+# Field yang bisa muncul di missing_fields (lihat knowledge.py
+# _count_completed_fields) yang relevan untuk tiap modul, dibatasi akses D-12
+# (03_KNOWLEDGE.md "Akses Field Per Modul"). Catatan jujur: missing_fields
+# saat ini cuma melacak 13 field (bagian 2/4/5/6) — bagian 3a/3b/7 belum
+# punya completeness-tracking sendiri (lihat Fase 1), jadi knowledge_gaps di
+# bawah tidak lengkap untuk bagian itu, bukan berarti bagian itu selalu utuh.
+MODULE_KNOWLEDGE_GAP_FIELDS = {
+    "multibagger": {
+        "historical_trend.return_1y", "historical_trend.return_3y", "historical_trend.return_5y",
+        "historical_trend.volatility_daily",
+        "valuation.pe_ratio_trailing", "valuation.ps_ratio", "valuation.pb_ratio", "valuation.fcf_yield",
+    },
+    "quality_compound": {
+        "financial_health.balance_sheet.debt_to_equity", "financial_health.balance_sheet.current_ratio",
+        "financial_health.balance_sheet.quick_ratio", "financial_health.cash_flow_trend.fcf_q4",
+        "historical_trend.return_1y", "historical_trend.return_3y", "historical_trend.return_5y",
+        "historical_trend.volatility_daily",
+        "valuation.pe_ratio_trailing", "valuation.ps_ratio", "valuation.pb_ratio", "valuation.fcf_yield",
+    },
+    "speculative": {
+        "historical_trend.volatility_daily",  # D-12: Speculative cuma dapat volatilitas dari bagian 4
+        "ownership.institutional_pct",
+    },
+}
+
+
+def _knowledge_gaps(profile: KnowledgeProfile, module: str) -> list[str]:
+    allowed = MODULE_KNOWLEDGE_GAP_FIELDS[module]
+    return [f for f in (profile.metadata.missing_fields or []) if f in allowed]
+
+
+def _module_confidence(
+    confidence_report: ConfidenceReport | None,
+    knowledge_gaps: list[str],
+) -> ModuleConfidence:
+    """confidence.score modul ini <= ConfidenceReport.overall.score (V6) —
+    dijamin karena selalu MULAI dari angka itu lalu cuma dikurangi."""
+    if confidence_report is None:
+        base = 50.0
+        limiters = ["ConfidenceReport unavailable"]
+    else:
+        base = confidence_report.overall.score
+        limiters = list(confidence_report.overall.limiters)
+
+    score = max(0.0, base - 5.0 * len(knowledge_gaps))
+    if knowledge_gaps:
+        limiters.append(f"{len(knowledge_gaps)} field missing dalam scope modul ini")
+
+    if score >= 70:
+        band = "high"
+    elif score >= 40:
+        band = "medium"
+    else:
+        band = "low"
+
+    if band == "high":
+        limiters = []  # V3 cuma wajib kalau band != high
+
+    return ModuleConfidence(score=round(score, 1), band=band, limiters=limiters)
+
+
+def _build_flag_responses(risk: RiskAssessment | None) -> list[FlagResponse]:
+    """V1: tepat 1 entri per flag severity=tinggi (semua modul, terlepas
+    dari section akses D-12 masing-masing — Risk spec eksplisit bilang flag
+    'terlihat oleh ketiga modul reasoning', override normal akses karena ini
+    soal keselamatan (Prinsip #4), bukan analisis section biasa).
+    V2: rationale menyertakan flag_id + evidence_note supaya otomatis beda
+    antar flag, gak pernah kalimat generik yang sama diulang."""
+    if risk is None:
+        return []
+    responses = []
+    for flag in risk.flags:
+        if flag.severity != "tinggi":
+            continue
+        if flag.status == "undetermined":
+            impact = "lowers_confidence"
+            rationale = f"{flag.flag_id}: belum bisa dipastikan ({flag.evidence_note}) — confidence diturunkan, bukan diabaikan"
+        else:
+            impact = "changes_stance" if flag.category == "dilution" else "lowers_confidence"
+            rationale = f"{flag.flag_id} terkonfirmasi: {flag.evidence_note}"
+        responses.append(FlagResponse(flag_id=flag.flag_id, impact=impact, rationale=rationale))
+    return responses
 
 
 def run_quality_lens(
     profile: KnowledgeProfile,
-    confidence: ConfidenceScore | None = None,
+    confidence: ConfidenceReport | None = None,
     risk: RiskAssessment | None = None,
-) -> ReasoningOutput:
-    """Quality Lens: Fundamental analysis.
+    peer: PeerComparisonResult | None = None,
+) -> ModuleOutput:
+    """Quality/Compound Lens — "Ini mesin compounding?"
 
-    Access: sections 1,2,3a,4,6,7 (Identity, Financial Health, Competitive Structure, Historical, Valuation, Governance)
-    Focus: margin trends, balance sheet health, valuation vs peers, governance quality
+    Access: sections 1,2,3a,4,6,7 (Identity, Financial Health, Competitive
+    Structure, Historical, Valuation, Governance).
     """
     score = 0.0
     positive = []
     negative = []
     metrics = {}
 
-    # Section 2: Financial Health
     fh = profile.financial_health
     if fh.net_margin_trend.q4 is not None and fh.net_margin_trend.q4 > 5:
         score += 15
@@ -59,7 +157,6 @@ def run_quality_lens(
         negative.append("High leverage (D/E >2)")
         metrics["debt_to_equity"] = fh.balance_sheet.debt_to_equity
 
-    # Section 4: Historical Trend
     ht = profile.historical_trend
     if ht.return_1y is not None and ht.return_1y > 10:
         score += 8
@@ -70,7 +167,6 @@ def run_quality_lens(
         negative.append("Severe drawdown")
         metrics["return_1y"] = ht.return_1y
 
-    # Section 6: Valuation
     val = profile.valuation
     if val.pe_ratio_trailing is not None:
         if val.pe_ratio_trailing < 20:
@@ -87,7 +183,21 @@ def run_quality_lens(
         positive.append("Fair P/B ratio (<2x)")
         metrics["pb_ratio"] = val.pb_ratio
 
-    # Section 7: Governance
+    # Peer: valuasi relatif — sebelumnya modul ini gak pernah baca Peer sama
+    # sekali padahal 08_MODULE_QUALITY_COMPOUND.md butuh percentile peer
+    # untuk menilai "wajar/mahal dibanding sejenis". Bobot kecil (+/-6),
+    # bukan pengganti kriteria valuasi absolut di atas.
+    if peer and peer.pe_ratio_comparison and peer.pe_ratio_comparison.percentile is not None:
+        pct = peer.pe_ratio_comparison.percentile
+        if pct <= 30:
+            score += 6
+            positive.append(f"P/E cheaper than {100-pct:.0f}% of peers")
+            metrics["pe_peer_percentile"] = pct
+        elif pct >= 85:
+            score -= 6
+            negative.append(f"P/E more expensive than {pct:.0f}% of peers")
+            metrics["pe_peer_percentile"] = pct
+
     gov = profile.governance
     if len(gov.restatements or []) > 0:
         score -= 15
@@ -96,51 +206,70 @@ def run_quality_lens(
         score -= 8
         negative.append(f"Auditor changes ({len(gov.auditor_changes)})")
 
-    # Confidence adjustment
-    if confidence and confidence.overall_confidence < 40:
+    if confidence and confidence.overall.score < 40:
         score -= 10
         negative.append("Low data confidence")
 
-    # Risk adjustment
     if risk and risk.high_severity_count > 0:
         score -= 15
         negative.append(f"High-risk flags ({risk.high_severity_count})")
 
-    score = max(0, min(100, score + 50))  # Normalize to 0-100
+    score = max(0, min(100, score + 50))
 
-    stance = _score_to_stance(score)
+    gaps = _knowledge_gaps(profile, "quality_compound")
+    if score >= 70:
+        stance = "compounding_kuat"
+    elif score >= 45:
+        stance = "compounding_rapuh"
+    else:
+        stance = "bukan_compounder"
+    if len(gaps) >= 4:
+        stance = "mesin_tak_terbaca"
+    assert stance in QUALITY_STANCES
 
-    return ReasoningOutput(
-        lens_name="quality",
+    return ModuleOutput(
+        module="quality_compound",
         ticker=profile.ticker,
         exchange=profile.exchange,
-        conviction_score=round(score, 1),
+        method_version=METHOD_VERSION,
         stance=stance,
-        score_breakdown={"fundamentals": (score - 50) / 50},
+        stance_rationale=f"Quality score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Mixed signals")),
+        confidence=_module_confidence(confidence, gaps),
+        flag_responses=_build_flag_responses(risk),
+        context_used=[],
+        knowledge_gaps=gaps,
+        generated_at=datetime.now(timezone.utc).isoformat(),
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Quality score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Mixed signals")),
-        assessed_at=datetime.now(timezone.utc).isoformat(),
+        score_breakdown={"fundamentals": (score - 50) / 50},
         fields_accessed=["identity", "financial_health", "historical_trend", "valuation", "governance"],
     )
 
 
 def run_speculative_lens(
     profile: KnowledgeProfile,
-    confidence: ConfidenceScore | None = None,
-) -> ReasoningOutput:
-    """Speculative Lens: Technical + sentiment.
+    confidence: ConfidenceReport | None = None,
+    risk: RiskAssessment | None = None,
+    catalyst: CatalystSet | None = None,
+) -> ModuleOutput:
+    """Speculative Lens — "Ada asimetri berkatalis?"
 
-    Access: sections 1,3a,4-volatility,5 (Identity, Competitive Structure, Volatility, Ownership)
-    Focus: price momentum, volatility, insider activity, sentiment shifts
+    Access: sections 1,3a,4-volatilitas,5 (Identity, Competitive Structure,
+    Volatility, Ownership) + CatalystSet (Fase A, 10_CATALYST_TRACKING.md).
+
+    Kosakata stance membedakan asimetri BERKATALIS vs TANPA katalis: asimetri
+    (skor tinggi) + ada katalis mendatang terjadwal/diperkirakan =
+    "asimetri_berkatalis"; asimetri tapi tidak ada katalis =
+    "asimetri_tanpa_katalis". Katalis `rumored` sengaja TIDAK dihitung sebagai
+    katalis di sini (spec: rumor menurunkan confidence, bukan menaikkan
+    stance) — has_upcoming hanya True untuk scheduled/expected.
     """
     score = 0.0
     positive = []
     negative = []
     metrics = {}
 
-    # Section 4: Volatility & momentum
     ht = profile.historical_trend
     if ht.volatility_daily is not None:
         if ht.volatility_daily > 4.0:
@@ -161,7 +290,6 @@ def run_speculative_lens(
         negative.append("Negative momentum")
         metrics["return_1y"] = ht.return_1y
 
-    # Section 5: Ownership - insider activity
     own = profile.ownership
     if own.institutional_pct is not None and own.institutional_pct > 0.70:
         score += 8
@@ -177,46 +305,67 @@ def run_speculative_lens(
         positive.append("Recent insider activity")
         metrics["insider_transactions"] = len(own.insider_transactions)
 
-    # Confidence adjustment
-    if confidence and confidence.price_data_confidence < 40:
+    if confidence and confidence.by_section["historical_trend"].score < 40:
         score -= 15
         negative.append("Insufficient price data for technical analysis")
 
-    score = max(0, min(100, score + 50))  # Normalize to 0-100
+    has_catalyst = catalyst is not None and catalyst.has_upcoming
+    if has_catalyst:
+        upcoming = [c for c in catalyst.catalysts if c.certainty in ("scheduled", "expected")]
+        nearest = min(upcoming, key=lambda c: c.expected_at)
+        positive.append(f"Upcoming catalyst: {nearest.kind} {nearest.expected_at} ({nearest.certainty})")
+        metrics["next_catalyst"] = f"{nearest.kind}@{nearest.expected_at}"
 
-    stance = _score_to_stance(score)
+    score = max(0, min(100, score + 50))
 
-    return ReasoningOutput(
-        lens_name="speculative",
+    gaps = _knowledge_gaps(profile, "speculative")
+    if score >= 60:
+        # Asimetri terbaca — berkatalis kalau ada katalis mendatang, tanpa
+        # katalis kalau tidak (Catalyst Set, Fase 5, akhirnya menghidupkan
+        # cabang "berkatalis" yang sebelumnya mustahil dicapai).
+        stance = "asimetri_berkatalis" if has_catalyst else "asimetri_tanpa_katalis"
+    else:
+        stance = "tanpa_asimetri"
+    if len(gaps) >= 2:
+        stance = "asimetri_tak_terbaca"
+    assert stance in SPECULATIVE_STANCES
+
+    return ModuleOutput(
+        module="speculative",
         ticker=profile.ticker,
         exchange=profile.exchange,
-        conviction_score=round(score, 1),
+        method_version=METHOD_VERSION,
         stance=stance,
-        score_breakdown={"momentum": (score - 50) / 50},
+        stance_rationale=f"Speculative score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Neutral momentum")),
+        confidence=_module_confidence(confidence, gaps),
+        flag_responses=_build_flag_responses(risk),
+        context_used=[],
+        knowledge_gaps=gaps,
+        generated_at=datetime.now(timezone.utc).isoformat(),
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Speculative score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Neutral momentum")),
-        assessed_at=datetime.now(timezone.utc).isoformat(),
+        score_breakdown={"momentum": (score - 50) / 50},
         fields_accessed=["identity", "historical_trend", "ownership"],
     )
 
 
 def run_multibagger_lens(
     profile: KnowledgeProfile,
-    confidence: ConfidenceScore | None = None,
-) -> ReasoningOutput:
-    """Multibagger Lens: Growth + momentum.
+    confidence: ConfidenceReport | None = None,
+    risk: RiskAssessment | None = None,
+    peer: PeerComparisonResult | None = None,
+) -> ModuleOutput:
+    """Multibagger Lens — "Ada ruang untuk kelipatan besar?"
 
-    Access: sections 1,3a,3b,4,6 (Identity, Competitive Structure, Momentum, Historical, Valuation)
-    Focus: revenue growth, segment acceleration, TAM, high-growth characteristics
+    Access: sections 1,3a,3b,4,6 (Identity, Competitive Structure, Momentum,
+    Historical, Valuation).
     """
     score = 0.0
     positive = []
     negative = []
     metrics = {}
 
-    # Section 3a: Competitive Structure
     cs = profile.competitive_structure
     if cs.total_revenue_ttm is not None and cs.total_revenue_ttm > 100e6:
         if cs.tam_estimate and "large" in str(cs.tam_estimate).lower():
@@ -224,7 +373,6 @@ def run_multibagger_lens(
             positive.append("Large TAM - multibagger potential")
             metrics["tam_estimate"] = cs.tam_estimate
 
-    # Section 3b: Momentum
     cm = profile.competitive_momentum
     if cm.segment_growth and "high" in str(cm.segment_growth).lower():
         score += 15
@@ -235,7 +383,6 @@ def run_multibagger_lens(
         positive.append("Positive acceleration signal")
         metrics["acceleration_signal"] = cm.acceleration_signal
 
-    # Section 4: Historical returns
     ht = profile.historical_trend
     if ht.return_1y is not None and ht.return_1y > 50:
         score += 12
@@ -246,7 +393,6 @@ def run_multibagger_lens(
         positive.append("Strong 1Y return (>20%)")
         metrics["return_1y"] = ht.return_1y
 
-    # Section 6: Valuation - growth justification
     val = profile.valuation
     if val.pe_ratio_trailing is not None:
         if val.pe_ratio_trailing > 50 and ht.return_1y and ht.return_1y > 30:
@@ -258,137 +404,84 @@ def run_multibagger_lens(
             negative.append("Extreme valuation - limited upside")
             metrics["pe_ratio"] = val.pe_ratio_trailing
 
-    # Confidence adjustment
-    if confidence and confidence.overall_confidence < 40:
+    # Peer: pertumbuhan revenue relatif — 07_MODULE_MULTIBAGGER.md butuh
+    # posisi relatif buat menilai "pertumbuhan cepat dibanding sejenis, atau
+    # cuma sektornya lagi naik semua". Bobot kecil, sama seperti Quality.
+    if peer and peer.revenue_growth_comparison and peer.revenue_growth_comparison.percentile is not None:
+        pct = peer.revenue_growth_comparison.percentile
+        if pct >= 80:
+            score += 6
+            positive.append(f"Revenue growth faster than {pct:.0f}% of peers")
+            metrics["revenue_growth_peer_percentile"] = pct
+
+    if confidence and confidence.overall.score < 40:
         score -= 12
         negative.append("Insufficient data for growth thesis")
 
-    score = max(0, min(100, score + 50))  # Normalize to 0-100
+    score = max(0, min(100, score + 50))
 
-    stance = _score_to_stance(score)
+    gaps = _knowledge_gaps(profile, "multibagger")
+    if score >= 70:
+        stance = "ruang_terbuka"
+    elif score >= 45:
+        stance = "ruang_sempit"
+    else:
+        stance = "ruang_tertutup"
+    if len(gaps) >= 3:
+        stance = "ruang_tak_terbaca"
+    assert stance in MULTIBAGGER_STANCES
 
-    return ReasoningOutput(
-        lens_name="multibagger",
+    return ModuleOutput(
+        module="multibagger",
         ticker=profile.ticker,
         exchange=profile.exchange,
-        conviction_score=round(score, 1),
+        method_version=METHOD_VERSION,
         stance=stance,
-        score_breakdown={"growth": (score - 50) / 50},
+        stance_rationale=f"Multibagger score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Modest growth profile")),
+        confidence=_module_confidence(confidence, gaps),
+        flag_responses=_build_flag_responses(risk),
+        context_used=[],
+        knowledge_gaps=gaps,
+        generated_at=datetime.now(timezone.utc).isoformat(),
         positive_factors=positive,
         negative_factors=negative,
         key_metrics=metrics,
-        reasoning_notes=f"Multibagger score {score:.0f}: " + (positive[0] if positive else (negative[0] if negative else "Modest growth profile")),
-        assessed_at=datetime.now(timezone.utc).isoformat(),
+        score_breakdown={"growth": (score - 50) / 50},
         fields_accessed=["identity", "competitive_structure", "competitive_momentum", "historical_trend", "valuation"],
     )
 
 
-def aggregate_reasoning(
-    quality: ReasoningOutput,
-    speculative: ReasoningOutput,
-    multibagger: ReasoningOutput,
-    risk_adjustment: float = 0.0,
-) -> AggregatedReasoning:
-    """Aggregate 3 lens menjadi final recommendation.
-
-    Args:
-        quality: Quality lens output
-        speculative: Speculative lens output
-        multibagger: Multibagger lens output
-        risk_adjustment: Confidence adjustment dari risk module
-
-    Returns:
-        AggregatedReasoning dengan final stance
-    """
-    # Weighted average of 3 lens
-    final_score = (
-        quality.conviction_score * 0.40 +
-        speculative.conviction_score * 0.30 +
-        multibagger.conviction_score * 0.30
-    )
-
-    # Risk adjustment
-    final_score = max(0, min(100, final_score + (risk_adjustment * 50)))
-
-    # Map to stance
-    final_stance = _score_to_stance(final_score)
-
-    # Check lens agreement
-    stances = [quality.stance, speculative.stance, multibagger.stance]
-    agreement = sum(1 for s in stances if s == final_stance) / 3 * 100
-
-    # Divergence level
-    if agreement >= 80:
-        divergence = "low"
-    elif agreement >= 50:
-        divergence = "medium"
-    else:
-        divergence = "high"
-
-    # Build recommendation string
-    reason_parts = []
-    if quality.stance in ["strong_buy", "buy"]:
-        reason_parts.append("Quality bullish")
-    elif quality.stance in ["strong_sell", "sell"]:
-        reason_parts.append("Quality bearish")
-
-    if multibagger.stance in ["strong_buy", "buy"]:
-        reason_parts.append("Multibagger growth")
-    elif multibagger.stance in ["strong_sell", "sell"]:
-        reason_parts.append("Multibagger caution")
-
-    recommendation = f"{final_stance.replace('_', ' ').title()} ({'+ ' + ', '.join(reason_parts) if reason_parts else 'Mixed signals'})"
-
-    return AggregatedReasoning(
-        ticker=quality.ticker,
-        exchange=quality.exchange,
-        quality_output=quality,
-        speculative_output=speculative,
-        multibagger_output=multibagger,
-        final_score=round(final_score, 1),
-        final_stance=final_stance,
-        lens_agreement=round(agreement, 0),
-        divergence_level=divergence,
-        recommendation=recommendation,
-        risk_adjusted_score=round(final_score, 1),
-        aggregated_at=datetime.now(timezone.utc).isoformat(),
-    )
-
-
-def _score_to_stance(score: float) -> str:
-    """Convert numeric score to stance."""
-    if score >= 75:
-        return "strong_buy"
-    elif score >= 60:
-        return "buy"
-    elif score >= 40:
-        return "hold"
-    elif score >= 25:
-        return "sell"
-    else:
-        return "strong_sell"
-
-
 def run_reasoning_pipeline(
     profile: KnowledgeProfile,
-    confidence: ConfidenceScore | None = None,
+    confidence: ConfidenceReport | None = None,
     risk: RiskAssessment | None = None,
-) -> AggregatedReasoning:
-    """Run all 3 reasoning lenses dan aggregate hasil.
+    peer: PeerComparisonResult | None = None,
+    catalyst: CatalystSet | None = None,
+) -> ReasoningBundle:
+    """Jalankan 3 reasoning lens independen — TIDAK diagregasi jadi satu
+    skor/stance di sini (itu yang dilarang D-04). Sintesis non-memampatkan
+    (agreements/divergences) dibangun terpisah di Fase 6 (aggregator.py)."""
+    quality = run_quality_lens(profile, confidence, risk, peer)
+    speculative = run_speculative_lens(profile, confidence, risk, catalyst)
+    multibagger = run_multibagger_lens(profile, confidence, risk, peer)
 
-    Args:
-        profile: KnowledgeProfile
-        confidence: ConfidenceScore (optional)
-        risk: RiskAssessment (optional)
+    confidence_report_score = confidence.overall.score if confidence else None
+    tinggi_flag_ids = [f.flag_id for f in risk.flags if f.severity == "tinggi"] if risk else []
+    for output in (quality, speculative, multibagger):
+        violations = validate_module_output(output, tinggi_flag_ids, confidence_report_score)
+        if violations:
+            # Tidak menghentikan pipeline (satu ticker gagal validasi bukan
+            # alasan gagalkan seluruh run) — tapi harus terlihat, bukan
+            # ditelan diam-diam (bertentangan dengan Prinsip #4/#5 itu
+            # sendiri kalau pelanggaran definisi jujur ini malah disembunyikan).
+            import sys
+            print(f"  WARNING {profile.ticker}/{output.module}: {violations}", file=sys.stderr)
 
-    Returns:
-        AggregatedReasoning dengan 3 lens outputs + final recommendation
-    """
-    quality = run_quality_lens(profile, confidence, risk)
-    speculative = run_speculative_lens(profile, confidence)
-    multibagger = run_multibagger_lens(profile, confidence)
-
-    risk_adj = risk.recommended_risk_adjustment if risk else 0.0
-    aggregated = aggregate_reasoning(quality, speculative, multibagger, risk_adj)
-
-    return aggregated
+    return ReasoningBundle(
+        ticker=profile.ticker,
+        exchange=profile.exchange,
+        multibagger=multibagger,
+        quality_compound=quality,
+        speculative=speculative,
+        generated_at=datetime.now(timezone.utc).isoformat(),
+    )

@@ -79,7 +79,8 @@ def _atomic_write(path: Path, data: dict) -> None:
 
 def main() -> int:
     started = datetime.now(timezone.utc)
-    log.info("Full pipeline refresh started")
+    session_id = f"session-{started.strftime('%Y%m%dT%H%M%S')}"
+    log.info(f"Full pipeline refresh started (session_id={session_id})")
 
     try:
         screening_result, price_cache = run_screening(limit=SCREENING_LIMIT, sector=SCREENING_SECTOR)
@@ -122,16 +123,24 @@ def main() -> int:
         confidence_map = {c.ticker: c for c in confidences}
         risk_map = {r.ticker: r for r in risks}
         peer_map = {c.ticker: c for c in comparisons}
+        # Severity=ekstrem triggered -> halted -> tidak diteruskan ke 3 modul
+        # reasoning sama sekali (04_RISK_REDFLAG_CHECK.md "Cara Kerja"),
+        # bukan cuma ditandai setelah reasoning tetap jalan. Selalu False
+        # hari ini (tidak ada check yang bisa capai ekstrem, lihat Fase 3)
+        # tapi jalur ini harus tetap benar untuk saat data-nya ada nanti.
         reasonings = [
             run_reasoning_pipeline(
                 p, confidence_map.get(p.ticker), risk_map.get(p.ticker),
                 peer_map.get(p.ticker), catalyst_map.get(p.ticker),
             )
             for p in profiles
+            if not (risk_map.get(p.ticker) and risk_map[p.ticker].halted)
         ]
         log.info(f"Reasoning: {len(reasonings)} outputs")
 
-        recommendations = run_aggregator(profiles, comparisons, confidences, risks, reasonings)
+        recommendations = run_aggregator(
+            profiles, comparisons, confidences, risks, reasonings, catalysts, session_id,
+        )
         log.info(f"Aggregator: {len(recommendations)} recommendations")
 
         timelines = load_historical_timeline(str(DATA_DIR / "historical_timeline.json"))
@@ -190,8 +199,12 @@ def main() -> int:
     }
     aggregator_data = {
         "profiles_count": len(profiles),
-        "recommendations_generated": len(recommendations),
-        "generated_at": recommendations[0].recommended_at if recommendations else None,
+        "session_id": session_id,
+        "outputs_generated": len(recommendations),
+        "generated_at": recommendations[0].generated_at if recommendations else None,
+        # Key tetap "recommendations" (bukan direname ke "aggregator_outputs")
+        # untuk sekarang -- backend/app.py & frontend masih baca key ini,
+        # rename filename/key penuh itu scope Fase 7 (frontend), bukan di sini.
         "recommendations": [r.to_dict() for r in recommendations],
     }
     timeline_data = {ticker: t.to_dict() for ticker, t in timelines.items()}

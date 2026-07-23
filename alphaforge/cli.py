@@ -809,7 +809,7 @@ def main() -> None:
         result_dict = {
             "profiles_count": len(profiles),
             "recommendations_generated": len(recommendations),
-            "generated_at": recommendations[0].recommended_at if recommendations else None,
+            "generated_at": recommendations[0].generated_at if recommendations else None,
             "recommendations": [r.to_dict() for r in recommendations],
         }
         _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)

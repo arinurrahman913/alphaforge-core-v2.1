@@ -1,45 +1,57 @@
-"""Historical tracking module — Layer 2 Fase B, stage 6: Decision Tracking Over Time
+"""Historical tracking module — Layer 2 Fase B, stage 6: snapshot storage (v2.0).
 
-Track recommendations, compare dengan actual outcomes, measure accuracy.
+12_HISTORICAL_TRACKING_JOURNAL.md: penyimpanan snapshot AggregatorOutput
+sejak v2.0 (murah, mulai hari ini); EVALUASI terhadap outcome nyata sengaja
+DITUNDA ke v2.1 karena bentuknya ("Return absolut? Relatif index? Horizon
+berapa lama, beda per modul?") masih eksplisit "belum diputuskan" di spec
+sendiri. Versi sebelumnya sempat implementasi evaluasi (record_outcome,
+compare_recommendations, confidence_trend) lebih awal dari keputusan spec-nya
+sendiri — dihapus di sini, bukan diadaptasi, karena field yang dipakainya
+(recommendation/conviction tunggal) sudah tidak ada lagi (D-04), dan
+menebak bentuk outcome sendiri akan mengulang kesalahan yang sama (membuat
+keputusan produk yang seharusnya didiskusikan, bukan diasumsikan).
+
+Entries disimpan sebagai dict polos setelah dibuat (bukan direkonstruksi balik
+jadi dataclass bersarang saat load) — snapshot AggregatorOutput bersarang
+dalam sampai ModuleOutput/Flag/dst, round-trip dataclass penuh tidak
+diperlukan karena entry lama tidak pernah dimodifikasi, cuma ditambah &
+dibaca ulang sebagai JSON.
 """
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+import uuid
+from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from .historical_contracts import DecisionRecord, HistoricalTimeline
+from .historical_contracts import HistoricalTimeline
+from ..json_safe import dumps_safe
 
 if TYPE_CHECKING:
-    from .aggregator_contracts import FinalRecommendation
+    from .aggregator_contracts import AggregatorOutput
 
 
-def create_decision_record(recommendation: FinalRecommendation) -> DecisionRecord:
-    """Create decision record dari FinalRecommendation."""
-    return DecisionRecord(
-        ticker=recommendation.ticker,
-        recommendation=recommendation.recommendation,
-        conviction=recommendation.conviction,
-        recommendation_date=recommendation.recommended_at,
-        reasoning_summary=recommendation.reasoning_summary,
-        confidence_score=recommendation.confidence_score,
-        risk_score=recommendation.risk_score,
-        reasoning_score=recommendation.reasoning_score,
-        tracking_id=recommendation.tracking_id,
-        next_review_date=recommendation.next_review_date,
-    )
+def create_historical_entry(output: AggregatorOutput) -> dict:
+    """Bungkus satu AggregatorOutput jadi HistoricalEntry dict siap simpan."""
+    return {
+        "entry_id": str(uuid.uuid4()),
+        "analyzed_at": output.generated_at,
+        "aggregator_output": asdict(output),
+        "method_versions": dict(output.method_versions),
+        "outcome": None,
+    }
+
+
+def _entry_date(entry: dict) -> str:
+    return entry["analyzed_at"]
 
 
 def load_historical_timeline(timeline_file: str) -> dict[str, HistoricalTimeline]:
-    """Load historical timeline dari file.
-
-    Args:
-        timeline_file: Path ke historical_timeline.json
-
-    Returns:
-        Dict mapping ticker -> HistoricalTimeline
-    """
+    """Load historical timeline dari file. Entries dibiarkan sebagai dict
+    (lihat docstring modul) — cuma total/first/last date yang dibaca ulang
+    ke field dataclass HistoricalTimeline."""
     if not Path(timeline_file).exists():
         return {}
 
@@ -48,19 +60,12 @@ def load_historical_timeline(timeline_file: str) -> dict[str, HistoricalTimeline
 
     timelines = {}
     for ticker, timeline_dict in data.items():
-        records = [
-            DecisionRecord(**record_dict)
-            for record_dict in timeline_dict.get("records", [])
-        ]
         timeline = HistoricalTimeline(
             ticker=ticker,
-            total_recommendations=timeline_dict.get("total_recommendations", 0),
-            first_recommendation_date=timeline_dict.get("first_recommendation_date"),
-            last_recommendation_date=timeline_dict.get("last_recommendation_date"),
-            records=records,
-            correct_predictions=timeline_dict.get("correct_predictions", 0),
-            total_outcomes=timeline_dict.get("total_outcomes", 0),
-            accuracy_pct=timeline_dict.get("accuracy_pct"),
+            total_entries=timeline_dict.get("total_entries", 0),
+            first_entry_date=timeline_dict.get("first_entry_date"),
+            last_entry_date=timeline_dict.get("last_entry_date"),
+            entries=list(timeline_dict.get("entries", [])),
         )
         timelines[ticker] = timeline
 
@@ -69,193 +74,47 @@ def load_historical_timeline(timeline_file: str) -> dict[str, HistoricalTimeline
 
 def update_timeline(
     timelines: dict[str, HistoricalTimeline],
-    new_recommendations: list[FinalRecommendation],
+    new_outputs: list[AggregatorOutput],
 ) -> dict[str, HistoricalTimeline]:
-    """Update timelines dengan new recommendations.
+    """Update timelines dengan AggregatorOutput baru. Satu entry per HARI
+    KALENDER (UTC) per ticker — re-run di hari yang sama menimpa entry hari
+    itu, bukan menambah duplikat (lihat riwayat bug di commit 7caf44c)."""
+    for output in new_outputs:
+        if output.ticker not in timelines:
+            timelines[output.ticker] = HistoricalTimeline(ticker=output.ticker)
 
-    Args:
-        timelines: Existing timelines dict
-        new_recommendations: New FinalRecommendation list
+        timeline = timelines[output.ticker]
+        entry = create_historical_entry(output)
 
-    Returns:
-        Updated timelines dict
-    """
-    for rec in new_recommendations:
-        if rec.ticker not in timelines:
-            timelines[rec.ticker] = HistoricalTimeline(ticker=rec.ticker)
-
-        timeline = timelines[rec.ticker]
-
-        # Create record
-        record = create_decision_record(rec)
-
-        # The pipeline is meant to run once/day (see scripts/refresh_full_
-        # pipeline.py docstring), but nothing prevents a manual re-run or a
-        # scheduler double-trigger on the same UTC calendar day. Without this
-        # check, every re-run appended a brand-new record (aggregator.py
-        # mints a fresh tracking_id each call, so nothing dedups downstream
-        # either), inflating total_recommendations and drowning out real
-        # history in calculate_recommendation_confidence_trend's recent-5
-        # window. A same-UTC-day re-run now replaces the existing entry for
-        # that day instead of duplicating it; a genuinely new day still
-        # appends as before.
         same_day = (
-            timeline.records
-            and datetime.fromisoformat(timeline.records[-1].recommendation_date).date()
-            == datetime.fromisoformat(record.recommendation_date).date()
+            timeline.entries
+            and datetime.fromisoformat(_entry_date(timeline.entries[-1])).date()
+            == datetime.fromisoformat(_entry_date(entry)).date()
         )
         if same_day:
-            timeline.records[-1] = record
+            timeline.entries[-1] = entry
         else:
-            timeline.records.append(record)
-            timeline.total_recommendations += 1
+            timeline.entries.append(entry)
+            timeline.total_entries += 1
 
-        timeline.last_recommendation_date = record.recommendation_date
-        if not timeline.first_recommendation_date:
-            timeline.first_recommendation_date = record.recommendation_date
+        timeline.last_entry_date = _entry_date(entry)
+        if not timeline.first_entry_date:
+            timeline.first_entry_date = _entry_date(entry)
 
     return timelines
 
 
 def save_historical_timeline(timelines: dict[str, HistoricalTimeline], output_file: str) -> None:
-    """Save historical timelines ke file.
-
-    Args:
-        timelines: Dict mapping ticker -> HistoricalTimeline
-        output_file: Path ke output file
-    """
-    data = {}
-    for ticker, timeline in timelines.items():
-        data[ticker] = timeline.to_dict()
-
+    data = {ticker: timeline.to_dict() for ticker, timeline in timelines.items()}
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write(dumps_safe(data, indent=2, ensure_ascii=False))
 
 
-def compare_recommendations(
-    old_record: DecisionRecord,
-    new_recommendation: FinalRecommendation,
-) -> dict:
-    """Compare old recommendation vs new recommendation.
-
-    Args:
-        old_record: Historical DecisionRecord
-        new_recommendation: New FinalRecommendation
-
-    Returns:
-        Comparison dict dengan changes
-    """
-    changed = old_record.recommendation != new_recommendation.recommendation
-    conviction_change = new_recommendation.conviction - old_record.conviction
-    score_change = new_recommendation.reasoning_score - old_record.reasoning_score
-
-    return {
-        "ticker": old_record.ticker,
-        "recommendation_changed": changed,
-        "old_stance": old_record.recommendation,
-        "new_stance": new_recommendation.recommendation,
-        "old_conviction": old_record.conviction,
-        "new_conviction": new_recommendation.conviction,
-        "conviction_change": round(conviction_change, 0),
-        "old_score": old_record.reasoning_score,
-        "new_score": new_recommendation.reasoning_score,
-        "score_change": round(score_change, 1),
-        "last_recommendation_date": old_record.recommendation_date,
-        "new_recommendation_date": new_recommendation.recommended_at,
-    }
-
-
-def record_outcome(
-    timeline: HistoricalTimeline,
-    tracking_id: str,
-    actual_return_pct: float,
-) -> DecisionRecord | None:
-    """Record actual outcome untuk satu decision.
-
-    Args:
-        timeline: HistoricalTimeline
-        tracking_id: UUID dari decision yang ingin di-track
-        actual_return_pct: Actual return sejak recommendation hingga sekarang
-
-    Returns:
-        Updated DecisionRecord atau None jika tracking_id tidak ditemukan
-    """
-    for record in timeline.records:
-        if record.tracking_id == tracking_id:
-            record.outcome_date = datetime.now(timezone.utc).isoformat()
-            record.actual_return_pct = actual_return_pct
-
-            # Evaluate correctness
-            if record.recommendation in ["strong_buy", "buy"]:
-                record.decision_correct = actual_return_pct > 0
-            elif record.recommendation in ["strong_sell", "sell"]:
-                record.decision_correct = actual_return_pct < 0
-            else:  # hold
-                record.decision_correct = -5 < actual_return_pct < 5
-
-            # Update timeline stats
-            timeline.total_outcomes += 1
-            if record.decision_correct:
-                timeline.correct_predictions += 1
-
-            # Recalculate accuracy
-            if timeline.total_outcomes > 0:
-                timeline.accuracy_pct = (timeline.correct_predictions / timeline.total_outcomes) * 100
-
-            return record
-
-    return None
-
-
-def get_recommendation_history(
-    timeline: HistoricalTimeline,
-    days_back: int | None = None,
-) -> list[DecisionRecord]:
-    """Get recommendation history untuk satu ticker.
-
-    Args:
-        timeline: HistoricalTimeline
-        days_back: Limit ke N hari terakhir (None = semua)
-
-    Returns:
-        List of DecisionRecord sorted chronologically
-    """
-    records = timeline.records.copy()
-
+def get_entry_history(timeline: HistoricalTimeline, days_back: int | None = None) -> list[dict]:
+    """Get entry history untuk satu ticker, urut kronologis."""
+    entries = list(timeline.entries)
     if days_back:
-        cutoff = datetime.now(timezone.utc) - __import__("datetime").timedelta(days=days_back)
-        records = [r for r in records if datetime.fromisoformat(r.recommendation_date) >= cutoff]
-
-    return sorted(records, key=lambda r: r.recommendation_date)
-
-
-def calculate_recommendation_confidence_trend(
-    timeline: HistoricalTimeline,
-) -> dict:
-    """Calculate trend dalam conviction over time.
-
-    Args:
-        timeline: HistoricalTimeline
-
-    Returns:
-        Dict dengan trend analysis
-    """
-    if len(timeline.records) < 2:
-        return {"trend": "insufficient_history"}
-
-    recent = timeline.records[-5:] if len(timeline.records) >= 5 else timeline.records
-    avg_conviction = sum(r.conviction for r in recent) / len(recent)
-
-    old_conviction = timeline.records[0].conviction if timeline.records else 50
-    conviction_delta = avg_conviction - old_conviction
-
-    trend = "increasing" if conviction_delta > 5 else ("decreasing" if conviction_delta < -5 else "stable")
-
-    return {
-        "ticker": timeline.ticker,
-        "trend": trend,
-        "conviction_delta": round(conviction_delta, 1),
-        "recent_avg_conviction": round(avg_conviction, 1),
-        "first_conviction": old_conviction,
-        "recommendation_count": len(timeline.records),
-    }
+        from datetime import timedelta, timezone
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days_back)
+        entries = [e for e in entries if datetime.fromisoformat(_entry_date(e)) >= cutoff]
+    return sorted(entries, key=_entry_date)

@@ -189,6 +189,31 @@ class SecFilings:
 
 
 @dataclass
+class InstitutionalTrade:
+    """Satu transaksi insider/institusional dari SEC Form 4."""
+    trader_name: str
+    relationship: str  # "Director", "Officer", "10% Owner", "Other"
+    transaction_type: str  # "buy", "sell", "grant", "exercise"
+    shares: int
+    price: float | None  # transaction price, or None if tidak tersedia
+    transaction_date: str  # ISO date
+    form_type: str  # "4" (insider) atau "144" (affiliate sale)
+    filing_date: str  # ISO date Form 4 was filed
+
+
+@dataclass
+class InstitutionalActivity:
+    """Ringkasan trading activity dari insider/institusional (Form 4)."""
+    metadata: SourceMetadata
+    recent_trades: list[InstitutionalTrade] = field(default_factory=list)  # Last 30 days
+    buy_count_30d: int = 0
+    sell_count_30d: int = 0
+    net_shares_30d: int = 0  # positive = net buys
+    top_buyer: str | None = None  # who bought most
+    top_seller: str | None = None  # who sold most
+
+
+@dataclass
 class EvidencePackage:
     """Fakta terverifikasi per satu ticker — 03_LAYER2_SPECS/02_EVIDENCE.md."""
     ticker: str
@@ -196,6 +221,7 @@ class EvidencePackage:
     price_market: PriceMarketData
     fundamental: FundamentalData
     institutional_ownership: InstitutionalOwnership
+    institutional_activity: InstitutionalActivity
     news: NewsCollection
     sec_filings: SecFilings
     generated_at: str
@@ -207,6 +233,15 @@ class EvidencePackage:
             "price_market": asdict(self.price_market),
             "fundamental": asdict(self.fundamental),
             "institutional_ownership": asdict(self.institutional_ownership),
+            "institutional_activity": {
+                "buy_count_30d": self.institutional_activity.buy_count_30d,
+                "sell_count_30d": self.institutional_activity.sell_count_30d,
+                "net_shares_30d": self.institutional_activity.net_shares_30d,
+                "top_buyer": self.institutional_activity.top_buyer,
+                "top_seller": self.institutional_activity.top_seller,
+                "recent_trades": [asdict(t) for t in self.institutional_activity.recent_trades],
+                "metadata": asdict(self.institutional_activity.metadata),
+            },
             "news": {
                 "count": len(self.news.news),
                 "items": [asdict(n) for n in self.news.news],

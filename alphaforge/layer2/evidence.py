@@ -23,6 +23,7 @@ from .sources.yahoo_evidence import (
 from .sources.finnhub import fetch_company_news, reset_batch_tracking as reset_finnhub_batch_tracking
 from .sources.sec_edgar import fetch_sec_filings
 from .sources.sec_parser import fetch_quarterly_financials, reset_sec_rate_limit
+from .sources.sec_form4 import fetch_institutional_activity
 
 
 def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage | None:
@@ -34,6 +35,7 @@ def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage 
     price_market = fetch_price_market_data(ticker)
     fundamental = fetch_fundamental_data(ticker)
     institutional = fetch_institutional_ownership(ticker)
+    institutional_activity = fetch_institutional_activity(ticker)
     news = fetch_company_news(ticker)
     sec_filings = fetch_sec_filings(ticker)
 
@@ -51,6 +53,7 @@ def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage 
         price_market=price_market,
         fundamental=fundamental,
         institutional_ownership=institutional,
+        institutional_activity=institutional_activity,
         news=news,
         sec_filings=sec_filings,
         generated_at=datetime.now(timezone.utc).isoformat()

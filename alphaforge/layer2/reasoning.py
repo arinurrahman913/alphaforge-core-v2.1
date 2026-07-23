@@ -23,6 +23,7 @@ from .reasoning_contracts import (
 if TYPE_CHECKING:
     from .catalyst_contracts import CatalystSet
     from .confidence_contracts import ConfidenceReport
+    from .contracts import InstitutionalActivity
     from .knowledge_contracts import KnowledgeProfile
     from .peer_contracts import PeerComparisonResult
     from .risk_contracts import RiskAssessment

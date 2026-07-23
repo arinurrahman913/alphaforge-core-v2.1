@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
-import { fmtPct, fmtMoney, ratingClass } from '../format'
+import { fmtPct, fmtMoney, ratingClass, stanceClass, prettyStance, bandClass, prettyLabel, MODULE_LABELS } from '../format'
+
+const MODULES = ['multibagger', 'quality_compound', 'speculative']
 
 export default function TickerModal({ ticker, onClose }) {
   const [data, setData] = useState(null)
@@ -88,89 +90,103 @@ function LiveQuoteBadge({ live }) {
 }
 
 function ModalBody({ data }) {
-  const { aggregator, reasoning, risk, confidence, knowledge, evidence, historical } = data
-  const anySection = aggregator || reasoning || risk?.red_flags?.length || confidence || knowledge || evidence || historical
+  const { aggregator, reasoning, risk, confidence, catalyst, knowledge, evidence, historical } = data
+  const anySection = aggregator || reasoning || risk || confidence || catalyst || knowledge || evidence || historical
 
   if (!anySection) return <div className="empty">Tidak ada detail untuk ticker ini.</div>
 
+  const synthesis = aggregator?.synthesis
+
   return (
     <>
-      {aggregator && (
-        <>
+      {aggregator?.halted && (
+        <div className="msection">
+          <div className="flag">
+            <strong>HALTED</strong> — {aggregator.halt_reason || 'red flag severity ekstrem terpicu'}.
+            Saham ini tidak diteruskan ke modul reasoning (hard-gate keselamatan).
+          </div>
+        </div>
+      )}
+
+      {synthesis && (
+        <div className="msection">
+          <div className="msection-title">
+            Sintesis — {synthesis.full_convergence ? '3 lensa konvergen' : 'ada perbedaan pandangan'}
+          </div>
           <div className="mrow">
             <div className="mcell">
-              <div className="mcell-label">Recommendation</div>
+              <div className="mcell-label">Confidence (terendah)</div>
               <div className="mcell-val">
-                <span className={`pill ${ratingClass(aggregator.recommendation)}`}>
-                  {aggregator.recommendation.replace('_', ' ')}
+                <span className={`pill ${bandClass(synthesis.confidence?.band)}`}>
+                  {synthesis.confidence ? `${synthesis.confidence.score.toFixed(0)} · ${synthesis.confidence.band}` : '—'}
                 </span>
               </div>
             </div>
             <div className="mcell">
-              <div className="mcell-label">Conviction</div>
-              <div className="mcell-val">{aggregator.conviction}%</div>
+              <div className="mcell-label">Surprise</div>
+              <div className="mcell-val">{synthesis.surprise != null ? synthesis.surprise.toFixed(2) : '—'}</div>
             </div>
             <div className="mcell">
-              <div className="mcell-label">Confidence</div>
-              <div className="mcell-val">{aggregator.confidence_score.toFixed(0)}</div>
+              <div className="mcell-label">Kesepakatan</div>
+              <div className="mcell-val">{synthesis.agreements?.length ?? 0}</div>
             </div>
             <div className="mcell">
-              <div className="mcell-label">Risk Score</div>
-              <div className="mcell-val">{aggregator.risk_score.toFixed(0)}</div>
-            </div>
-            <div className="mcell">
-              <div className="mcell-label">Reasoning</div>
-              <div className="mcell-val">{aggregator.reasoning_score.toFixed(0)}</div>
+              <div className="mcell-label">Perbedaan</div>
+              <div className="mcell-val">{synthesis.divergences?.length ?? 0}</div>
             </div>
           </div>
-          <div className="msection">
-            <div className="msection-title">Bull / Bear Case</div>
-            <p className="narrative">
-              <strong>Bull:</strong> {aggregator.bull_case}
-            </p>
-            <p className="narrative" style={{ marginTop: 6 }}>
-              <strong>Bear:</strong> {aggregator.bear_case}
-            </p>
-          </div>
-          {aggregator.red_flags?.length > 0 && (
-            <div className="msection">
-              <div className="msection-title">Red Flags</div>
-              {aggregator.red_flags.map((f, i) => (
-                <div className="flag" key={i}>
-                  {f}
+          {synthesis.narrative && <p className="narrative" style={{ marginTop: 8 }}>{synthesis.narrative}</p>}
+          {(synthesis.divergences || []).map((d, i) => (
+            <div className="lens-box" key={`div${i}`}>
+              <div className="lens-head">
+                <span>{d.claim}</span>
+                <span style={{ color: 'var(--faint)', fontSize: 11 }}>akar: {d.root_cause}</span>
+              </div>
+              {(d.modules || []).map((m, j) => (
+                <div className="factor" key={j} style={{ color: 'var(--dim)' }}>
+                  {MODULE_LABELS[m.module] || m.module}: {m.position}
                 </div>
               ))}
             </div>
-          )}
-        </>
+          ))}
+        </div>
       )}
 
-      {reasoning && (
+      {reasoning && !aggregator?.halted && (
         <div className="msection">
-          <div className="msection-title">Reasoning — 3 Lensa</div>
-          {[
-            ['quality_output', 'Quality'],
-            ['speculative_output', 'Speculative'],
-            ['multibagger_output', 'Multibagger'],
-          ].map(([key, label]) => {
+          <div className="msection-title">Reasoning — 3 Lensa Independen</div>
+          {MODULES.map((key) => {
             const o = reasoning[key]
             if (!o) return null
             return (
               <div className="lens-box" key={key}>
                 <div className="lens-head">
-                  <span>{label}</span>
+                  <span>{MODULE_LABELS[key]}</span>
                   <span>
-                    {o.conviction_score.toFixed(0)} · {o.stance}
+                    <span className={`pill ${stanceClass(o.stance)}`}>{prettyStance(o.stance)}</span>
+                    {' '}
+                    <span style={{ color: 'var(--faint)', fontSize: 11 }}>
+                      conf {o.confidence?.score?.toFixed(0) ?? '—'}/{o.confidence?.band ?? '—'}
+                    </span>
                   </span>
                 </div>
+                {o.stance_rationale && (
+                  <div className="factor" style={{ color: 'var(--dim)' }}>{o.stance_rationale}</div>
+                )}
                 {(o.positive_factors || []).map((f, i) => (
-                  <div className="factor pos" key={`p${i}`}>
-                    + {f}
-                  </div>
+                  <div className="factor pos" key={`p${i}`}>+ {f}</div>
                 ))}
                 {(o.negative_factors || []).map((f, i) => (
-                  <div className="factor neg" key={`n${i}`}>
-                    − {f}
+                  <div className="factor neg" key={`n${i}`}>− {f}</div>
+                ))}
+                {(o.knowledge_gaps || []).length > 0 && (
+                  <div className="factor" style={{ color: 'var(--faint)', fontSize: 11 }}>
+                    Data kurang: {o.knowledge_gaps.join(', ')}
+                  </div>
+                )}
+                {(o.flag_responses || []).map((fr, i) => (
+                  <div className="factor" key={`fr${i}`} style={{ color: 'var(--warn)', fontSize: 11 }}>
+                    ⚑ {fr.flag_id} ({fr.impact}): {fr.rationale}
                   </div>
                 ))}
               </div>
@@ -179,13 +195,18 @@ function ModalBody({ data }) {
         </div>
       )}
 
-      {risk?.red_flags?.length > 0 && (
+      {(risk?.flags?.length > 0 || risk?.red_flags?.length > 0) && (
         <div className="msection">
           <div className="msection-title">
-            Risk Detail ({risk.red_flags.length} flags, score {risk.risk_score.toFixed(0)})
+            Risk / Red Flags{risk.risk_score != null ? ` (score ${risk.risk_score.toFixed(0)})` : ''}
           </div>
-          {risk.red_flags.map((f, i) => (
-            <div className={`flag${f.severity === 'medium' ? ' medium' : ''}`} key={i}>
+          {(risk.flags || []).map((f, i) => (
+            <div className={`flag${f.severity === 'tinggi' ? ' medium' : ''}`} key={`f${i}`}>
+              <strong>{f.flag_id}</strong> ({f.severity} · {f.status}) — {f.evidence_note}
+            </div>
+          ))}
+          {(risk.red_flags || []).map((f, i) => (
+            <div className={`flag${f.severity === 'medium' ? ' medium' : ''}`} key={`rf${i}`}>
               <strong>{f.flag_type}</strong> ({f.severity}) — {f.description}
             </div>
           ))}
@@ -194,26 +215,42 @@ function ModalBody({ data }) {
 
       {confidence && (
         <div className="msection">
-          <div className="msection-title">Confidence Breakdown (overall {confidence.overall_confidence.toFixed(0)}%)</div>
-          <div className="mrow">
-            <div className="mcell">
-              <div className="mcell-label">Price</div>
-              <div className="mcell-val">{confidence.price_data_confidence.toFixed(0)}%</div>
-            </div>
-            <div className="mcell">
-              <div className="mcell-label">Fundamentals</div>
-              <div className="mcell-val">{confidence.fundamental_data_confidence.toFixed(0)}%</div>
-            </div>
-            <div className="mcell">
-              <div className="mcell-label">Ownership</div>
-              <div className="mcell-val">{confidence.ownership_data_confidence.toFixed(0)}%</div>
-            </div>
-            <div className="mcell">
-              <div className="mcell-label">Governance</div>
-              <div className="mcell-val">{confidence.governance_data_confidence.toFixed(0)}%</div>
-            </div>
+          <div className="msection-title">
+            Confidence Report — overall {confidence.overall?.score?.toFixed(0) ?? '—'}%{' '}
+            <span className={`pill ${bandClass(confidence.overall?.band)}`}>{confidence.overall?.band || '—'}</span>
           </div>
-          <p className="narrative">{confidence.confidence_notes || ''}</p>
+          <div className="mrow">
+            {Object.entries(confidence.by_section || {}).map(([name, sec]) => (
+              <div className="mcell" key={name}>
+                <div className="mcell-label">{prettyLabel(name)}</div>
+                <div className="mcell-val">{sec.score.toFixed(0)}%</div>
+              </div>
+            ))}
+          </div>
+          {(confidence.overall?.limiters || []).length > 0 && (
+            <p className="narrative" style={{ marginTop: 8 }}>
+              <strong>Pembatas:</strong> {confidence.overall.limiters.join(' · ')}
+            </p>
+          )}
+        </div>
+      )}
+
+      {catalyst && (catalyst.catalysts || []).length > 0 && (
+        <div className="msection">
+          <div className="msection-title">Katalis Mendatang</div>
+          {catalyst.catalysts.map((c, i) => (
+            <div className="lens-box" key={i}>
+              <div className="lens-head">
+                <span>{c.kind} · {c.expected_at}{c.expected_at_end ? `–${c.expected_at_end}` : ''}</span>
+                <span className={`pill ${c.certainty === 'scheduled' ? 'ok' : c.certainty === 'expected' ? 'warn' : 'neutral'}`}>
+                  {c.certainty}
+                </span>
+              </div>
+              <div className="factor" style={{ color: 'var(--faint)', fontSize: 11 }}>
+                berlaku sampai {c.expires_at}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -267,29 +304,37 @@ function ModalBody({ data }) {
         <InstitutionalHoldersSection ownership={evidence.institutional_ownership} />
       )}
 
-      {historical && (
+      {historical && (historical.entries || []).length > 0 && (
         <div className="msection">
           <div className="msection-title">
-            Historical Tracking (accuracy {historical.accuracy_pct !== null && historical.accuracy_pct !== undefined ? historical.accuracy_pct.toFixed(0) + '%' : '—'})
+            Historical Tracking ({historical.total_entries || historical.entries.length} snapshot)
           </div>
-          {historical.records.map((r, i) => (
-            <div className="lens-box" key={i}>
-              <div className="lens-head">
-                <span>
-                  {r.recommendation} @ {r.recommendation_date.slice(0, 10)}
-                </span>
-                <span>{r.actual_return_pct !== null && r.actual_return_pct !== undefined ? fmtPct(r.actual_return_pct) : 'pending'}</span>
-              </div>
-              <div className="factor" style={{ color: 'var(--dim)' }}>
-                {r.reasoning_summary}
-              </div>
-              {r.decision_correct !== null && r.decision_correct !== undefined && (
-                <div className={`factor ${r.decision_correct ? 'pos' : 'neg'}`}>
-                  {r.decision_correct ? '✓ Prediksi benar' : '✗ Prediksi meleset'}
+          {historical.entries.slice().reverse().map((e, i) => {
+            const ao = e.aggregator_output || {}
+            const syn = ao.synthesis
+            return (
+              <div className="lens-box" key={i}>
+                <div className="lens-head">
+                  <span>{e.analyzed_at?.slice(0, 10) || '—'}</span>
+                  <span>
+                    {ao.halted ? (
+                      <span className="pill bad">halted</span>
+                    ) : syn?.full_convergence ? (
+                      <span className="pill ok">konvergen</span>
+                    ) : (
+                      <span className="pill neutral">divergen</span>
+                    )}
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
+                {syn?.narrative && (
+                  <div className="factor" style={{ color: 'var(--dim)' }}>{syn.narrative}</div>
+                )}
+                <div className="factor" style={{ color: 'var(--faint)', fontSize: 11 }}>
+                  {e.outcome != null ? 'outcome tercatat' : 'outcome: menunggu evaluasi v2.1'}
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </>

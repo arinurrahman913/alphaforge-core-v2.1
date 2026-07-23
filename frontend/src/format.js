@@ -32,6 +32,57 @@ export function clampPct(pct) {
   return Math.max(0, Math.min(100, pct || 0))
 }
 
+// --- Kosakata stance per-modul (Data Contracts D-09) ---
+// Tiap modul reasoning punya kosakata sendiri yang TIDAK sebanding lintas
+// modul — tapi DI DALAM satu modul urutannya jelas (bullish→bearish). Peta
+// ini cuma untuk WARNA/label UI, bukan untuk membandingkan antar modul.
+const STANCE_TIER = {
+  // multibagger
+  ruang_terbuka: 'bull', ruang_sempit: 'neutral', ruang_tertutup: 'bear', ruang_tak_terbaca: 'unreadable',
+  // quality_compound
+  compounding_kuat: 'bull', compounding_rapuh: 'neutral', bukan_compounder: 'bear', mesin_tak_terbaca: 'unreadable',
+  // speculative
+  asimetri_berkatalis: 'bull', asimetri_tanpa_katalis: 'neutral', tanpa_asimetri: 'bear', asimetri_tak_terbaca: 'unreadable',
+}
+
+export function stanceTier(stance) {
+  return STANCE_TIER[stance] || 'neutral'
+}
+
+// Warna pill untuk stance: bull=ok(hijau), bear=bad(merah),
+// unreadable=neutral(abu), neutral=warn(kuning netral).
+export function stanceClass(stance) {
+  const t = stanceTier(stance)
+  if (t === 'bull') return 'ok'
+  if (t === 'bear') return 'bad'
+  if (t === 'unreadable') return 'neutral'
+  return 'warn'
+}
+
+// "ruang_terbuka" -> "Ruang Terbuka"
+export function prettyStance(stance) {
+  if (!stance) return '—'
+  return String(stance)
+    .split('_')
+    .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+    .join(' ')
+}
+
+// Warna pill untuk band confidence (low/medium/high).
+export function bandClass(band) {
+  if (band === 'high') return 'ok'
+  if (band === 'medium') return 'warn'
+  if (band === 'low') return 'bad'
+  return 'neutral'
+}
+
+// Label modul reasoning.
+export const MODULE_LABELS = {
+  multibagger: 'Multibagger',
+  quality_compound: 'Quality/Compound',
+  speculative: 'Speculative',
+}
+
 // Label human-readable untuk key/field yang tersimpan snake_case di data.
 // Mapping eksplisit untuk istilah yang butuh kapitalisasi/akronim khusus;
 // selain itu fallback generik (pisah '_', Title Case, rapikan akronim umum).

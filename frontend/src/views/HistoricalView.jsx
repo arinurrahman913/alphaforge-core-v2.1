@@ -2,8 +2,12 @@ import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
-import { fmtPct, ratingClass } from '../format'
 
+// HistoricalTimeline v2.0 (Data Contracts §8): menyimpan snapshot
+// AggregatorOutput utuh per hari (HistoricalEntry). EVALUASI terhadap outcome
+// nyata sengaja DITUNDA ke v2.1 (bentuk outcome belum diputuskan), jadi
+// `outcome` selalu null untuk sekarang — view ini menampilkan penyimpanannya,
+// bukan akurasi (yang belum bisa dihitung).
 export default function HistoricalView({ onSelectTicker }) {
   const { data, error } = useStageData(api.historical)
 
@@ -11,62 +15,56 @@ export default function HistoricalView({ onSelectTicker }) {
   if (!data) return <div className="loading">Memuat…</div>
 
   const timelines = Object.values(data)
-  const withOutcome = timelines.filter((t) => t.total_outcomes > 0)
-  const totalCorrect = withOutcome.reduce((s, t) => s + t.correct_predictions, 0)
-  const totalOutcomes = withOutcome.reduce((s, t) => s + t.total_outcomes, 0)
-  const overallAcc = totalOutcomes ? (totalCorrect / totalOutcomes) * 100 : null
+  const totalEntries = timelines.reduce((s, t) => s + (t.total_entries || 0), 0)
+  const withOutcome = timelines.filter((t) =>
+    (t.entries || []).some((e) => e.outcome != null),
+  ).length
 
   const stats = [
     { label: 'Tickers Tracked', value: timelines.length },
-    { label: 'With Outcome', value: withOutcome.length },
-    {
-      label: 'Overall Accuracy',
-      value: overallAcc !== null ? `${overallAcc.toFixed(1)}%` : '—',
-      tone: overallAcc !== null ? (overallAcc >= 50 ? 'good' : 'bad') : undefined,
-    },
+    { label: 'Total Snapshots', value: totalEntries },
+    { label: 'Dengan Outcome', value: withOutcome, tone: withOutcome ? 'good' : undefined },
   ]
+
+  const lastEntry = (t) => (t.entries && t.entries.length ? t.entries[t.entries.length - 1] : null)
 
   const columns = [
     { key: 'ticker', label: 'Ticker', render: (r) => <span className="ticker">{r.ticker}</span> },
-    { key: 'total_recs', label: 'Total Recs', render: (r) => r.total_recommendations, sortValue: (r) => r.total_recommendations },
+    { key: 'total', label: 'Snapshots', render: (r) => r.total_entries || 0, sortValue: (r) => r.total_entries || 0 },
     {
-      key: 'last_rec',
-      label: 'Last Recommendation',
-      render: (r) => {
-        const last = r.records[r.records.length - 1]
-        return <span className={`pill ${ratingClass(last?.recommendation)}`}>{last?.recommendation || '—'}</span>
-      },
+      key: 'last_date',
+      label: 'Snapshot Terakhir',
+      render: (r) => (r.last_entry_date ? r.last_entry_date.slice(0, 10) : '—'),
+      sortValue: (r) => r.last_entry_date,
     },
     {
-      key: 'actual_return',
-      label: 'Actual Return',
+      key: 'last_halted',
+      label: 'Status Terakhir',
       render: (r) => {
-        const last = r.records[r.records.length - 1]
-        return last?.actual_return_pct !== undefined && last?.actual_return_pct !== null ? fmtPct(last.actual_return_pct) : 'pending'
+        const e = lastEntry(r)
+        const halted = e?.aggregator_output?.halted
+        if (halted === true) return <span className="pill bad">halted</span>
+        if (halted === false) return <span className="pill ok">analyzed</span>
+        return '—'
       },
-      sortValue: (r) => r.records[r.records.length - 1]?.actual_return_pct,
     },
     {
       key: 'outcome',
       label: 'Outcome',
       render: (r) => {
-        const last = r.records[r.records.length - 1]
-        if (last?.decision_correct === true) return <span className="pill ok">correct</span>
-        if (last?.decision_correct === false) return <span className="pill bad">wrong</span>
-        return '—'
+        const e = lastEntry(r)
+        return e?.outcome != null ? 'ada' : <span style={{ color: 'var(--faint)' }}>menunggu v2.1</span>
       },
-    },
-    {
-      key: 'accuracy',
-      label: 'Accuracy',
-      render: (r) => (r.accuracy_pct !== null && r.accuracy_pct !== undefined ? `${r.accuracy_pct.toFixed(0)}%` : '—'),
-      sortValue: (r) => r.accuracy_pct,
     },
   ]
 
   return (
     <>
       <StatCards stats={stats} />
+      <p className="narrative" style={{ margin: '0 0 12px', color: 'var(--dim)', fontSize: 13 }}>
+        Menyimpan snapshot analisa utuh sejak hari pertama (v2.0). Evaluasi akurasi terhadap pergerakan harga nyata
+        menyusul di v2.1 — kolom Outcome masih kosong secara sengaja sampai bentuk pengukurannya diputuskan.
+      </p>
       <DataTable columns={columns} rows={timelines} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )

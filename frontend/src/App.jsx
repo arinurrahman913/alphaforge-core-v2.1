@@ -6,6 +6,7 @@ import Layer1View from './views/Layer1View'
 import ScreeningView from './views/ScreeningView'
 import EvidenceView from './views/EvidenceView'
 import KnowledgeView from './views/KnowledgeView'
+import CatalystView from './views/CatalystView'
 import PeerView from './views/PeerView'
 import ConfidenceView from './views/ConfidenceView'
 import RiskView from './views/RiskView'
@@ -18,12 +19,13 @@ const TITLES = {
   screening: ['Screening', 'Filter kandidat dari universe mentah — data/screening.json'],
   evidence: ['Evidence', 'Fakta terverifikasi per ticker (price, fundamental, ownership, news, SEC filings)'],
   knowledge: ['Knowledge', '7-section profile per ticker, hasil sintesis Evidence'],
+  catalyst: ['Catalyst Tracking', 'Peristiwa mendatang per ticker (earnings, dll) — data/catalysts.json'],
   peer: ['Peer Comparison', 'Posisi percentile terhadap peer group'],
-  confidence: ['Confidence Scoring', 'Skor kualitas data 0-100 per 6 kategori'],
+  confidence: ['Confidence Report', 'Kekuatan data 0-100 per 7 section Knowledge + penalti peer/context'],
   risk: ['Risk / Red Flags', 'Deteksi anomali governance, financial, momentum, valuation'],
-  reasoning: ['Reasoning Pipeline', '3 lensa independen: Quality, Speculative, Multibagger'],
-  aggregator: ['Aggregator', 'Rekomendasi final gabungan Confidence + Risk + Reasoning'],
-  historical: ['Historical Tracking', 'Pelacakan hasil rekomendasi vs actual return'],
+  reasoning: ['Reasoning — 3 Lensa', 'Multibagger, Quality/Compound, Speculative — masing-masing kosakata stance sendiri (D-09)'],
+  aggregator: ['Aggregator + Synthesis', '3 lensa berdampingan + peta kesepakatan/perbedaan — tanpa skor tunggal (D-04)'],
+  historical: ['Historical Tracking', 'Snapshot analisa utuh per hari (evaluasi outcome menyusul v2.1)'],
 }
 
 const VIEWS = {
@@ -31,6 +33,7 @@ const VIEWS = {
   screening: ScreeningView,
   evidence: EvidenceView,
   knowledge: KnowledgeView,
+  catalyst: CatalystView,
   peer: PeerView,
   confidence: ConfidenceView,
   risk: RiskView,

@@ -3,7 +3,13 @@ import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
 import HBarChart from '../components/HBarChart'
-import { ratingClass } from '../format'
+import { stanceClass, stanceTier, prettyStance, MODULE_LABELS } from '../format'
+
+// ReasoningBundle: 3 ModuleOutput independen (multibagger, quality_compound,
+// speculative), MASING-MASING punya kosakata stance sendiri (D-09) — sengaja
+// TIDAK ada satu skor/stance gabungan (D-04). Tabel menampilkan ketiganya
+// berdampingan.
+const MODULES = ['multibagger', 'quality_compound', 'speculative']
 
 export default function ReasoningView({ onSelectTicker }) {
   const { data, error } = useStageData(api.reasoning)
@@ -12,73 +18,84 @@ export default function ReasoningView({ onSelectTicker }) {
   if (!data) return <div className="loading">Memuat…</div>
 
   const outs = data.reasoning_outputs || []
-  const avgAgree = outs.reduce((s, o) => s + o.lens_agreement, 0) / (outs.length || 1)
-  const highDiv = outs.filter((o) => o.divergence_level === 'high').length
+
+  // "Konvergensi" = ketiga modul se-tier (semua bull / semua bear). Bukan
+  // skor tunggal — sekadar hitungan berapa ticker yang ketiga lensanya searah.
+  const convergent = outs.filter((o) => {
+    const tiers = MODULES.map((m) => stanceTier(o[m]?.stance))
+    return tiers.every((t) => t === 'bull') || tiers.every((t) => t === 'bear')
+  }).length
+  const anyUnreadable = outs.filter((o) =>
+    MODULES.some((m) => stanceTier(o[m]?.stance) === 'unreadable'),
+  ).length
 
   const stats = [
     { label: 'Total', value: outs.length },
-    { label: 'Avg Lens Agreement', value: `${avgAgree.toFixed(0)}%` },
-    { label: 'High Divergence', value: highDiv, tone: highDiv ? 'warn' : undefined },
+    { label: 'Konvergen (3 lensa searah)', value: convergent, tone: 'good' },
+    { label: 'Ada lensa tak-terbaca', value: anyUnreadable, tone: anyUnreadable ? 'warn' : undefined },
   ]
+
+  const moduleCol = (m) => ({
+    key: m,
+    label: MODULE_LABELS[m],
+    render: (r) => {
+      const mo = r[m]
+      if (!mo) return '—'
+      return (
+        <span className={`pill ${stanceClass(mo.stance)}`} title={mo.stance_rationale}>
+          {prettyStance(mo.stance)}
+        </span>
+      )
+    },
+    sortValue: (r) => r[m]?.stance,
+  })
 
   const columns = [
     { key: 'ticker', label: 'Ticker', render: (r) => <span className="ticker">{r.ticker}</span> },
+    moduleCol('multibagger'),
+    moduleCol('quality_compound'),
+    moduleCol('speculative'),
     {
-      key: 'quality',
-      label: 'Quality',
-      render: (r) => r.quality_output?.conviction_score?.toFixed(0) ?? '—',
-      sortValue: (r) => r.quality_output?.conviction_score,
-    },
-    {
-      key: 'speculative',
-      label: 'Speculative',
-      render: (r) => r.speculative_output?.conviction_score?.toFixed(0) ?? '—',
-      sortValue: (r) => r.speculative_output?.conviction_score,
-    },
-    {
-      key: 'multibagger',
-      label: 'Multibagger',
-      render: (r) => r.multibagger_output?.conviction_score?.toFixed(0) ?? '—',
-      sortValue: (r) => r.multibagger_output?.conviction_score,
-    },
-    { key: 'final_score', label: 'Final Score', render: (r) => <strong>{r.final_score.toFixed(0)}</strong>, sortValue: (r) => r.final_score },
-    {
-      key: 'stance',
-      label: 'Stance',
-      render: (r) => <span className={`pill ${ratingClass(r.final_stance)}`}>{r.final_stance}</span>,
-    },
-    {
-      key: 'divergence',
-      label: 'Divergence',
-      render: (r) => (
-        <span className={`pill ${r.divergence_level === 'high' ? 'bad' : r.divergence_level === 'medium' ? 'warn' : 'ok'}`}>
-          {r.divergence_level}
-        </span>
-      ),
+      key: 'confidence',
+      label: 'Confidence (min)',
+      render: (r) => {
+        const min = Math.min(...MODULES.map((m) => r[m]?.confidence?.score ?? 100))
+        return Number.isFinite(min) ? min.toFixed(0) : '—'
+      },
+      sortValue: (r) => Math.min(...MODULES.map((m) => r[m]?.confidence?.score ?? 100)),
     },
   ]
 
-  const divDist = { low: 0, medium: 0, high: 0 }
-  outs.forEach((o) => { divDist[o.divergence_level] = (divDist[o.divergence_level] || 0) + 1 })
-  const divChart = [
-    { label: 'Low', count: divDist.low, color: 'var(--good)' },
-    { label: 'Medium', count: divDist.medium, color: 'var(--warn)' },
-    { label: 'High', count: divDist.high, color: 'var(--bad)' },
-  ]
-
-  const lensAvg = (key) => outs.reduce((s, o) => s + (o[key]?.conviction_score || 0), 0) / (outs.length || 1)
-  const lensChart = [
-    { label: 'Quality', count: Math.round(lensAvg('quality_output')), color: 'var(--accent2)' },
-    { label: 'Speculative', count: Math.round(lensAvg('speculative_output')), color: 'var(--accent2)' },
-    { label: 'Multibagger', count: Math.round(lensAvg('multibagger_output')), color: 'var(--accent2)' },
-  ]
+  // Distribusi stance per modul (satu chart per modul — TIDAK digabung,
+  // karena kosakatanya beda dan tidak sebanding).
+  const stanceDist = (m) => {
+    const counts = {}
+    outs.forEach((o) => {
+      const st = o[m]?.stance
+      if (st) counts[st] = (counts[st] || 0) + 1
+    })
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([st, count]) => ({
+        label: prettyStance(st),
+        count,
+        color:
+          stanceTier(st) === 'bull' ? 'var(--good)'
+          : stanceTier(st) === 'bear' ? 'var(--bad)'
+          : stanceTier(st) === 'unreadable' ? 'var(--dim)'
+          : 'var(--warn)',
+      }))
+  }
 
   return (
     <>
       <StatCards stats={stats} />
       <div className="chart-row">
-        <HBarChart title="Distribusi Divergence" data={divChart} />
-        <HBarChart title="Rata-rata Conviction per Lensa" data={lensChart} />
+        <HBarChart title="Multibagger — distribusi stance" data={stanceDist('multibagger')} />
+        <HBarChart title="Quality/Compound — distribusi stance" data={stanceDist('quality_compound')} />
+      </div>
+      <div className="chart-row">
+        <HBarChart title="Speculative — distribusi stance" data={stanceDist('speculative')} />
       </div>
       <DataTable columns={columns} rows={outs} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>

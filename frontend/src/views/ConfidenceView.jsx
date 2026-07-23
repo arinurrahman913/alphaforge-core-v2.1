@@ -4,7 +4,14 @@ import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
 import HBarChart from '../components/HBarChart'
 import Bar from '../components/Bar'
-import { ratingClass } from '../format'
+import { bandClass, prettyLabel } from '../format'
+
+// 7 section Knowledge yang di-skor Confidence (lihat confidence.py
+// SECTION_WEIGHTS). Ditampilkan sebagai kolom ringkas + chart rata-rata.
+const SECTIONS = [
+  'financial_health', 'valuation', 'historical_trend',
+  'competitive_structure', 'competitive_momentum', 'ownership', 'governance',
+]
 
 export default function ConfidenceView({ onSelectTicker }) {
   const { data, error } = useStageData(api.confidence)
@@ -13,66 +20,74 @@ export default function ConfidenceView({ onSelectTicker }) {
   if (!data) return <div className="loading">Memuat…</div>
 
   const scores = data.scores || []
-  const avg = scores.reduce((s, x) => s + x.overall_confidence, 0) / (scores.length || 1)
-  const highCount = scores.filter((s) => s.confidence_rating === 'high').length
+  const avg = scores.reduce((s, x) => s + (x.overall?.score || 0), 0) / (scores.length || 1)
+  const highCount = scores.filter((s) => s.overall?.band === 'high').length
 
   const stats = [
     { label: 'Total', value: scores.length },
     { label: 'Avg Confidence', value: `${avg.toFixed(0)}%` },
-    { label: 'High Rating', value: highCount, tone: 'good' },
+    { label: 'High Band', value: highCount, tone: 'good' },
   ]
+
+  const sectionCol = (name) => ({
+    key: name,
+    label: prettyLabel(name),
+    render: (r) => {
+      const sec = r.by_section?.[name]
+      return sec ? `${sec.score.toFixed(0)}%` : '—'
+    },
+    sortValue: (r) => r.by_section?.[name]?.score,
+  })
 
   const columns = [
     { key: 'ticker', label: 'Ticker', render: (r) => <span className="ticker">{r.ticker}</span> },
-    { key: 'overall', label: 'Overall', render: (r) => <Bar pct={r.overall_confidence} />, sortValue: (r) => r.overall_confidence },
-    { key: 'price', label: 'Price', render: (r) => `${r.price_data_confidence.toFixed(0)}%`, sortValue: (r) => r.price_data_confidence },
+    { key: 'overall', label: 'Overall', render: (r) => <Bar pct={r.overall?.score} />, sortValue: (r) => r.overall?.score },
     {
-      key: 'fundamentals',
-      label: 'Fundamentals',
-      render: (r) => `${r.fundamental_data_confidence.toFixed(0)}%`,
-      sortValue: (r) => r.fundamental_data_confidence,
+      key: 'band',
+      label: 'Band',
+      render: (r) => <span className={`pill ${bandClass(r.overall?.band)}`}>{r.overall?.band || '—'}</span>,
     },
+    sectionCol('financial_health'),
+    sectionCol('valuation'),
+    sectionCol('ownership'),
+    sectionCol('governance'),
     {
-      key: 'ownership',
-      label: 'Ownership',
-      render: (r) => `${r.ownership_data_confidence.toFixed(0)}%`,
-      sortValue: (r) => r.ownership_data_confidence,
-    },
-    {
-      key: 'governance',
-      label: 'Governance',
-      render: (r) => `${r.governance_data_confidence.toFixed(0)}%`,
-      sortValue: (r) => r.governance_data_confidence,
-    },
-    {
-      key: 'rating',
-      label: 'Rating',
-      render: (r) => <span className={`pill ${ratingClass(r.confidence_rating)}`}>{r.confidence_rating}</span>,
+      key: 'penalty',
+      label: 'Penalti',
+      render: (r) => {
+        const tags = []
+        if (r.peer_penalty?.applied) tags.push('peer')
+        if (r.context_penalty?.applied) tags.push('context')
+        return tags.length ? tags.join(' · ') : '—'
+      },
     },
   ]
 
-  const ratingDist = { high: 0, medium: 0, low: 0 }
-  scores.forEach((s) => { ratingDist[s.confidence_rating] = (ratingDist[s.confidence_rating] || 0) + 1 })
-  const ratingChart = [
-    { label: 'High', count: ratingDist.high, color: 'var(--good)' },
-    { label: 'Medium', count: ratingDist.medium, color: 'var(--warn)' },
-    { label: 'Low', count: ratingDist.low, color: 'var(--bad)' },
+  const bandDist = { high: 0, medium: 0, low: 0 }
+  scores.forEach((s) => {
+    const b = s.overall?.band
+    if (b) bandDist[b] = (bandDist[b] || 0) + 1
+  })
+  const bandChart = [
+    { label: 'High', count: bandDist.high, color: 'var(--good)' },
+    { label: 'Medium', count: bandDist.medium, color: 'var(--warn)' },
+    { label: 'Low', count: bandDist.low, color: 'var(--bad)' },
   ]
 
-  const avgCategory = (key) => scores.reduce((s, x) => s + x[key], 0) / (scores.length || 1)
-  const categoryChart = [
-    { label: 'Price', count: Math.round(avgCategory('price_data_confidence')), color: 'var(--accent)' },
-    { label: 'Fundamentals', count: Math.round(avgCategory('fundamental_data_confidence')), color: 'var(--accent)' },
-    { label: 'Ownership', count: Math.round(avgCategory('ownership_data_confidence')), color: 'var(--accent)' },
-    { label: 'Governance', count: Math.round(avgCategory('governance_data_confidence')), color: 'var(--accent)' },
-  ]
+  const avgSection = (name) =>
+    scores.reduce((s, x) => s + (x.by_section?.[name]?.score || 0), 0) / (scores.length || 1)
+  const sectionChart = SECTIONS.map((name) => ({
+    label: prettyLabel(name),
+    count: Math.round(avgSection(name)),
+    color: 'var(--accent)',
+  }))
 
   return (
     <>
       <StatCards stats={stats} />
       <div className="chart-row">
-        <HBarChart title="Distribusi Rating Confidence" data={ratingChart} />
-        <HBarChart title="Rata-rata Confidence per Kategori" data={categoryChart} />
+        <HBarChart title="Distribusi Band Confidence" data={bandChart} />
+        <HBarChart title="Rata-rata Kelengkapan per Section" data={sectionChart} />
       </div>
       <DataTable columns={columns} rows={scores} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>

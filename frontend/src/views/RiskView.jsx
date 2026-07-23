@@ -37,6 +37,22 @@ export default function RiskView({ onSelectTicker }) {
     { key: 'valuation', label: 'Valuation', render: (r) => r.valuation_risk_score.toFixed(0), sortValue: (r) => r.valuation_risk_score },
     { key: 'high_flags', label: 'High Flags', render: (r) => r.high_severity_count, sortValue: (r) => r.high_severity_count },
     {
+      key: 'spec_flags',
+      label: 'Spec Flags',
+      // Flag baru (Data Contracts §7): 6 pemeriksaan dilusi/auditor/dll.
+      // triggered = terpicu; undetermined = data belum tersedia (jujur, bukan
+      // "aman"). halted = severity ekstrem terpicu → hard-gate.
+      render: (r) => {
+        if (r.halted) return <span className="pill bad">halted</span>
+        const triggered = (r.flags || []).filter((f) => f.status === 'triggered').length
+        const undet = (r.flags || []).filter((f) => f.status === 'undetermined').length
+        if (triggered > 0) return <span className="pill warn">{triggered} triggered</span>
+        if (undet > 0) return <span className="pill neutral" title="data belum tersedia">{undet} undetermined</span>
+        return '—'
+      },
+      sortValue: (r) => (r.halted ? 999 : (r.flags || []).filter((f) => f.status === 'triggered').length),
+    },
+    {
       key: 'rating',
       label: 'Rating',
       render: (r) => (

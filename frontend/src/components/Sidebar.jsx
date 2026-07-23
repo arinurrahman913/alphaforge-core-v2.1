@@ -6,6 +6,7 @@ const NAV_GROUPS = [
       { id: 'screening', label: 'Screening' },
       { id: 'evidence', label: 'Evidence' },
       { id: 'knowledge', label: 'Knowledge' },
+      { id: 'catalyst', label: 'Catalyst' },
     ],
   },
   {

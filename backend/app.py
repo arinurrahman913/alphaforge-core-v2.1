@@ -42,6 +42,7 @@ STAGE_FILES = {
     "screening": "screening.json",
     "evidence": "evidence.json",
     "knowledge": "knowledge.json",
+    "catalyst": "catalysts.json",
     "peer": "peer_results.json",
     "confidence": "confidence_scores.json",
     "risk": "risk_assessments.json",
@@ -89,6 +90,7 @@ def get_ticker_detail(ticker: str):
     ticker = ticker.upper()
     evidence = _index_by_ticker(_get_stage("evidence").get("packages", []))
     knowledge = _index_by_ticker(_get_stage("knowledge").get("profiles", []))
+    catalyst = _index_by_ticker(_get_stage("catalyst").get("catalyst_sets", []))
     confidence = _index_by_ticker(_get_stage("confidence").get("scores", []))
     risk = _index_by_ticker(_get_stage("risk").get("assessments", []))
     reasoning = _index_by_ticker(_get_stage("reasoning").get("reasoning_outputs", []))
@@ -99,6 +101,7 @@ def get_ticker_detail(ticker: str):
         "ticker": ticker,
         "evidence": evidence.get(ticker),
         "knowledge": knowledge.get(ticker),
+        "catalyst": catalyst.get(ticker),
         "confidence": confidence.get(ticker),
         "risk": risk.get(ticker),
         "reasoning": reasoning.get(ticker),

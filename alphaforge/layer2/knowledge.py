@@ -159,7 +159,8 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
     # 5. Kepemilikan
     ownership = Ownership(
         institutional_pct=evidence.institutional_ownership.percentage,
-        insider_transactions=[]  # TODO: dari news/SEC filings
+        insider_transactions=[],  # TODO: dari news/SEC filings
+        insider_filing_activity_30d=evidence.institutional_activity.buy_count_30d  # Form 4 filings count
     )
 
     # 6. Valuasi

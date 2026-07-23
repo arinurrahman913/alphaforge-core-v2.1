@@ -116,6 +116,7 @@ class Ownership:
     institutional_pct: float | None = None  # Persentase owned institusional (0-100)
     insider_pct: float | None = None  # Persentase owned insider (0-100)
     insider_transactions: list[dict] = field(default_factory=list)  # List of {date, type: "buy"|"sell", amount_usd, exec_name}
+    insider_filing_activity_30d: int = 0  # Form 4 filings dalam 30 hari terakhir (indicator of insider involvement)
 
 
 @dataclass

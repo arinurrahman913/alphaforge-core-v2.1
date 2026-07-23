@@ -215,6 +215,17 @@ def run_quality_lens(
         score -= 15
         negative.append(f"High-risk flags ({risk.high_severity_count})")
 
+    # Insider filing activity (Form 4) — indicator of insider involvement
+    own = profile.ownership
+    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2:
+        score += 5
+        positive.append(f"Recent insider activity ({own.insider_filing_activity_30d} Form 4 filings)")
+        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
+    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 1:
+        score += 2
+        positive.append("Insider filing recent")
+        metrics["insider_filings_30d"] = 1
+
     score = max(0, min(100, score + 50))
 
     gaps = _knowledge_gaps(profile, "quality_compound")
@@ -418,6 +429,13 @@ def run_multibagger_lens(
     if confidence and confidence.overall.score < 40:
         score -= 12
         negative.append("Insufficient data for growth thesis")
+
+    # Insider filing activity (Form 4) — can indicate insider confidence
+    own = profile.ownership
+    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2:
+        score += 3
+        positive.append(f"Insider activity detected ({own.insider_filing_activity_30d} Form 4 filings)")
+        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
 
     score = max(0, min(100, score + 50))
 

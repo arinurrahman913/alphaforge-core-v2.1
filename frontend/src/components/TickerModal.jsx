@@ -300,6 +300,10 @@ function ModalBody({ data }) {
         </div>
       )}
 
+      {evidence?.institutional_activity && (
+        <InsiderActivitySection activity={evidence.institutional_activity} />
+      )}
+
       {evidence?.institutional_ownership && (
         <InstitutionalHoldersSection ownership={evidence.institutional_ownership} />
       )}
@@ -456,6 +460,89 @@ function InstitutionalHoldersSection({ ownership }) {
             </tbody>
           </table>
         </>
+      )}
+    </div>
+  )
+}
+
+function InsiderActivitySection({ activity }) {
+  if (!activity || activity.status === 'missing') return null
+
+  const filings = activity.recent_trades || []
+  const count30d = activity.buy_count_30d || 0
+
+  if (count30d === 0 && filings.length === 0) return null
+
+  const statusColor = activity.status === 'ok' ? 'var(--good)' : 'var(--faint)'
+  const convictionLevel = count30d >= 3 ? 'tinggi' : count30d === 2 ? 'sedang' : 'rendah'
+  const convictionTone = count30d >= 3 ? 'good' : count30d === 2 ? 'neutral' : 'faint'
+
+  return (
+    <div className="msection">
+      <div className="msection-title">
+        Insider Activity (Form 4 Filings)
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <p className="narrative">
+          Insider/executive Form 4 filings dalam 30 hari terakhir sebagai indikator konviksi management terhadap prospek perusahaan.
+        </p>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 8 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: statusColor }}>
+              {count30d} Form 4 Filing{count30d !== 1 ? 's' : ''}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--faint)', marginTop: 2 }}>
+              Conviction Level: <span style={{ color: convictionTone, fontWeight: 600 }}>{convictionLevel}</span>
+            </div>
+          </div>
+          {count30d >= 2 && (
+            <div className="pill" style={{ backgroundColor: 'var(--good)', color: 'var(--text-on-good)' }}>
+              ✓ Insider aktif
+            </div>
+          )}
+        </div>
+      </div>
+
+      {filings.length > 0 && (
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--faint)', marginBottom: 8 }}>
+            Recent Filings:
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {filings.slice(0, 5).map((filing, i) => (
+              <div key={i} style={{
+                padding: '8px',
+                backgroundColor: 'var(--bg-faint)',
+                borderRadius: 4,
+                fontSize: 12,
+                borderLeft: '3px solid var(--dim)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontFamily: 'var(--mono)', color: 'var(--dim)' }}>
+                    {filing.transaction_date}
+                  </span>
+                  <span style={{ fontSize: 10, color: 'var(--faint)' }}>
+                    Form {filing.form_type}
+                  </span>
+                </div>
+                <div style={{ marginTop: 4, color: 'var(--text-dim)' }}>
+                  {filing.trader_name} ({filing.relationship})
+                </div>
+              </div>
+            ))}
+            {filings.length > 5 && (
+              <div style={{ fontSize: 11, color: 'var(--faint)', fontStyle: 'italic' }}>
+                … dan {filings.length - 5} filing lainnya
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {count30d === 0 && (
+        <p className="narrative" style={{ color: 'var(--faint)', fontSize: 11 }}>
+          Tidak ada Form 4 filings dalam 30 hari terakhir.
+        </p>
       )}
     </div>
   )

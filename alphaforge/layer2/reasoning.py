@@ -215,14 +215,20 @@ def run_quality_lens(
         score -= 15
         negative.append(f"High-risk flags ({risk.high_severity_count})")
 
-    # Insider filing activity (Form 4) — indicator of insider involvement
+    # Insider filing activity (Form 4) — strong indicator of insider involvement/confidence
+    # Weighted higher (15pts) than typical fundamental signals because insider trades
+    # reveal actual conviction (with real money at stake)
     own = profile.ownership
-    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2:
-        score += 5
+    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 3:
+        score += 20
+        positive.append(f"Heavy insider activity ({own.insider_filing_activity_30d} Form 4 filings - high conviction)")
+        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
+    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 2:
+        score += 15
         positive.append(f"Recent insider activity ({own.insider_filing_activity_30d} Form 4 filings)")
         metrics["insider_filings_30d"] = own.insider_filing_activity_30d
     elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 1:
-        score += 2
+        score += 8
         positive.append("Insider filing recent")
         metrics["insider_filings_30d"] = 1
 
@@ -321,6 +327,7 @@ def run_speculative_lens(
         score -= 15
         negative.append("Insufficient price data for technical analysis")
 
+    # Catalysts: explicit (earnings, events) + implicit (insider conviction via Form 4)
     has_catalyst = catalyst is not None and catalyst.has_upcoming
     if has_catalyst:
         upcoming = [c for c in catalyst.catalysts if c.certainty in ("scheduled", "expected")]
@@ -328,14 +335,22 @@ def run_speculative_lens(
         positive.append(f"Upcoming catalyst: {nearest.kind} {nearest.expected_at} ({nearest.certainty})")
         metrics["next_catalyst"] = f"{nearest.kind}@{nearest.expected_at}"
 
+    # Insider conviction (Form 4 filings) = implicit catalyst: insiders betting real money
+    has_insider_conviction = own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2
+    if has_insider_conviction:
+        score += 12
+        positive.append(f"Insider conviction signal: {own.insider_filing_activity_30d} Form 4 filings (insiders see asymmetry)")
+        metrics["insider_conviction"] = own.insider_filing_activity_30d
+        # Insider activity = catalyst for asymmetry thesis (they wouldn't file if they didn't see upside)
+
     score = max(0, min(100, score + 50))
 
     gaps = _knowledge_gaps(profile, "speculative")
     if score >= 60:
-        # Asimetri terbaca — berkatalis kalau ada katalis mendatang, tanpa
-        # katalis kalau tidak (Catalyst Set, Fase 5, akhirnya menghidupkan
-        # cabang "berkatalis" yang sebelumnya mustahil dicapai).
-        stance = "asimetri_berkatalis" if has_catalyst else "asimetri_tanpa_katalis"
+        # Asimetri terbaca — berkatalis kalau ada katalis mendatang ATAU insider conviction,
+        # tanpa katalis kalau tidak.
+        has_any_catalyst = has_catalyst or has_insider_conviction
+        stance = "asimetri_berkatalis" if has_any_catalyst else "asimetri_tanpa_katalis"
     else:
         stance = "tanpa_asimetri"
     if len(gaps) >= 2:
@@ -430,12 +445,21 @@ def run_multibagger_lens(
         score -= 12
         negative.append("Insufficient data for growth thesis")
 
-    # Insider filing activity (Form 4) — can indicate insider confidence
+    # Insider filing activity (Form 4) — strong indicator of insider confidence in growth thesis
+    # Multibagger investors (insiders) = they believe in multibagger potential
     own = profile.ownership
-    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2:
-        score += 3
-        positive.append(f"Insider activity detected ({own.insider_filing_activity_30d} Form 4 filings)")
+    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 3:
+        score += 12
+        positive.append(f"Strong insider conviction ({own.insider_filing_activity_30d} Form 4 filings - insiders back multibagger thesis)")
         metrics["insider_filings_30d"] = own.insider_filing_activity_30d
+    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 2:
+        score += 8
+        positive.append(f"Insider activity signals growth confidence ({own.insider_filing_activity_30d} Form 4 filings)")
+        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
+    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 1:
+        score += 4
+        positive.append(f"Insider involvement detected")
+        metrics["insider_filings_30d"] = 1
 
     score = max(0, min(100, score + 50))
 

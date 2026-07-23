@@ -7,6 +7,8 @@ import json
 import time
 from pathlib import Path
 
+from .json_safe import dumps_safe
+
 CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 
 # Windows treats these as reserved device names regardless of extension —
@@ -47,7 +49,7 @@ def get(namespace: str, key: str, ttl_seconds: float):
 
 def set(namespace: str, key: str, data) -> None:
     p = _path(namespace, key)
-    p.write_text(json.dumps({"cached_at": time.time(), "data": data}), encoding="utf-8")
+    p.write_text(dumps_safe({"cached_at": time.time(), "data": data}), encoding="utf-8")
 
 
 def get_stale(namespace: str, key: str):

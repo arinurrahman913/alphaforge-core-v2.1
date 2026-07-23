@@ -28,6 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from alphaforge.json_safe import dumps_safe  # noqa: E402
 from alphaforge.layer1 import historical as layer1_historical  # noqa: E402
 from alphaforge.layer1.pipeline import build_market_context_package  # noqa: E402
 from alphaforge.layer2.screening import run_screening  # noqa: E402
@@ -72,7 +73,7 @@ log = logging.getLogger("refresh_full_pipeline")
 
 def _atomic_write(path: Path, data: dict) -> None:
     tmp = path.with_name(path.name + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.write_text(dumps_safe(data, indent=2, ensure_ascii=False), encoding="utf-8")
     os.replace(tmp, path)
 
 

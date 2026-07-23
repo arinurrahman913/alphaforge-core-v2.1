@@ -5,6 +5,8 @@ import argparse
 import json
 import sys
 
+from .json_safe import dumps_safe
+
 from .layer1 import build_market_context_package
 from .layer2 import run_screening, run_evidence, run_knowledge, run_peer_comparison, run_confidence, run_risk_assessment, run_reasoning_pipeline, run_aggregator
 
@@ -110,7 +112,7 @@ def main() -> None:
             _, price_cache = run_screening(limit=args.screening_limit)
             print(f"Screening selesai: {len(price_cache)} ticker di cache harga.", file=sys.stderr)
         package = build_market_context_package(price_cache=price_cache)
-        _write(json.dumps(package.to_dict(), indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(package.to_dict(), indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "screening":
         result, _ = run_screening(limit=args.limit, sector=args.sector)
@@ -120,7 +122,7 @@ def main() -> None:
             f"lolos: {len(result.passed)} · hard exclude: {len(result.hard_excluded)}",
             file=sys.stderr,
         )
-        _write(json.dumps(result.to_dict(), indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result.to_dict(), indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "evidence":
         with open(args.screening_out, "r", encoding="utf-8") as f:
@@ -149,7 +151,7 @@ def main() -> None:
             "generated_at": packages[0].generated_at if packages else None,
             "packages": [p.to_dict() for p in packages],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "knowledge":
         with open(args.evidence_out, "r", encoding="utf-8") as f:
@@ -255,7 +257,7 @@ def main() -> None:
             "generated_at": profiles[0].metadata.evidence_date if profiles else None,
             "profiles": [p.to_dict() for p in profiles],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "peer":
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
@@ -341,7 +343,7 @@ def main() -> None:
             "generated_at": comparisons[0].generated_at if comparisons else None,
             "comparisons": [c.to_dict() for c in comparisons],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "confidence":
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
@@ -458,7 +460,7 @@ def main() -> None:
             "generated_at": scores[0].assessed_at if scores else None,
             "scores": [s.to_dict() for s in scores],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "risk":
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
@@ -536,7 +538,7 @@ def main() -> None:
             "generated_at": assessments[0].assessed_at if assessments else None,
             "assessments": [a.to_dict() for a in assessments],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "reasoning":
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
@@ -657,7 +659,7 @@ def main() -> None:
             "generated_at": reasonings[0].generated_at if reasonings else None,
             "reasoning_outputs": [r.to_dict() for r in reasonings],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
     elif args.command == "aggregator":
         with open(args.knowledge_out, "r", encoding="utf-8") as f:
@@ -810,7 +812,7 @@ def main() -> None:
             "generated_at": recommendations[0].recommended_at if recommendations else None,
             "recommendations": [r.to_dict() for r in recommendations],
         }
-        _write(json.dumps(result_dict, indent=2, ensure_ascii=False), args.out)
+        _write(dumps_safe(result_dict, indent=2, ensure_ascii=False), args.out)
 
 
 if __name__ == "__main__":

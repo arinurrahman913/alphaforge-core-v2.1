@@ -215,22 +215,15 @@ def run_quality_lens(
         score -= 15
         negative.append(f"High-risk flags ({risk.high_severity_count})")
 
-    # Insider filing activity (Form 4) — strong indicator of insider involvement/confidence
-    # Weighted higher (15pts) than typical fundamental signals because insider trades
-    # reveal actual conviction (with real money at stake)
-    own = profile.ownership
-    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 3:
-        score += 20
-        positive.append(f"Heavy insider activity ({own.insider_filing_activity_30d} Form 4 filings - high conviction)")
-        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
-    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 2:
-        score += 15
-        positive.append(f"Recent insider activity ({own.insider_filing_activity_30d} Form 4 filings)")
-        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
-    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 1:
-        score += 8
-        positive.append("Insider filing recent")
-        metrics["insider_filings_30d"] = 1
+    # Insider Form 4 filing activity DELIBERATELY NOT scored here (removed post-audit,
+    # 2026-07-24). Reasons: (1) D-12 scope — this module's own access-list (1,2,3a,4,6,7)
+    # never included section 5 Ownership; (2) sec_form4.py's MVP fetch counts ANY Form 4
+    # filing (grants/RSU-vesting/option-exercise included), it cannot isolate genuine
+    # open-market buys (the parser that could, _parse_form4_xml, exists but is dead code),
+    # so treating filing volume as "conviction" was unverified; (3) the same raw count was
+    # being scored in Quality, Multibagger AND Speculative simultaneously — a single weak,
+    # ambiguous signal voting three times violates the independent-lens principle (D-09).
+    # See Speculative lens below for the (deliberately reduced) surviving use of this signal.
 
     score = max(0, min(100, score + 50))
 
@@ -335,22 +328,31 @@ def run_speculative_lens(
         positive.append(f"Upcoming catalyst: {nearest.kind} {nearest.expected_at} ({nearest.certainty})")
         metrics["next_catalyst"] = f"{nearest.kind}@{nearest.expected_at}"
 
-    # Insider conviction (Form 4 filings) = implicit catalyst: insiders betting real money
-    has_insider_conviction = own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2
-    if has_insider_conviction:
-        score += 12
-        positive.append(f"Insider conviction signal: {own.insider_filing_activity_30d} Form 4 filings (insiders see asymmetry)")
-        metrics["insider_conviction"] = own.insider_filing_activity_30d
-        # Insider activity = catalyst for asymmetry thesis (they wouldn't file if they didn't see upside)
+    # Insider Form 4 filing activity — reduced post-audit (2026-07-24). Was previously also
+    # scored in Quality/Multibagger (removed there, D-09 lens-independence violation — a
+    # single ambiguous signal shouldn't vote 3 times) and was flipping this lens's STANCE to
+    # "asimetri_berkatalis" by treating filing count as a CatalystSet-equivalent event, which
+    # is a category error (Catalyst = dated future event; this is a trailing 30-day count with
+    # no forward date, never becomes a real Catalyst object). It also cannot distinguish a
+    # genuine open-market buy from a routine grant/RSU-vest/option-exercise Form 4 (the parser
+    # that could, sec_form4.py's _parse_form4_xml, is written but never called) — so it stays
+    # here ONLY as a small factual point contributor (this lens already legitimately reads
+    # Ownership per its own access-list), and — unlike before — can NOT by itself flip the
+    # stance to "asimetri_berkatalis". A real forward-looking Catalyst is still required for
+    # that stance.
+    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 2:
+        score += 5
+        positive.append(f"Recent Form 4 filing activity ({own.insider_filing_activity_30d} in 30d)")
+        metrics["insider_filing_activity_30d"] = own.insider_filing_activity_30d
 
     score = max(0, min(100, score + 50))
 
     gaps = _knowledge_gaps(profile, "speculative")
     if score >= 60:
-        # Asimetri terbaca — berkatalis kalau ada katalis mendatang ATAU insider conviction,
-        # tanpa katalis kalau tidak.
-        has_any_catalyst = has_catalyst or has_insider_conviction
-        stance = "asimetri_berkatalis" if has_any_catalyst else "asimetri_tanpa_katalis"
+        # Asimetri terbaca — berkatalis HANYA kalau ada katalis kalender nyata (CatalystSet),
+        # tanpa katalis kalau tidak. Insider filing activity TIDAK bisa memicu ini sendirian
+        # (lihat catatan di atas).
+        stance = "asimetri_berkatalis" if has_catalyst else "asimetri_tanpa_katalis"
     else:
         stance = "tanpa_asimetri"
     if len(gaps) >= 2:
@@ -445,21 +447,12 @@ def run_multibagger_lens(
         score -= 12
         negative.append("Insufficient data for growth thesis")
 
-    # Insider filing activity (Form 4) — strong indicator of insider confidence in growth thesis
-    # Multibagger investors (insiders) = they believe in multibagger potential
-    own = profile.ownership
-    if own.insider_filing_activity_30d and own.insider_filing_activity_30d >= 3:
-        score += 12
-        positive.append(f"Strong insider conviction ({own.insider_filing_activity_30d} Form 4 filings - insiders back multibagger thesis)")
-        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
-    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 2:
-        score += 8
-        positive.append(f"Insider activity signals growth confidence ({own.insider_filing_activity_30d} Form 4 filings)")
-        metrics["insider_filings_30d"] = own.insider_filing_activity_30d
-    elif own.insider_filing_activity_30d and own.insider_filing_activity_30d == 1:
-        score += 4
-        positive.append(f"Insider involvement detected")
-        metrics["insider_filings_30d"] = 1
+    # Insider Form 4 filing activity DELIBERATELY NOT scored here (removed post-audit,
+    # 2026-07-24) — same reasons as Quality lens above: D-12 scope (this module's own
+    # access-list 1,3a,3b,4,6 never included section 5 Ownership), filing-count can't
+    # distinguish real buys from routine grants/exercises, and it was voting in 3
+    # independent lenses simultaneously (D-09 violation). See Speculative lens for the
+    # surviving, reduced use of this signal.
 
     score = max(0, min(100, score + 50))
 

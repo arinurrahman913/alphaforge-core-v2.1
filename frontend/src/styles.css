@@ -87,6 +87,10 @@ a{color:inherit}
 .gen-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px -2px rgba(232,184,75,.6)}
 .gen-btn:disabled{cursor:default;transform:none}
 .gen-btn.running{background:var(--panel3);color:var(--gold-hi);box-shadow:none;border:1px solid rgba(232,184,75,.3)}
+.btn-back{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:12.5px;font-weight:600;
+  color:var(--dim);background:var(--panel2);border:1px solid var(--rule-strong);border-radius:9px;padding:8px 14px;
+  cursor:pointer;transition:color .12s var(--ease),border-color .12s var(--ease),transform .12s var(--ease)}
+.btn-back:hover{color:var(--text);border-color:color-mix(in srgb,var(--gold) 40%,var(--rule-strong));transform:translateX(-2px)}
 .gen-caret{font-size:10px;opacity:.75;margin-left:1px}
 .gen-spin{width:13px;height:13px;border-radius:50%;border:2px solid rgba(232,184,75,.25);border-top-color:var(--gold-hi);
   animation:genspin .7s linear infinite;display:inline-block}

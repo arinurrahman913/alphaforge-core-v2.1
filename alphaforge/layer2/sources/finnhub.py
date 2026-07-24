@@ -17,11 +17,26 @@ from __future__ import annotations
 import os
 import sys
 import time
+from pathlib import Path
+
 import requests
 from datetime import datetime, timedelta, timezone
 from ..contracts import SourceMetadata, CompanyNews, NewsCollection
 from ._retry import retry
 
+# Auto-load dari .env di root repo (gitignored) — sebelumnya modul ini TIDAK
+# panggil load_dotenv() sendiri, cuma numpang kebetulan kalau
+# layer1/sources/fred.py (yang punya load_dotenv()) sempat ter-import lebih
+# dulu. Itu fragile: kalau finnhub.py di-import duluan (mis. lewat
+# `alphaforge.layer2.evidence`), FINNHUB_API_KEY ke-baca None walau .env
+# sudah diisi, dan module-level constant di bawah tidak pernah dibaca ulang.
+# Sekarang self-contained, sama seperti fred.py.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parents[3] / ".env")
+except ImportError:
+    pass
 
 FINNHUB_API_KEY = os.environ.get("FINNHUB_API_KEY")
 FINNHUB_BASE_URL = "https://finnhub.io/api/v1"

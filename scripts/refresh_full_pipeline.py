@@ -41,6 +41,7 @@ from alphaforge.layer2.risk import run_risk_assessment  # noqa: E402
 from alphaforge.layer2.reasoning import run_reasoning_pipeline  # noqa: E402
 from alphaforge.layer2.aggregator import run_aggregator  # noqa: E402
 from alphaforge.layer2.historical import load_historical_timeline, update_timeline  # noqa: E402
+from alphaforge.layer2 import source_health  # noqa: E402
 
 DATA_DIR = ROOT / "dashboard" / "data"
 LOG_DIR = ROOT / "logs"
@@ -222,6 +223,7 @@ def main() -> int:
     _atomic_write(DATA_DIR / "historical_timeline.json", timeline_data)
     _atomic_write(DATA_DIR / "layer1_context.json", layer1_data)
     layer1_historical.append_entry(DATA_DIR / "layer1_history.json", layer1_pkg)
+    source_health.append_entry(DATA_DIR / "source_health_history.json", evidence_packages)
 
     # Root reference snapshots — tracked in git, matches the convention
     # already established for evidence.json/knowledge.json/peer_results.json/

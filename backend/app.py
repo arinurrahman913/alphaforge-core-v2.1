@@ -49,6 +49,7 @@ STAGE_FILES = {
     "reasoning": "reasoning_outputs.json",
     "aggregator": "final_recommendations.json",
     "historical": "historical_timeline.json",
+    "source_health": "source_health_history.json",
 }
 
 # name -> (mtime at last load, parsed JSON). Populated lazily on first request.
@@ -317,6 +318,60 @@ def get_knowledge_sector_summary():
 
     sectors.sort(key=lambda s: s["count"], reverse=True)
     return jsonify({"sectors": sectors})
+
+
+@app.get("/api/evidence/summary")
+def get_evidence_summary():
+    """Versi ringan evidence.json untuk EvidenceView — evidence.json penuh bisa
+    ~275MB di skala full-market (price_history 1 tahun + quarterly_data + news
+    + trades per ticker), terlalu besar untuk di-fetch+parse browser utuh demi
+    tabel ringkasan. Endpoint ini strip array besar itu (price_history, item
+    quarterly_data, item news, item trades) dan cuma kirim field skalar yang
+    dipakai StatCards/tabel/source-health cards — metadata.status tiap section
+    tetap disertakan (dipakai EvidenceView.jsx sourceStatus()/computeSourceStats()).
+    Detail lengkap 1 ticker (utuh, termasuk array) tetap lewat /api/ticker/<t>
+    yang cuma index 1 ticker, bukan seluruh populasi."""
+    pkgs = _get_stage("evidence").get("packages", [])
+    rows = []
+    for p in pkgs:
+        pm = p.get("price_market") or {}
+        fd = p.get("fundamental") or {}
+        io = p.get("institutional_ownership") or {}
+        ia = p.get("institutional_activity") or {}
+        nw = p.get("news") or {}
+        sf = p.get("sec_filings") or {}
+        rows.append({
+            "ticker": p.get("ticker"),
+            "price_market": {
+                "close": pm.get("close"),
+                "market_cap": pm.get("market_cap"),
+                "metadata": pm.get("metadata"),
+            },
+            "fundamental": {
+                "revenue": fd.get("revenue"),
+                "net_income": fd.get("net_income"),
+                "pe_ratio": fd.get("pe_ratio"),
+                "quarterly_count": len(fd.get("quarterly_data") or []),
+                "metadata": fd.get("metadata"),
+            },
+            "institutional_ownership": {
+                "percentage": io.get("percentage"),
+                "metadata": io.get("metadata"),
+            },
+            "institutional_activity": {
+                "buy_count_30d": ia.get("buy_count_30d"),
+                "metadata": ia.get("metadata"),
+            },
+            "news": {
+                "count": nw.get("count", 0),
+                "metadata": nw.get("metadata"),
+            },
+            "sec_filings": {
+                "count": sf.get("count", 0),
+                "metadata": sf.get("metadata"),
+            },
+        })
+    return jsonify({"packages": rows, "total": len(rows)})
 
 
 @app.get("/api/sectors")

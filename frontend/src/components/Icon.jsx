@@ -21,6 +21,9 @@ const ICONS = {
   bars: '<path d="M4 20h16"/><rect x="5" y="11" width="3" height="7" rx="1"/><rect x="10.5" y="6" width="3" height="12" rx="1"/><rect x="16" y="9" width="3" height="9" rx="1"/>',
   mood: '<circle cx="12" cy="12" r="9"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14.5h6"/>',
   bond: '<path d="M4 7h11"/><path d="M4 12h7"/><path d="M4 17h14"/><path d="M17 9.5v5"/><circle cx="17" cy="7" r="1.6"/><circle cx="20" cy="17" r="1.6"/>',
+  clipboard: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M8 11h8"/><path d="M8 15h5"/>',
+  newspaper: '<path d="M4 6h13a2 2 0 0 1 2 2v11a1.5 1.5 0 0 1-1.5 1.5H6a2 2 0 0 1-2-2z"/><path d="M19 9v9a1.5 1.5 0 0 0 1.5 1.5"/><path d="M7 9h7"/><path d="M7 12.5h7"/><path d="M7 16h4"/>',
+  filedoc: '<path d="M7 2.5h7L18.5 7v14.5H7z"/><path d="M14 2.5V7h4.5"/><path d="M9.5 12.5h5"/><path d="M9.5 15.5h5"/><path d="M9.5 18.5h3"/>',
   dot: '<circle cx="12" cy="12" r="4"/>',
 }
 

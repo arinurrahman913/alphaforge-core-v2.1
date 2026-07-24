@@ -1,19 +1,62 @@
+import { useEffect, useRef, useState } from 'react'
 import { api } from '../api'
 import { useStageData } from '../useStageData'
 import StatCards from '../components/StatCards'
 import DataTable from '../components/DataTable'
+import SourceHealthCards, { SOURCE_META } from '../components/SourceHealthCards'
 import { fmtMoney, fmtNum, ratingClass } from '../format'
 
+// "ok"/"missing"/"degraded" datang langsung dari SourceMetadata.status yang
+// sudah ditempel tiap fetcher (contracts.py) — dibaca ulang di sini (bukan
+// backend) supaya kartu kesehatan + kolom Completeness ikut ter-update live
+// begitu evidence.json baru selesai ditulis, tanpa endpoint tambahan.
+function sourceStatus(pkg, field) {
+  return pkg[field]?.metadata?.status || 'missing'
+}
+
+function computeSourceStats(pkgs) {
+  const total = pkgs.length
+  const out = {}
+  for (const { key } of SOURCE_META) {
+    const ok = pkgs.filter((p) => sourceStatus(p, key) === 'ok').length
+    out[key] = { ok, total, pct: total ? +((100 * ok) / total).toFixed(1) : 0 }
+  }
+  return out
+}
+
+function completeness(pkg) {
+  const okCount = SOURCE_META.filter(({ key }) => sourceStatus(pkg, key) === 'ok').length
+  return { okCount, total: SOURCE_META.length }
+}
+
 export default function EvidenceView({ onSelectTicker }) {
-  const { data, error } = useStageData(api.evidence)
+  // Versi ringan (bukan api.evidence mentah) — evidence.json penuh bisa
+  // ~275MB di skala full-market (price_history/quarterly_data/news/trades
+  // per ticker), terlalu besar untuk di-fetch+parse browser demi tabel
+  // ringkasan. /api/evidence/summary sudah strip array besar itu di backend;
+  // detail lengkap 1 ticker tetap via TickerModal (/api/ticker/<t>).
+  const { data, error } = useStageData(api.evidenceSummary)
+  const { data: healthHistory } = useStageData(api.sourceHealth)
+  const [activeSource, setActiveSource] = useState(null)
+  const filterNoteRef = useRef(null)
+
+  // Card klik cuma filter `rows` DataTable di bawahnya — nggak ada perubahan
+  // visual di area kartu sendiri selain border tipis, jadi dari layar yang
+  // cuma nampilin kartu (tabel di luar viewport) kelihatannya "nggak ngapa-
+  // ngapain". Auto-scroll ke filter note supaya efeknya langsung kelihatan.
+  useEffect(() => {
+    if (activeSource) filterNoteRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [activeSource])
 
   if (error) return <div className="empty">Gagal memuat data/evidence.json: {error}</div>
   if (!data) return <div className="loading">Memuat…</div>
 
   const pkgs = data.packages || []
   const avgMcap = pkgs.reduce((s, p) => s + (p.price_market?.market_cap || 0), 0) / (pkgs.length || 1)
-  const withSecQ = pkgs.filter((p) => p.fundamental?.quarterly_data?.length).length
+  const withSecQ = pkgs.filter((p) => p.fundamental?.quarterly_count).length
   const withFilings = pkgs.filter((p) => p.sec_filings?.metadata?.status === 'ok').length
+  const sourceStats = computeSourceStats(pkgs)
+  const filteredPkgs = activeSource ? pkgs.filter((p) => sourceStatus(p, activeSource) !== 'ok') : pkgs
 
   const stats = [
     { label: 'Packages', value: pkgs.length },
@@ -58,11 +101,11 @@ export default function EvidenceView({ onSelectTicker }) {
       key: 'quarterly',
       label: 'SEC Qtrly',
       render: (r) => (
-        <span className={`pill ${r.fundamental?.quarterly_data?.length ? 'ok' : 'neutral'}`}>
-          {r.fundamental?.quarterly_data?.length || 0} qtrs
+        <span className={`pill ${r.fundamental?.quarterly_count ? 'ok' : 'neutral'}`}>
+          {r.fundamental?.quarterly_count || 0} qtrs
         </span>
       ),
-      sortValue: (r) => r.fundamental?.quarterly_data?.length || 0,
+      sortValue: (r) => r.fundamental?.quarterly_count || 0,
     },
     {
       key: 'filings',
@@ -73,12 +116,63 @@ export default function EvidenceView({ onSelectTicker }) {
         </span>
       ),
     },
+    {
+      key: 'institutional_pct',
+      label: 'Institutional %',
+      render: (r) => {
+        const pct = r.institutional_ownership?.percentage
+        return pct !== null && pct !== undefined ? `${(pct * 100).toFixed(1)}%` : '—'
+      },
+      sortValue: (r) => r.institutional_ownership?.percentage,
+    },
+    {
+      key: 'news_count',
+      label: 'News',
+      render: (r) => r.news?.count ?? 0,
+      sortValue: (r) => r.news?.count ?? 0,
+    },
+    {
+      key: 'insider_activity',
+      label: 'Insider (30d)',
+      render: (r) => {
+        const n = r.institutional_activity?.buy_count_30d || 0
+        return n > 0 ? <span className="pill ok" style={{ fontSize: 10 }}>{n} filing</span> : '—'
+      },
+      sortValue: (r) => r.institutional_activity?.buy_count_30d || 0,
+    },
+    {
+      key: 'completeness',
+      label: 'Completeness',
+      render: (r) => {
+        const { okCount, total } = completeness(r)
+        const cls = okCount === total ? 'ok' : okCount >= total - 1 ? 'warn' : 'bad'
+        return (
+          <span className={`pill ${cls}`}>
+            {okCount}/{total} {okCount === total ? '✓' : '⚠'}
+          </span>
+        )
+      },
+      sortValue: (r) => completeness(r).okCount,
+    },
   ]
 
   return (
     <>
       <StatCards stats={stats} />
-      <DataTable columns={columns} rows={pkgs} onRowClick={(r) => onSelectTicker(r.ticker)} />
+      <SourceHealthCards
+        stats={sourceStats}
+        history={Array.isArray(healthHistory) ? healthHistory : []}
+        activeSource={activeSource}
+        onSelect={setActiveSource}
+      />
+      {activeSource && (
+        <p className="sh-filter-note" ref={filterNoteRef}>
+          Menampilkan {filteredPkgs.length} ticker dengan status bukan "ok" untuk{' '}
+          {SOURCE_META.find((s) => s.key === activeSource)?.label} ·{' '}
+          <a onClick={() => setActiveSource(null)}>reset filter</a>
+        </p>
+      )}
+      <DataTable columns={columns} rows={filteredPkgs} onRowClick={(r) => onSelectTicker(r.ticker)} />
     </>
   )
 }

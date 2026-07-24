@@ -64,7 +64,7 @@ npm --prefix frontend run build           # build sekali (atau `npm run dev` unt
 python backend/app.py                     # buka http://localhost:5000
 ```
 
-Tanpa `FRED_API_KEY`, 5 komponen Layer 1 berbasis FRED otomatis `status=missing` — pipeline tetap jalan, tidak crash.
+Tanpa `FRED_API_KEY`, 5 komponen Layer 1 berbasis FRED otomatis `status=missing` — pipeline tetap jalan, tidak crash. Sama halnya tanpa `FINNHUB_API_KEY` (juga di `.env`, gratis di [finnhub.io/register](https://finnhub.io/register)): Evidence.news otomatis `status=missing` untuk semua ticker, bukan crash.
 
 ---
 

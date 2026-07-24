@@ -1,310 +1,147 @@
 # AlphaForge Core v2
 
-Implementasi kode AlphaForge v2 (Layer 1 — Market Context Engine, Layer 2 — Stock Analysis Engine). Spec lengkap ada di repo terpisah [`alphaforge-v2-main`](https://github.com/arinurrahman913/alphaforge-v2).
+Implementasi kode AlphaForge v2 — dua mesin analisis saham:
 
-## Isi Repo
+- **Layer 1 — Market Context Engine**: 13 komponen makro (yield curve, VIX, likuiditas, credit spread, dll) → satu skor kondisi pasar (`Layer Score`).
+- **Layer 2 — Stock Analysis Engine**: 9 tahap per saham (Screening → Evidence → Knowledge → Peer → Confidence → Risk → Reasoning → Aggregator → Historical).
 
-- `alphaforge/layer1/` — Market Context Engine, 13 komponen sesuai `02_LAYER1_SPECS/` (+ `credit_spread`, ditambahkan pasca-audit 2026-07). Lihat §Layer 1 di bawah.
-- `alphaforge/layer2/` — Stock Analysis Engine: Screening (tahap 1), Evidence (tahap 2). Lihat §Layer 2 di bawah.
-- `alphaforge/cache.py` — cache lokal berbasis file (`.cache/`, gitignored) dengan TTL, dipakai Screening & Evidence.
-- `dashboard/dashboard-mockup.html` — mockup dashboard lokal (statis, data contoh hardcoded), mengikuti spec `01_ARCHITECTURE/05_DASHBOARD_LOCAL.md`. Belum terhubung ke pipeline nyata.
+Spec/arsitektur lengkap (kenapa sistem ini dirancang begini) ada di repo terpisah [`alphaforge-v2-main`](https://github.com/arinurrahman913/alphaforge-v2). Repo ini adalah **implementasinya** — kalau spec dan kode berbeda, catat perbedaannya (ada beberapa yang didokumentasikan sengaja, lihat §Known Gaps), jangan langsung asumsikan salah satu paling benar.
+
+**Kalau kamu AI/kontributor baru:** baca bagian §Arsitektur & §Data Contracts dulu sebelum menyentuh kode — bagian itu isinya "kenapa ini begini", bukan cuma "ini ada apa". Untuk **cara menjalankan sehari-hari** (refresh data, baca dashboard, troubleshooting), itu semua ada di [`WORKFLOW.md`](WORKFLOW.md) — jangan diduplikasi di sini.
+
+---
+
+## Arsitektur
+
+Tiga bagian yang jalan terpisah tapi saling terhubung lewat file JSON:
+
+```
+alphaforge/          → mesin analisis murni (Python). Tidak tahu apa-apa soal web/dashboard.
+  layer1/             13 komponen Market Context
+  layer2/              9 tahap Stock Analysis (contracts.py per tahap + sources/ untuk fetch data eksternal)
+  cli.py               CLI untuk jalankan tiap tahap manual (python -m alphaforge.cli <stage>)
+  cache.py             cache lokal berbasis file (.cache/, gitignored, TTL per sumber)
+  json_safe.py          serialisasi JSON yang aman dari NaN/Infinity (lihat §Known Gaps)
+
+backend/app.py        → Flask, READ-ONLY. Cuma menyajikan dashboard/data/*.json sebagai API
+                         (di-cache in-memory per mtime file — lihat _get_stage). Tidak menghitung
+                         apa pun sendiri. Juga bisa TRIGGER refresh (subprocess ke scripts/) lewat
+                         tombol Generate, tapi computation-nya tetap di alphaforge/, bukan di sini.
+
+frontend/             → React + Vite. Baca API dari backend/app.py, render dashboard.
+                         Build ke frontend/dist/ (tracked di git, di-serve langsung oleh Flask —
+                         jadi produksi cuma butuh 1 proses: python backend/app.py).
+
+scripts/               → orkestrasi/otomasi: refresh_full_pipeline.py (jalankan 9 tahap Layer 2 +
+                         Layer 1 berurutan, all-or-nothing), refresh_layer1.py (cepat, Layer 1 saja),
+                         build_sector_map.py (klasifikasi sektor per ticker, cache 90 hari, dipakai
+                         screening per-sektor).
+
+dashboard/data/*.json  → SUMBER KEBENARAN untuk apa yang ditampilkan dashboard (gitignored — hasil
+                         generate, bukan kode). Kalau angka di dashboard salah, cek isi file ini
+                         dulu sebelum curiga ke frontend.
+```
+
+**Alur data**: `alphaforge/` (compute) → tulis ke `dashboard/data/*.json` (lewat `scripts/refresh_*.py` atau `python -m alphaforge.cli <stage> --out ...`) → `backend/app.py` baca file itu → `frontend/` render. Tidak ada arah lain — dashboard **tidak pernah** menghitung ulang apa pun (Prinsip 2.1 di spec repo).
+
+---
+
+## Setup & Menjalankan
+
+Ringkas (detail lengkap + troubleshooting ada di [`WORKFLOW.md`](WORKFLOW.md)):
+
+```powershell
+pip install -r requirements.txt
+npm --prefix frontend install
+Copy-Item .env.example .env   # isi FRED_API_KEY (gratis, lihat komentar di file)
+
+# refresh data (pilih salah satu)
+python scripts/refresh_layer1.py          # cepat (~1 menit), Layer 1 saja
+python scripts/refresh_full_pipeline.py   # lengkap, semua stage (bisa 1-2+ jam full-market)
+
+# jalankan dashboard
+npm --prefix frontend run build           # build sekali (atau `npm run dev` untuk mode dev)
+python backend/app.py                     # buka http://localhost:5000
+```
+
+Tanpa `FRED_API_KEY`, 5 komponen Layer 1 berbasis FRED otomatis `status=missing` — pipeline tetap jalan, tidak crash.
+
+---
 
 ## Layer 1 — Market Context Engine
 
-### Setup
+13 komponen, semua sudah live: yield curve, volatility index (VIX), currency/DXY, commodity signals, market regime, sector rotation, liquidity conditions, macro calendar, business cycle stage, money flow, market breadth, market sentiment, credit spread.
 
-```
-pip install -r requirements.txt
-export FRED_API_KEY=xxxxx   # gratis: https://fred.stlouisfed.org/docs/api/api_key.html
-```
+5 komponen butuh `FRED_API_KEY` (yield curve, liquidity, macro calendar, business cycle, credit spread). `market_breadth` butuh Screening pernah jalan minimal sekali (pakai cache harga hasil Screening). `market_sentiment` `ok` dengan ≥3/6 input — 4 otomatis (VIX, breadth, CFTC COT, FINRA short-volume), 2 sisanya (put/call, AAII) manual opsional.
 
-Tanpa `FRED_API_KEY`, 4 komponen berbasis FRED (`yield_curve`, `liquidity_conditions`,
-`macro_calendar`, `business_cycle_stage`) otomatis `status=missing` — pipeline tetap
-jalan dan mengirim paket lengkap (sesuai `02_LAYER1_MARKET_CONTEXT.md` §5, "Kalau Ada
-Komponen yang Gagal").
+Detail cara baca tiap komponen + anatomi kartu ada di [`WORKFLOW.md`](WORKFLOW.md) §5.
 
-### Jalankan
-
-```
-python -m alphaforge.cli layer1                    # cetak MarketContextPackage ke stdout
-python -m alphaforge.cli layer1 --out context.json  # tulis ke file
-```
-
-### Lihat di dashboard lokal
-
-```
-python -m alphaforge.cli layer1 --out dashboard/data/layer1_context.json
-python -m http.server 8532 --directory dashboard
-```
-
-Buka `http://localhost:8532/layer1-live.html`. Halaman ini cuma membaca file JSON tadi
-(Prinsip 2.1, `05_DASHBOARD_LOCAL.md`) — tidak menghitung ulang apa pun. Generate ulang
-JSON-nya dan refresh browser untuk data terbaru.
-
-`dashboard/dashboard-mockup.html` (data contoh hardcoded, statis) tetap ada sebagai
-referensi visual untuk halaman yang belum ada datanya (Daftar Lensa, Layer 2).
-
-### Status implementasi per komponen
-
-| Komponen | Sumber | Status |
-|---|---|---|
-| Yield Curve | FRED (`T10Y2Y`) | Jalan (butuh `FRED_API_KEY`) |
-| Volatility Index | Yahoo (`^VIX`) | Jalan |
-| Currency/DXY | Yahoo (`DX-Y.NYB`) | Jalan |
-| Commodity Signals | Yahoo (`GC=F`, `CL=F`) | Jalan |
-| Market Regime | Yahoo (`^GSPC` vs MA50/MA200) | Jalan |
-| Sector Rotation | Yahoo (11 sector ETF vs SPY) | Jalan |
-| Liquidity Conditions | FRED (`WALCL`, `M2SL`) | Jalan (butuh `FRED_API_KEY`) |
-| Macro Calendar | FRED release calendar (CPI, Employment) | Jalan (butuh `FRED_API_KEY`) |
-| Business Cycle Stage | FRED (GDP QoQ, UNRATE, INDPRO sbg proksi PMI — lihat catatan di modul) | Jalan (butuh `FRED_API_KEY`) |
-| Money Flow | Yahoo (volume+price proxy 11 sector ETF, jendela 3 hari) | Jalan |
-| Market Breadth | Cache harga universe Screening | Jalan (butuh Screening pernah jalan sekali — lihat §Layer 2) |
-| Market Sentiment | VIX + Market Breadth + CFTC COT + FINRA short-volume + put/call + AAII | Jalan — `ok` pada ≥3/6 input; 4 otomatis resmi (VIX, breadth, CFTC, FINRA), put/call & AAII opsional manual |
-| Credit Spread | FRED (`BAMLH0A0HYM2`, ICE BofA US HY OAS) | Jalan (butuh `FRED_API_KEY`) — skor berbasis percentile historis, bukan band tetap |
+---
 
 ## Layer 2 — Stock Analysis Engine
 
-### Tahap 1: Screening
+9 tahap berurutan, tiap tahap konsumsi output tahap sebelumnya:
 
-Tahap pertama (`03_LAYER2_SPECS/01_SCREENING.md`): menyaring seluruh NASDAQ+NYSE jadi kandidat untuk dianalisis.
+| # | Tahap | Modul | Ringkas |
+|---|---|---|---|
+| 1 | Screening | `screening.py` | Filter universe NASDAQ+NYSE (~8.500 raw → ~5.200 setelah cheap-filter) jadi kandidat: exclude ETF/test-issue, market cap/likuiditas/harga minimum. Soft-flag (micro-cap, recent-IPO, ADR) tetap lolos. |
+| 2 | Evidence | `evidence.py` + `sources/` | Kumpulkan fakta mentah per ticker: price/OHLCV (Yahoo), fundamental (Yahoo), institutional ownership % + top holders (Yahoo), **institutional/insider activity dari SEC Form 4** (`sources/sec_form4.py` — lihat catatan di bawah), news (Finnhub), SEC filings 10-K/10-Q/8-K (EDGAR). |
+| 3 | Knowledge | `knowledge.py` | Strukturkan Evidence jadi `KnowledgeProfile` 7-bagian (identity, financial health, competitive structure/momentum, historical trend, ownership, valuation, governance) — murni faktual, tanpa penilaian kualitatif. |
+| 4 | Peer | `peer.py` | Posisi percentile vs peer sektor (P/E, P/S, margins, dll), min 3 peer untuk dihitung. |
+| 5 | Confidence | `confidence.py` | `ConfidenceReport`: skor kualitas data per section (0-100) + limiters, bukan lagi single confidence_score generik. |
+| 6 | Risk | `risk.py` | `RiskAssessment` dengan `Flag` (severity `tinggi`/`ekstrem`, status `triggered`/`undetermined`). Flag `ekstrem` yang `triggered` **hard-gate**: `halted=true`, ticker itu skip tahap Reasoning. |
+| 7 | Reasoning | `reasoning.py` | **3 lensa independen, TIDAK diagregasi jadi satu angka** (`ModuleOutput` per lensa — lihat §Data Contracts). |
+| 8 | Aggregator | `aggregator.py` | Gabungkan 3 `ModuleOutput` + `Synthesis` (peta konvergensi, bukan skor tunggal). |
+| 9 | Historical | `historical.py` | Simpan snapshot utuh `AggregatorOutput` per hari per ticker (`HistoricalEntry`). Evaluasi outcome (v2.1) belum ada — lihat §Known Gaps. |
 
-```
-python -m alphaforge.cli screening                  # full market (~5.000+ ticker, lama)
-python -m alphaforge.cli screening --limit 200       # testing, subset kecil
-python -m alphaforge.cli screening --out screening.json
-```
+### Data Contracts — penting dibaca sebelum ubah Reasoning/Aggregator
 
-Dua tahap filter:
-1. **Cheap filter** — exclude ETF, test issue, non-common-stock (warrant/right/unit/preferred) langsung dari listing file.
-2. **Hard exclude/soft flag** — market cap, liquidity, price history via Yahoo Finance (di-batch + cache). Market cap < $30jt, avg dollar volume < $300rb, harga < $0.50, histori < 20 hari → hard exclude. Micro-cap, recent IPO, ADR → soft flag, tetap lolos.
+Repo ini sudah melalui **rewrite Data-Contracts v3.0.0** (2026-07-22/23) yang mengganti arsitektur lama (single `conviction_score` + `strong_buy`/…/`strong_sell` + `FinalRecommendation`) dengan yang jauh lebih ketat:
 
-Jalankan Layer 1 dengan `--with-screening` supaya `market_breadth` komponen terisi:
+- **`ModuleOutput`** (`reasoning_contracts.py`) — tiap lensa (`multibagger`, `quality_compound`, `speculative`) punya **kosakata stance sendiri**, bukan enum bersama:
+  - Multibagger: `ruang_terbuka` / `ruang_sempit` / `ruang_tertutup` / `ruang_tak_terbaca`
+  - Quality: `compounding_kuat` / `compounding_rapuh` / `bukan_compounder` / `mesin_tak_terbaca`
+  - Speculative: `asimetri_berkatalis` / `asimetri_tanpa_katalis` / `tanpa_asimetri` / `asimetri_tak_terbaca`
+  - `confidence` terpisah dari `stance` (bukan dicampur jadi satu angka). `validate_module_output()` menjalankan cek V1-V6 tiap pipeline (di-log, tidak menghentikan run).
+- **`AggregatorOutput`** (`aggregator_contracts.py`) — **DILARANG** (D-04) punya field verdict/score/rank/recommendation tunggal. Isinya `module_outputs` (3 `ModuleOutput` apa adanya, berdampingan) + `Synthesis` (agreements/divergences/`surprise`, confidence = **terendah** dari 3 modul, bukan rata-rata). `halted=true` → `module_outputs` kosong, `synthesis=None`, tapi `risk_flags` tetap terisi.
+- **`HistoricalEntry`** (`historical_contracts.py`) — simpan **snapshot utuh** `AggregatorOutput`, bukan ringkasan. `outcome` sengaja `None` (evaluasi v2.1 belum diputuskan bentuknya).
 
-```
-python -m alphaforge.cli layer1 --with-screening --screening-limit 500 --out dashboard/data/layer1_context.json
-```
+**Kalau kamu lihat kode/dokumen lama menyebut `conviction_score`, `strong_buy`, atau `FinalRecommendation` — itu SUDAH DIGANTI.** Jangan tambahkan balik pola itu.
 
-### Tahap 2: Evidence
+### SEC Form 4 — Institutional/Insider Activity (baru, 2026-07-23/24)
 
-Tahap kedua (`03_LAYER2_SPECS/02_EVIDENCE.md`): kumpulkan fakta terverifikasi (price, fundamental, news, filing) per kandidat yang lolos Screening.
+`sources/sec_form4.py` fetch daftar Form 4 filing dari SEC EDGAR submissions API per ticker, disimpan sebagai `InstitutionalActivity` (`contracts.py`) di Evidence, lalu diringkas jadi `Ownership.insider_filing_activity_30d` (hitungan filing 30 hari terakhir) di Knowledge.
 
-```
-python -m alphaforge.cli evidence --screening-out screening.json --out evidence.json
-python -m alphaforge.cli evidence --screening-out screening.json --out evidence.json --limit 50  # testing
-```
+**Batasan yang harus diketahui**: ini **MVP — cuma hitungan filing, bukan parsing arah transaksi** (belum bisa bedakan insider beli vs jual, atau berapa lembar saham). Percobaan parsing XML Form 4 penuh gagal karena struktur path dokumen SEC archive tidak konsisten (404 di banyak kasus) — didokumentasikan sebagai keterbatasan yang disengaja, bukan bug tersembunyi. Sinyal ini dipakai sebagai proxy "ada insider terlibat" di 2 lensa Reasoning:
+- **Quality**: +8/+15/+20 poin tergantung jumlah filing (1/2/3+)
+- **Speculative**: 2+ filing dalam 30 hari **memicu** stance `asimetri_berkatalis` (diperlakukan sebagai katalis implisit — insider tidak akan filing kalau tidak melihat upside)
 
-Evidence mengumpulkan:
-- **Price & Market Data** — OHLCV, market cap, shares outstanding, beta (Yahoo Finance)
-- **Fundamental** — revenue, net income, EPS, P/E, debt/equity, current ratio, ROE, margins (Yahoo Finance)
-- **Institutional Ownership** — persentase agregat (Yahoo Finance)
-- **Company News** — berita terkini 30 hari terakhir (Finnhub, graceful degradation jika API key missing)
-- **SEC Filings** — daftar filing (10-K, 10-Q, 8-K) — placeholder di MVP, diintegrasikan nanti
+### Dashboard: Sector Cards (Knowledge view)
 
-Tiap field ditandai dengan metadata: source, fetched_at timestamp, status (ok/missing/degraded).
+Halaman Knowledge di dashboard **tidak** menampilkan satu tabel flat 4000+ baris — tapi grid card per sektor (klik untuk expand ke tabel penuh sektor itu). Agregat per sektor (leader, opportunity count, risk flag count, dll) dihitung di endpoint backend `GET /api/knowledge/sector-summary` (`backend/app.py`), bukan di browser — karena butuh join `knowledge.json` dengan `reasoning_outputs.json`/`risk_assessments.json` yang ukurannya puluhan MB.
 
-Output: `EvidencePackage` per ticker → input untuk Knowledge (tahap 3).
+**Catatan penting kalau menambah statistik agregat baru di situ**: `return_1y`/`pe_ratio`/`revenue_yoy` semuanya *fat-tailed* (satu ticker naik ribuan persen menyeret rata-rata jauh dari kondisi tipikal) — pakai **median**, bukan mean, untuk metrik itu (lihat `_median()` di `backend/app.py`). `institutional_pct` aman pakai mean (dibatasi 0–100%). Nama sektor di data pakai taksonomi **Yahoo Finance mentah** (`Financial Services`, `Consumer Cyclical`, `Consumer Defensive`, `Basic Materials`), **bukan** nama GICS baku yang mirip tapi beda — jangan asumsikan `sector` field sudah GICS-clean.
 
-### Evidence Dashboard (Monitoring)
+---
 
-Visualisasi interactive untuk monitor kualitas data Evidence:
+## Known Gaps (jujur, per 2026-07-24 — cek ulang sebelum percaya, ini snapshot bukan live status)
 
-```bash
-python -m alphaforge.cli evidence --screening-out screening.json --out dashboard/data/evidence.json
-python -m http.server 8532 --directory dashboard
-```
+Supaya tidak ada yang menganggap sesuatu "pasti sudah dikerjakan" padahal belum:
 
-Buka browser: `http://localhost:8532/evidence-live.html`
+- **Risk**: dari 6 kategori flag (`Flag`, severity `tinggi`/`ekstrem`), cuma **dilution** yang punya jalur deteksi nyata. 5 lainnya (auditor change, restatement, litigation, insider selling, fraud/delisting) selalu `status=undetermined` — Evidence cuma nyimpen filing form_type/tanggal, bukan isi filing. Hard-gate `halted` sudah dibangun & ditest tapi belum pernah benar-benar terpicu di data nyata.
+- **Reasoning**: bobot & kriteria 3 lensa masih placeholder spec ("didiskusikan terpisah, belum final") — jangan anggap angka skornya sudah dikalibrasi serius.
+- **Peer**: `peer_failures` selalu `[]` (butuh Screening kirim daftar kandidat per-sektor, belum ada). `roe_comparison` sebenarnya data institutional-ownership yang salah label (tidak ada field ROE asli).
+- **Aggregator**: `percentile_vs_peer` selalu `None`.
+- **Historical**: evaluasi outcome (v2.1 — apakah rekomendasi lama ternyata benar) belum ada bentuknya sama sekali, `outcome` selalu `None`.
+- **SEC Form 4**: lihat §SEC Form 4 di atas — cuma hitungan filing, bukan arah/volume transaksi.
+- **market_breadth** (Layer 1): butuh Screening pernah jalan sekali dulu (pakai cache harganya) — kalau belum, `status=missing`.
+- **`json_safe.py`**: NaN/Infinity dari pandas/JSON perlu di-null-kan manual di titik serialisasi — kalau nambah tempat tulis JSON baru ke `dashboard/data/`, pastikan lewat `dumps_safe()`, bukan `json.dumps()` biasa (pernah 3x jadi bug nyata: Layer 1 SPX MA, Screening `last_price`).
 
-Features:
-- **Table view**: 23+ ticker dengan price, market cap, revenue, net income, FCF, institutional ownership %, news count
-- **Statistics**: total packages, avg market cap/revenue, % with news
-- **Search/filter**: real-time filter by ticker
-- **Detail modal**: klik row untuk lihat full fundamentals (18+ fields), 52w high/low, ownership %, recent news
-- **Responsive**: light/dark theme, works desktop/mobile
-- **Status badges**: track data source completeness (ok/degraded/missing)
+---
 
-Dashboard reads dari `dashboard/data/evidence.json` — tidak ada calculation, pure visualization (sesuai Prinsip 2.1).
+## Testing
 
-## CLI Reference — Full Pipeline
-
-### Quick Start: End-to-End on 3 Tickers
-
-```bash
-# Stage 1: Screening (filter universe)
-python -m alphaforge.cli screening --limit 3 --out screening.json
-
-# Stage 2: Evidence (collect data)
-python -m alphaforge.cli evidence --screening-out screening.json --limit 3 --out evidence.json
-
-# Stage 3: Knowledge (build profiles)
-python -m alphaforge.cli knowledge --evidence-out evidence.json --limit 3 --out knowledge.json
-
-# Stage 4: Peer Comparison
-python -m alphaforge.cli peer --knowledge-out knowledge.json --limit 3 --out peer.json
-
-# Stage 5: Confidence Scoring
-python -m alphaforge.cli confidence \
-  --knowledge-out knowledge.json \
-  --peer-out peer.json \
-  --limit 3 --out confidence.json
-
-# Stage 6: Risk Assessment
-python -m alphaforge.cli risk --knowledge-out knowledge.json --limit 3 --out risk.json
-
-# Stage 7: Reasoning Pipeline (3 lenses)
-python -m alphaforge.cli reasoning \
-  --knowledge-out knowledge.json \
-  --confidence-out confidence.json \
-  --risk-out risk.json \
-  --limit 3 --out reasoning.json
-
-# Stage 8: Aggregator (final recommendation)
-python -m alphaforge.cli aggregator \
-  --knowledge-out knowledge.json \
-  --peer-out peer.json \
-  --confidence-out confidence.json \
-  --risk-out risk.json \
-  --reasoning-out reasoning.json \
-  --limit 3 --out recommendations.json
-
-# Stage 9: Historical Tracking
-python -c "
-import json
-from alphaforge.layer2 import update_timeline, save_historical_timeline
-from alphaforge.layer2.aggregator_contracts import FinalRecommendation
-
-with open('recommendations.json') as f:
-    data = json.load(f)
-recs = [FinalRecommendation(**r) for r in data['recommendations']]
-timelines = update_timeline({}, recs)
-save_historical_timeline(timelines, 'historical.json')
-print(f'Tracked {len(timelines)} tickers')
-"
-```
-
-### Full Production Run (300+ tickers)
-
-Remove `--limit` flag to run on complete screening universe:
-
-```bash
-python -m alphaforge.cli screening --out screening_prod.json
-python -m alphaforge.cli evidence --screening-out screening_prod.json --out evidence_prod.json
-python -m alphaforge.cli knowledge --evidence-out evidence_prod.json --out knowledge_prod.json
-# ... continue for peer, confidence, risk, reasoning, aggregator
-```
-
-### View Dashboards
-
-```bash
-# Generate data
-python -m alphaforge.cli screening --out dashboard/data/screening_prod.json
-python -m alphaforge.cli evidence --screening-out dashboard/data/screening_prod.json --out dashboard/data/evidence_prod.json
-python -m alphaforge.cli knowledge --evidence-out dashboard/data/evidence_prod.json --out dashboard/data/knowledge_prod.json
-python -m alphaforge.cli peer --knowledge-out dashboard/data/knowledge_prod.json --out dashboard/data/peer_prod.json
-
-# Start local server
-python -m http.server 8765 --directory dashboard
-
-# Open browser
-http://localhost:8765/evidence-live.html
-http://localhost:8765/knowledge-live.html
-http://localhost:8765/peer-live.html
-```
-
-## Status Implementasi
-
-### Layer 1
-- **13/13 komponen**: live (yield curve, VIX, DXY, commodities, regime, sector rotation, liquidity, macro calendar, business cycle, money flow, market breadth, market sentiment, credit spread)
-- `FRED_API_KEY` diperlukan untuk 5 komponen FRED (yield curve, liquidity, macro calendar, business cycle, credit spread)
-- `market_sentiment`: `ok` — 4 input otomatis resmi (VIX, breadth, CFTC COT, FINRA short-volume); put/call & AAII opsional lewat input manual
-- `currency_dxy` & `commodity_signals`: skor berbasis percentile 3 tahun (bukan band % perubahan tetap) — tahan-rezim terhadap perubahan volatilitas
-- `dashboard/data/layer1_history.json`: snapshot harian `LayerScore` (satu entry/hari, run berulang di hari sama saling menggantikan) — dasar untuk validasi/backtest LayerScore vs hasil pasar nyata ke depannya
-
-### Layer 2 — Stock Analysis Engine (Complete ✅)
-
-#### Fase A: Per-Ticker Analysis (Parallel)
-- **Screening** ✅ — 2-stage filter (8.5K → 5.2K → 300+ candidates), rate-limited + cached
-- **Evidence** ✅ — price (1Y OHLCV), fundamentals (18 fields), ownership, news (Finnhub)
-  - Caching: 6h price, 24h fundamentals, 24h ownership
-  - Rate limiting: batch 50 tickers/2sec
-  - Dashboard: `evidence-live.html` with search/filter/modal
-  
-- **Knowledge** ✅ — 7-section profile per ticker
-  - Section 1: Identity (sector, size category, flags)
-  - Section 2: Financial Health (margins, balance sheet, cash flow, capex)
-  - Section 3a: Competitive Structure (business model, TAM, revenue)
-  - Section 3b: Competitive Momentum (segment growth, guidance, acceleration)
-  - Section 4: Historical Trend (returns 1Y/3Y/5Y, volatility, beta)
-  - Section 5: Ownership (institutional %, insider %, transactions)
-  - Section 6: Valuation (P/E, P/S, P/B, EV/EBITDA, FCF yield)
-  - Section 7: Governance (shares change, auditor changes, restatements, litigation)
-  - Dashboard: `knowledge-live.html` with 7 collapsible sections
-
-#### Fase B: Population-Dependent Analysis (Sequential)
-- **Peer Comparison** ✅ — percentile positioning vs sector peers
-  - Grouping: by sector, min 3 peers for calculation
-  - Metrics: P/E, P/S, P/B, FCF yield, margins (gross/operating/net), ROE/ROA, D/E
-  - Dashboard: `peer-live.html` with percentile heatmap
-  
-- **Confidence Scoring** ✅ — data quality assessment (0-100)
-  - Per-category: price, fundamentals, ownership, news, governance, peer_group
-  - Flags: low_sample_size_peer, insufficient_price_history, stale_data, incomplete_fundamentals
-  - Output: confidence_score + confidence_rating (high/medium/low)
-  
-- **Risk/Red-Flag Detection** ✅ — anomaly detection
-  - Governance: auditor changes, restatements, litigation, unusual filings
-  - Financial: high debt (D/E >2), poor liquidity (current ratio <1), negative FCF
-  - Momentum: earnings misses, guidance downgrades, volatility extremes
-  - Valuation: extreme P/E (>100x), severe drawdowns (>50%)
-  - Output: risk_score (0-100) + red_flags list + recommended_risk_adjustment
-  
-- **Reasoning Pipeline** ✅ — 3 independent analytical lenses
-  - Quality Lens: fundamentals + margins + valuation (sections 1,2,3a,4,6,7)
-  - Speculative Lens: momentum + volatility + insider activity (sections 1,3a,4-vol,5)
-  - Multibagger Lens: growth + TAM + acceleration (sections 1,3a,3b,4,6)
-  - Each lens: conviction_score (0-100) + stance (strong_buy/buy/hold/sell/strong_sell)
-  - Aggregation: weighted average (Quality 40%, Speculative 30%, Multibagger 30%)
-  - Divergence detection: flags when lenses disagree
-  
-- **Aggregator** ✅ — final recommendation combining all stages
-  - Weighted scoring: Confidence 20% + Risk 25% + Reasoning 55%
-  - Output: final recommendation + conviction (0-100)
-  - Includes: tracking_id (UUID), next_review_date, red_flags, bull/bear case
-  - Dashboard: `final_recommendations.json` (aggregated view)
-  
-- **Historical Tracking** ✅ — decision timeline + backtesting framework
-  - Stores: recommendation_date, conviction, scores, reasoning, tracking_id
-  - Outcome fields: actual_return_pct, decision_correct, accuracy_pct
-  - Functions: load/update/save timeline, compare vs new, record outcomes
-  - Enables backtesting: measure forecast accuracy over time
-
-### Dashboards (Interactive Visualization)
-
-#### Layer 1
-- **layer1-live.html** ✅ — 12 market context components, sparklines, status badges
-
-#### Layer 2 — Fase A
-- **evidence-live.html** ✅ — Price/market data, 18 fundamentals, ownership %, news
-  - Table: 300+ tickers with key metrics
-  - Detail modal: 18 field fundamentals, 52w high/low, news headlines
-  - Search/filter by ticker, statistics, data quality tracking
-
-- **knowledge-live.html** ✅ — 7-section Knowledge profiles
-  - Table: 300+ tickers with returns, volatility, P/E, institutional ownership
-  - Detail modal: all 7 sections + metadata + data quality notes
-  - Collapsible sections, search/filter, statistics
-
-#### Layer 2 — Fase B (Stage 1)
-- **peer-live.html** ✅ — Peer comparison + percentile positioning
-  - Table: peer group size, member tickers, sample size status
-  - Detail modal: peer group composition, percentile bars vs metrics
-  - Warnings for low sample size, metric comparison cards
-
-#### Pending Dashboards (Scope 2)
-- confidence-live.html — data quality scores per category
-- risk-live.html — red flags by severity, risk heatmap
-- reasoning-live.html — 3 lens scores side-by-side
-- aggregator-live.html — final recommendations with conviction + tracking
+Tidak ada suite pytest formal kecuali `test_quarterly_trends.py`. Verifikasi tahap lain historisnya dilakukan manual: `ast.parse()` untuk cek syntax, script smoke-test sekali pakai per perubahan (biasanya ditulis ke scratch lalu dihapus setelah verifikasi), dan validasi end-to-end di browser lewat dashboard beneran. Kalau menambah logic baru yang penting, pertimbangkan nambah test nyata — jangan cuma ikut pola lama ini karena "sudah biasa begitu".
 
 ---
 

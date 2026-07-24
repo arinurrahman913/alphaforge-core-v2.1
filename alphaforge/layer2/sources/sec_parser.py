@@ -74,6 +74,9 @@ OPERATING_INCOME_TAGS = ["OperatingIncomeLoss"]
 NET_INCOME_TAGS = ["NetIncomeLoss", "ProfitLoss"]
 CASH_OPS_TAGS = ["NetCashProvidedByUsedInOperatingActivities"]
 CAPEX_TAGS = ["PaymentsToAcquirePropertyPlantAndEquipment"]
+# Instant (point-in-time balance sheet date), bukan duration seperti tag di atas
+# — dipakai untuk baseline dilution 12-bulan (lihat fetch_shares_outstanding_change_12m).
+SHARES_OUTSTANDING_TAGS = ["CommonStockSharesOutstanding", "CommonStockSharesIssued"]
 
 _HEADERS = {"User-Agent": SEC_USER_AGENT}
 
@@ -178,6 +181,90 @@ def _extract_quarterly_series(facts: dict, tags: list[str]) -> dict[str, float]:
         if series:
             return series
     return {}
+
+
+def _extract_instant_series(facts: dict, tags: list[str]) -> dict[str, float]:
+    """Ekstrak {as_of_date: value} untuk fakta INSTANT (snapshot titik-waktu,
+    mis. shares outstanding per tanggal neraca) — beda dari
+    _extract_quarterly_series yang untuk fakta DURATION (revenue per periode).
+    Instant facts di XBRL cuma punya 'end' (tanggal snapshot), tidak ada
+    'start', jadi tidak ada filter durasi 75-100 hari di sini."""
+    gaap = facts.get("facts", {}).get("us-gaap", {})
+    for tag in tags:
+        node = gaap.get(tag)
+        if not node:
+            continue
+        units = node.get("units", {}).get("shares", [])
+        series: dict[str, float] = {}
+        filed_at: dict[str, str] = {}
+        for point in units:
+            if point.get("form") not in ("10-Q", "10-Q/A", "10-K", "10-K/A"):
+                continue
+            end = point.get("end")
+            if not end:
+                continue
+            filed = point.get("filed", "")
+            if end in filed_at and filed <= filed_at[end]:
+                continue  # sudah ada revisi lebih baru untuk tanggal ini
+            series[end] = point.get("val")
+            filed_at[end] = filed
+        if series:
+            return series
+    return {}
+
+
+def fetch_shares_outstanding_change_12m(ticker: str) -> float | None:
+    """% perubahan shares outstanding dalam ~12 bulan terakhir — baseline untuk
+    deteksi dilution (Risk _check_dilution). Positive = lebih banyak saham
+    beredar sekarang dibanding ~setahun lalu (dilutive).
+
+    Pakai company facts XBRL yang SAMA dengan fetch_quarterly_financials
+    (di-cache 24 jam) — kalau quarterly_financials sudah dipanggil duluan
+    untuk ticker yang sama dalam window cache itu, ini praktis gratis
+    (cache hit), bukan network call kedua.
+    """
+    cik = get_cik_from_ticker(ticker)
+    if not cik:
+        return None
+
+    facts = _fetch_company_facts(cik)
+    if not facts:
+        return None
+
+    series = _extract_instant_series(facts, SHARES_OUTSTANDING_TAGS)
+    if len(series) < 2:
+        return None
+
+    dates_sorted = sorted(series.keys(), reverse=True)
+    latest_date = dates_sorted[0]
+    latest_val = series[latest_date]
+    if not latest_val:
+        return None
+
+    latest_dt = datetime.fromisoformat(latest_date)
+
+    # Cari snapshot paling dekat ke 365 hari sebelum snapshot terbaru (toleransi
+    # 300-430 hari — laporan kuartalan tidak selalu tepat 1 tahun kalender apart).
+    best_date = None
+    best_diff = None
+    for d in dates_sorted[1:]:
+        dt = datetime.fromisoformat(d)
+        days_ago = (latest_dt - dt).days
+        if not (300 <= days_ago <= 430):
+            continue
+        diff = abs(days_ago - 365)
+        if best_diff is None or diff < best_diff:
+            best_diff = diff
+            best_date = d
+
+    if best_date is None:
+        return None
+
+    baseline_val = series[best_date]
+    if not baseline_val:
+        return None
+
+    return ((latest_val - baseline_val) / baseline_val) * 100
 
 
 def fetch_quarterly_financials(ticker: str, max_periods: int = 8) -> dict | None:

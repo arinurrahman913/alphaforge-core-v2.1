@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 
 from .confidence_contracts import (
     ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty,
+    RecencyPenalty,
 )
 
 if TYPE_CHECKING:
@@ -42,6 +43,13 @@ SECTION_WEIGHTS = {
 PEER_PENALTY_POINTS = 10.0
 CONTEXT_PENALTY_PER_COMPONENT = 5.0
 CONTEXT_PENALTY_CAP = 15.0
+# 05_CONFIDENCE_DATA_QUALITY.md §2: "data fundamental yang berumur lebih dari
+# 1 kuartal penuh menurunkan skor" — 1 kuartal kalender ~91 hari. Poin penalti
+# belum dikalibrasi spec ("didiskusikan lebih lanjut mendekati fase
+# implementasi") — dipakai magnitude yang sama dengan PEER_PENALTY_POINTS
+# sebagai starting point yang konsisten, bukan angka final.
+RECENCY_PENALTY_THRESHOLD_DAYS = 91
+RECENCY_PENALTY_POINTS = 10.0
 
 
 def assess_confidence(
@@ -81,6 +89,8 @@ def assess_confidence(
 
     peer_penalty = _assess_peer_penalty(peer_comparison)
     context_penalty = _assess_context_penalty(components_degraded)
+    evidence_age = _get_data_age_days(knowledge_profile.metadata.evidence_date)
+    recency_penalty = _assess_recency_penalty(evidence_age)
 
     score = base_score
     if peer_penalty.applied:
@@ -90,6 +100,8 @@ def assess_confidence(
             len(context_penalty.components_degraded) * CONTEXT_PENALTY_PER_COMPONENT,
             CONTEXT_PENALTY_CAP,
         )
+    if recency_penalty.applied:
+        score -= RECENCY_PENALTY_POINTS
     score = max(0.0, min(100.0, score))
 
     if score >= 70:
@@ -113,9 +125,18 @@ def assess_confidence(
             limiters.append(
                 f"Layer 1 context degraded: {', '.join(context_penalty.components_degraded)}"
             )
-        evidence_age = _get_data_age_days(knowledge_profile.metadata.evidence_date)
-        if evidence_age is not None and evidence_age > 30:
-            limiters.append(f"Evidence data {evidence_age} days old")
+        if recency_penalty.applied:
+            limiters.append(recency_penalty.reason)
+        # V3 (Data Contracts): limiters WAJIB terisi kalau band != "high". Kasus
+        # nyata yang bisa lolos semua cek di atas tanpa masuk sini: band="medium"
+        # dari rata-rata tertimbang section yang moderat merata (tidak ada satu
+        # pun <50%) dan tidak ada peer/context/recency penalty — sebelumnya
+        # menghasilkan limiters=[] padahal band != "high" (V3 violation nyata,
+        # ditemukan audit 2026-07-24). Fallback generik, bukan alasan spesifik
+        # palsu, supaya tidak menyembunyikan band non-high tanpa penjelasan sama
+        # sekali.
+        if not limiters:
+            limiters.append("Overall data quality moderate (no single factor critical, but combined score below high threshold)")
 
     return ConfidenceReport(
         ticker=ticker,
@@ -125,7 +146,8 @@ def assess_confidence(
         by_section=by_section,
         peer_penalty=peer_penalty,
         context_penalty=context_penalty,
-        evidence_age_days=_get_data_age_days(knowledge_profile.metadata.evidence_date),
+        recency_penalty=recency_penalty,
+        evidence_age_days=evidence_age,
         assessed_at=datetime.now(timezone.utc).isoformat(),
     )
 
@@ -265,6 +287,16 @@ def _assess_context_penalty(components_degraded: list[str] | None) -> ContextPen
     if not components_degraded:
         return ContextPenalty(applied=False)
     return ContextPenalty(applied=True, components_degraded=list(components_degraded))
+
+
+def _assess_recency_penalty(evidence_age_days: int | None) -> RecencyPenalty:
+    if evidence_age_days is None or evidence_age_days <= RECENCY_PENALTY_THRESHOLD_DAYS:
+        return RecencyPenalty(applied=False, age_days=evidence_age_days)
+    return RecencyPenalty(
+        applied=True,
+        age_days=evidence_age_days,
+        reason=f"Evidence {evidence_age_days} days old (>1 full quarter, {RECENCY_PENALTY_THRESHOLD_DAYS}d threshold)",
+    )
 
 
 def _get_data_age_days(iso_datetime: str | None) -> int | None:

@@ -45,6 +45,15 @@ class ContextPenalty:
 
 
 @dataclass
+class RecencyPenalty:
+    """Penalti dari umur Evidence — 05_CONFIDENCE_DATA_QUALITY.md §2: 'data
+    fundamental yang berumur lebih dari 1 kuartal penuh menurunkan skor'."""
+    applied: bool
+    age_days: int | None = None
+    reason: str | None = None
+
+
+@dataclass
 class ConfidenceReport:
     """Confidence Report untuk satu ticker — Data Contracts §5c.
 
@@ -59,6 +68,7 @@ class ConfidenceReport:
     by_section: dict[str, SectionScore]  # key = nama section Knowledge
     peer_penalty: PeerPenalty
     context_penalty: ContextPenalty
+    recency_penalty: RecencyPenalty
     evidence_age_days: int | None
 
     assessed_at: str = ""  # ISO datetime

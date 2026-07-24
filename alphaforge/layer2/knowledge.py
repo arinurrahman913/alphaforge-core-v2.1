@@ -122,7 +122,13 @@ def build_knowledge_for_ticker(evidence: EvidencePackage, candidate: ScreeningCa
             capex_nominal_q3=capex_nominal.get('capex_nominal_q3'),
             capex_nominal_q4=capex_nominal.get('capex_nominal_q4'),
             capex_pct_revenue_q4=trends.get('capex_pct_revenue_q4')
-        )
+        ),
+        # ROE/ROA dari Yahoo (evidence.fundamental) sudah difetch sejak awal
+        # tapi sebelumnya tidak pernah dibawa ke Knowledge — Peer's
+        # roe_comparison/roa_comparison jadi selalu None/pakai data yang salah
+        # (institutional_pct sebagai pengganti). Lihat audit 2026-07-24.
+        roe=evidence.fundamental.roe,
+        roa=evidence.fundamental.roa,
     )
 
     # 3a. Struktur Kompetitif
@@ -239,15 +245,21 @@ def _count_completed_fields(returns: dict, volatility: float | None, financial_h
         ("financial_health.balance_sheet.current_ratio", financial_health.balance_sheet.current_ratio),
         ("financial_health.balance_sheet.quick_ratio", financial_health.balance_sheet.quick_ratio),
         ("financial_health.cash_flow_trend.fcf_q4", financial_health.cash_flow_trend.fcf_q4),
+        ("financial_health.roe", financial_health.roe),
+        ("financial_health.roa", financial_health.roa),
         ("ownership.institutional_pct", ownership.institutional_pct),
         ("valuation.pe_ratio_trailing", valuation.pe_ratio_trailing),
         ("valuation.ps_ratio", valuation.ps_ratio),
         ("valuation.pb_ratio", valuation.pb_ratio),
         ("valuation.fcf_yield", valuation.fcf_yield),
     ]
-    fields_completed = sum(1 for _, v in checks if v)
+    # "is not None", BUKAN truthy check -- return_1y=0.0 (flat), debt_to_equity=0.0
+    # (bebas utang), roe/roa=0.0 (breakeven) semuanya nilai VALID, bukan data
+    # hilang. Truthy check menghitungnya sebagai "missing" secara diam-diam
+    # (bug class yang sama yang ditemukan di peer.py, audit 2026-07-24).
+    fields_completed = sum(1 for _, v in checks if v is not None)
     fields_expected = len(checks)
-    missing_fields = [name for name, v in checks if not v]
+    missing_fields = [name for name, v in checks if v is None]
     return fields_completed, fields_expected, missing_fields
 
 
@@ -332,11 +344,15 @@ def _build_governance(evidence: EvidencePackage) -> Governance:
         itu sendiri adalah fakta ("filing tidak biasa"), bukan interpretasi —
         cocok dengan contoh spec ("filing tidak biasa lainnya").
 
+    shares_outstanding_change_12m sekarang derivable (2026-07-24) — dari
+    SEC XBRL CommonStockSharesOutstanding (instant fact per tanggal neraca),
+    bukan lagi Yahoo fast_info snapshot-saat-ini yang tidak punya baseline
+    12-bulan. Lihat sources/sec_parser.py fetch_shares_outstanding_change_12m.
+    Masih bisa None kalau ticker tidak punya cukup snapshot historis (mis.
+    baru IPO) — itu genuinely "tidak ada data", bukan bug.
+
     TIDAK derivable dari Evidence saat ini (sengaja dibiarkan kosong/None,
     bukan bug — butuh data yang belum dikumpulkan di Evidence stage):
-      - shares_outstanding_change_12m: Evidence cuma simpan shares_outstanding
-        snapshot SAAT INI (Yahoo fast_info, lihat sources/yahoo_evidence.py),
-        bukan angka 12 bulan lalu — tidak ada baseline untuk hitung % perubahan.
       - auditor_changes / restatements / material_litigation: butuh parsing isi
         filing (mis. item number 8-K 4.01 untuk auditor change, 4.02 untuk
         restatement, atau teks litigation disclosure). sec_edgar.py cuma
@@ -352,7 +368,7 @@ def _build_governance(evidence: EvidencePackage) -> Governance:
             ))
 
     return Governance(
-        shares_outstanding_change_12m=None,
+        shares_outstanding_change_12m=evidence.fundamental.shares_outstanding_change_12m,
         auditor_changes=[],
         restatements=[],
         material_litigation=[],

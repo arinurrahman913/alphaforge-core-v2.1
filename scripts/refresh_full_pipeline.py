@@ -111,7 +111,7 @@ def main() -> int:
         n_cat = sum(1 for c in catalysts if c.has_upcoming)
         log.info(f"Catalyst: {len(catalysts)} sets ({n_cat} with upcoming catalyst)")
 
-        comparisons = run_peer_comparison(profiles)
+        comparisons = run_peer_comparison(profiles, screening_result.passed)
         log.info(f"Peer: {len(comparisons)} comparisons")
 
         confidences = run_confidence(profiles, comparisons, components_degraded)

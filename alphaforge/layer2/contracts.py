@@ -135,6 +135,7 @@ class FundamentalData:
     sector: str | None = None
     industry: str | None = None
     quarterly_data: list[QuarterlyFundamental] = field(default_factory=list)  # Last 8 quarters dari EDGAR
+    shares_outstanding_change_12m: float | None = None  # % perubahan ~12 bulan (SEC XBRL), baseline dilution
 
 
 @dataclass

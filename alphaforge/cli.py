@@ -608,7 +608,8 @@ def main() -> None:
             with open(args.confidence_out, "r", encoding="utf-8") as f:
                 confidence_dict = json.load(f)
             from .layer2.confidence_contracts import (
-                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty
+                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty,
+                RecencyPenalty
             )
             for score_dict in confidence_dict.get("scores", []):
                 score_dict_copy = score_dict.copy()
@@ -618,6 +619,7 @@ def main() -> None:
                 }
                 score_dict_copy["peer_penalty"] = PeerPenalty(**score_dict["peer_penalty"])
                 score_dict_copy["context_penalty"] = ContextPenalty(**score_dict["context_penalty"])
+                score_dict_copy["recency_penalty"] = RecencyPenalty(**score_dict["recency_penalty"])
                 confidence = ConfidenceReport(**score_dict_copy)
                 confidence_map[confidence.ticker] = confidence
 
@@ -751,7 +753,8 @@ def main() -> None:
             with open(args.confidence_out, "r", encoding="utf-8") as f:
                 conf_dict = json.load(f)
             from .layer2.confidence_contracts import (
-                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty
+                ConfidenceReport, OverallConfidence, SectionScore, PeerPenalty, ContextPenalty,
+                RecencyPenalty
             )
             confidences = []
             for score_dict in conf_dict.get("scores", []):
@@ -762,6 +765,7 @@ def main() -> None:
                 }
                 score_dict_copy["peer_penalty"] = PeerPenalty(**score_dict["peer_penalty"])
                 score_dict_copy["context_penalty"] = ContextPenalty(**score_dict["context_penalty"])
+                score_dict_copy["recency_penalty"] = RecencyPenalty(**score_dict["recency_penalty"])
                 confidences.append(ConfidenceReport(**score_dict_copy))
 
         if args.risk_out:

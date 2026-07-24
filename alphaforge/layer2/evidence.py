@@ -22,7 +22,9 @@ from .sources.yahoo_evidence import (
 )
 from .sources.finnhub import fetch_company_news, reset_batch_tracking as reset_finnhub_batch_tracking
 from .sources.sec_edgar import fetch_sec_filings
-from .sources.sec_parser import fetch_quarterly_financials, reset_sec_rate_limit
+from .sources.sec_parser import (
+    fetch_quarterly_financials, fetch_shares_outstanding_change_12m, reset_sec_rate_limit
+)
 from .sources.sec_form4 import fetch_institutional_activity
 
 
@@ -46,6 +48,11 @@ def build_evidence_for_ticker(candidate: ScreeningCandidate) -> EvidencePackage 
         fundamental.quarterly_data = [
             QuarterlyFundamental(**q) for q in quarterly_data["periods"]
         ]
+
+    # Baseline dilution 12-bulan (lihat sources/sec_parser.py) — dipanggil
+    # SETELAH fetch_quarterly_financials di atas supaya company facts XBRL
+    # (cache 24h) sudah ter-cache, bukan network call kedua.
+    fundamental.shares_outstanding_change_12m = fetch_shares_outstanding_change_12m(ticker)
 
     package = EvidencePackage(
         ticker=ticker,

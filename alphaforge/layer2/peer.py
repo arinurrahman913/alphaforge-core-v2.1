@@ -10,6 +10,7 @@ from __future__ import annotations
 import sys
 import statistics
 from datetime import datetime, timezone
+from .contracts import ScreeningCandidate
 from .knowledge_contracts import KnowledgeProfile
 from .peer_contracts import (
     PeerComparisonResult, PeerGroupInfo, PeerMetricComparison
@@ -106,12 +107,18 @@ def calculate_metric_comparison(
 def build_peer_comparison(
     target_profile: KnowledgeProfile,
     peer_profiles: list[KnowledgeProfile],
-    basis: str = "screening_universe"
+    basis: str = "screening_universe",
+    peer_failures: list[str] | None = None,
 ) -> PeerComparisonResult:
     """Bangun Peer Comparison untuk satu ticker terhadap peer group-nya.
 
     target_profile: ticker yang akan dianalisis
     peer_profiles: seluruh peers dalam grup (including target)
+    peer_failures: ticker yang lolos Screening di scope yang sama (sektor/
+        universe) tapi tidak pernah sampai ke Knowledge — gagal di Evidence
+        atau Knowledge stage. Dihitung run_peer_comparison (butuh daftar
+        kandidat Screening asli), bukan di sini — fungsi ini cuma
+        menyematkannya ke output.
     """
     ticker = target_profile.ticker
     exchange = target_profile.exchange
@@ -119,7 +126,7 @@ def build_peer_comparison(
     # Exclude target dari peer group
     peers = [p for p in peer_profiles if p.ticker != ticker]
     peer_tickers = [p.ticker for p in peers]
-    peer_failures = []  # TODO: track failures dari Evidence stage
+    peer_failures = list(peer_failures) if peer_failures else []
 
     # Build peer group info
     peer_group = PeerGroupInfo(
@@ -149,7 +156,8 @@ def build_peer_comparison(
     nm_values = [p.financial_health.net_margin_trend.q4 for p in peers
                   if p.financial_health.net_margin_trend.q4 is not None]
 
-    roe_values = [p.ownership.institutional_pct for p in peers if p.ownership.institutional_pct is not None]  # TODO: proper ROE
+    roe_values = [p.financial_health.roe for p in peers if p.financial_health.roe is not None]
+    roa_values = [p.financial_health.roa for p in peers if p.financial_health.roa is not None]
     dte_values = [p.financial_health.balance_sheet.debt_to_equity for p in peers
                    if p.financial_health.balance_sheet.debt_to_equity is not None]
 
@@ -163,7 +171,8 @@ def build_peer_comparison(
     om_comp = calculate_metric_comparison("operating_margin", target_profile.financial_health.operating_margin_trend.q4, om_values, peer_tickers, peer_failures)
     nm_comp = calculate_metric_comparison("net_margin", target_profile.financial_health.net_margin_trend.q4, nm_values, peer_tickers, peer_failures)
 
-    roe_comp = calculate_metric_comparison("roe", None, roe_values, peer_tickers, peer_failures)  # TODO: use actual ROE
+    roe_comp = calculate_metric_comparison("roe", target_profile.financial_health.roe, roe_values, peer_tickers, peer_failures)
+    roa_comp = calculate_metric_comparison("roa", target_profile.financial_health.roa, roa_values, peer_tickers, peer_failures)
     dte_comp = calculate_metric_comparison("debt_to_equity", target_profile.financial_health.balance_sheet.debt_to_equity, dte_values, peer_tickers, peer_failures)
 
     return PeerComparisonResult(
@@ -178,6 +187,7 @@ def build_peer_comparison(
         operating_margin_comparison=om_comp,
         net_margin_comparison=nm_comp,
         roe_comparison=roe_comp,
+        roa_comparison=roa_comp,
         debt_to_equity_comparison=dte_comp,
         generated_at=datetime.now(timezone.utc).isoformat(),
         peer_group_basis=basis,
@@ -185,13 +195,37 @@ def build_peer_comparison(
     )
 
 
-def run_peer_comparison(profiles: list[KnowledgeProfile]) -> list[PeerComparisonResult]:
+def run_peer_comparison(
+    profiles: list[KnowledgeProfile],
+    screening_candidates: list[ScreeningCandidate] | None = None,
+) -> list[PeerComparisonResult]:
     """Jalankan Peer Comparison untuk seluruh Knowledge population.
 
     Fase B: butuh complete Knowledge dari seluruh screening candidates.
+
+    screening_candidates: daftar kandidat ASLI dari Screening (screening_result.passed),
+        optional — kalau diisi, dipakai untuk hitung peer_failures nyata (ticker
+        yang lolos Screening tapi gagal di Evidence/Knowledge, sehingga tidak
+        pernah sampai ke `profiles`). Tanpa ini, peer_failures selalu [] (tidak
+        ada visibilitas ke kandidat yang drop out sebelum Peer) — sama seperti
+        behavior lama, bukan regresi.
     """
     # Group by sector
     sectors = group_by_sector(profiles)
+    knowledge_tickers = {p.ticker for p in profiles}
+
+    # Kandidat Screening per sektor (kalau disediakan) — dipakai buat deteksi
+    # peer_failures: kandidat yang ADA di sini tapi TIDAK ADA di knowledge_tickers
+    # berarti gagal di Evidence atau Knowledge stage, bukan cuma "tidak
+    # dibandingkan" (beda dari low_sample_size, yang soal peer group terlalu
+    # kecil meski semuanya berhasil).
+    screening_by_sector: dict[str, list[str]] = {}
+    all_screening_tickers: list[str] = []
+    if screening_candidates:
+        for c in screening_candidates:
+            sector = c.sector or "Unknown"
+            screening_by_sector.setdefault(sector, []).append(c.ticker)
+            all_screening_tickers.append(c.ticker)
 
     results = []
     total = len(profiles)
@@ -211,6 +245,7 @@ def run_peer_comparison(profiles: list[KnowledgeProfile]) -> list[PeerComparison
                 # tetap "screening_universe", bukan label "sector" yang bukan
                 # bagian dari kontrak.
                 peer_group, basis = sector_group, "screening_universe"
+                scope_tickers = screening_by_sector.get(sector, [])
             else:
                 # Sektor tidak diketahui atau kepesertaannya terlalu kecil di
                 # universe ini untuk perbandingan bermakna (mis. cuma 1
@@ -219,8 +254,11 @@ def run_peer_comparison(profiles: list[KnowledgeProfile]) -> list[PeerComparison
                 # supaya tetap dapat hasil, dengan basis yang jujur di label.
                 print(f"  Info: {profile.ticker} sector '{sector}' punya <2 peers, fallback ke screening_universe", file=sys.stderr)
                 peer_group, basis = profiles, "screening_universe"
+                scope_tickers = all_screening_tickers
 
-            comparison = build_peer_comparison(profile, peer_group, basis=basis)
+            peer_failures = sorted(set(scope_tickers) - knowledge_tickers) if screening_candidates else []
+
+            comparison = build_peer_comparison(profile, peer_group, basis=basis, peer_failures=peer_failures)
             results.append(comparison)
         except Exception as e:
             print(f"Error for {profile.ticker}: {e}", file=sys.stderr)

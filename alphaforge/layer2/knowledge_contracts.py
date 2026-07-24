@@ -78,6 +78,11 @@ class FinancialHealth:
     balance_sheet: BalanceSheet
     cash_flow_trend: CashFlowTrend
     capex_info: CapExInfo
+    # Snapshot TTM, bukan tren per-kuartal (Yahoo hanya kasih 1 angka trailing,
+    # bukan breakdown per-Q seperti margin) — fraksi 0-1+ (bisa >1, mis. ROE
+    # tinggi karena buyback besar-besaran menyusutkan equity), BUKAN persen.
+    roe: float | None = None
+    roa: float | None = None
 
 
 @dataclass

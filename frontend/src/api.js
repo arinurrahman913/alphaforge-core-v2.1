@@ -16,6 +16,7 @@ export const api = {
   screening: () => getJSON('/api/screening'),
   evidence: () => getJSON('/api/evidence'),
   knowledge: () => getJSON('/api/knowledge'),
+  knowledgeSectorSummary: () => getJSON('/api/knowledge/sector-summary'),
   peer: () => getJSON('/api/peer'),
   catalyst: () => getJSON('/api/catalyst'),
   confidence: () => getJSON('/api/confidence'),

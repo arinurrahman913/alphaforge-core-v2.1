@@ -36,15 +36,14 @@ function completion(p) {
   return (p.metadata.fields_completed / p.metadata.fields_expected) * 100
 }
 
-function groupBySector(profiles) {
+function groupProfilesBySector(profiles) {
   const groups = {}
   for (const p of profiles) {
     const key = p.sector || 'Lainnya'
     if (!groups[key]) groups[key] = []
     groups[key].push(p)
   }
-  // Sektor dengan lebih banyak ticker ditampilkan lebih dulu.
-  return Object.entries(groups).sort((a, b) => b[1].length - a[1].length)
+  return groups
 }
 
 const columns = [
@@ -96,6 +95,7 @@ const columns = [
 
 export default function KnowledgeView({ onSelectTicker }) {
   const { data, error } = useStageData(api.knowledge)
+  const { data: summaryData } = useStageData(api.knowledgeSectorSummary)
   const [selectedSector, setSelectedSector] = useState(null)
 
   if (error) return <div className="empty">Gagal memuat data/knowledge.json: {error}</div>
@@ -103,10 +103,22 @@ export default function KnowledgeView({ onSelectTicker }) {
 
   const profiles = data.profiles || []
   const avgCompletion = profiles.reduce((s, p) => s + completion(p), 0) / (profiles.length || 1)
-  const sectorGroups = groupBySector(profiles)
+  const byProfile = groupProfilesBySector(profiles)
+  // Agregat (leader, avg return, opportunity/risk count, dll) datang dari
+  // backend (/api/knowledge/sector-summary) yang sudah join reasoning + risk
+  // per ticker — lebih murah dihitung sekali di server daripada di browser
+  // (lihat komentar di backend/app.py get_knowledge_sector_summary). Kalau
+  // belum siap (masih loading), grid sektor pakai fallback sederhana dari
+  // profiles saja supaya halaman tidak kosong sambil menunggu.
+  const summaries = summaryData?.sectors || null
+  const sectorList = summaries
+    ? summaries.filter((s) => byProfile[s.sector])
+    : Object.keys(byProfile)
+        .map((sector) => ({ sector, count: byProfile[sector].length }))
+        .sort((a, b) => b.count - a.count)
 
   if (selectedSector) {
-    const sectorProfiles = sectorGroups.find(([s]) => s === selectedSector)?.[1] || []
+    const sectorProfiles = byProfile[selectedSector] || []
     const meta = sectorMeta(selectedSector)
     return (
       <>
@@ -126,7 +138,7 @@ export default function KnowledgeView({ onSelectTicker }) {
 
   const stats = [
     { label: 'Profiles', value: profiles.length },
-    { label: 'Sektor', value: sectorGroups.length },
+    { label: 'Sektor', value: sectorList.length },
     { label: 'Avg Completion', value: `${avgCompletion.toFixed(0)}%` },
   ]
 
@@ -134,39 +146,25 @@ export default function KnowledgeView({ onSelectTicker }) {
     <>
       <StatCards stats={stats} />
       <div className="l1a-grid">
-        {sectorGroups.map(([sector, list], idx) => (
-          <SectorCard
-            key={sector}
-            sector={sector}
-            profiles={list}
-            idx={idx}
-            onClick={() => setSelectedSector(sector)}
-          />
+        {sectorList.map((s, idx) => (
+          <SectorCard key={s.sector} summary={s} idx={idx} onClick={() => setSelectedSector(s.sector)} />
         ))}
       </div>
     </>
   )
 }
 
-function SectorCard({ sector, profiles, idx, onClick }) {
+function SectorCard({ summary, idx, onClick }) {
+  const { sector, count, leader, avg_completion, median_return_1y, median_revenue_yoy, median_pe_ratio,
+    avg_institutional_pct, insider_active_tickers, insider_total_filings_30d,
+    opportunity_count, risk_flag_count } = summary
   const meta = sectorMeta(sector)
-  const count = profiles.length
 
-  const withReturn = profiles.filter((p) => p.historical_trend?.return_1y != null)
-  const leader = withReturn.length
-    ? withReturn.reduce((best, p) =>
-        p.historical_trend.return_1y > best.historical_trend.return_1y ? p : best
-      )
-    : null
-
-  const avgCompletion = profiles.reduce((s, p) => s + completion(p), 0) / (count || 1)
-  const avgReturn1y = withReturn.length
-    ? withReturn.reduce((s, p) => s + p.historical_trend.return_1y, 0) / withReturn.length
-    : null
-
-  const insiderActive = profiles.filter((p) => (p.ownership?.insider_filing_activity_30d || 0) > 0).length
-
-  const trend = avgReturn1y == null ? 'flat' : avgReturn1y > 5 ? 'up' : avgReturn1y < -5 ? 'down' : 'flat'
+  // Median dipakai (bukan mean) karena return/PE/revenue-growth semuanya
+  // fat-tailed — satu ticker naik ribuan persen bisa menyeret rata-rata
+  // jauh dari kondisi ticker tipikal di sektor itu (lihat catatan di
+  // backend/app.py _median).
+  const trend = median_return_1y == null ? 'flat' : median_return_1y > 5 ? 'up' : median_return_1y < -5 ? 'down' : 'flat'
 
   return (
     <div className="l1a-card" onClick={onClick} style={{ '--c': meta.color, '--i': idx }}>
@@ -183,7 +181,7 @@ function SectorCard({ sector, profiles, idx, onClick }) {
             </div>
           </div>
         </div>
-        <span className="l1a-pill ok">{avgCompletion.toFixed(0)}%</span>
+        {avg_completion != null && <span className="l1a-pill ok">{avg_completion.toFixed(0)}%</span>}
       </div>
 
       {leader && (
@@ -191,21 +189,61 @@ function SectorCard({ sector, profiles, idx, onClick }) {
           <div>
             <p className="l1a-mini-l">🏆 Pemimpin</p>
             <p className="l1a-mini-v">
-              {leader.ticker} {fmtPct(leader.historical_trend?.return_1y)}
+              {leader.ticker} {fmtPct(leader.return_1y)}
             </p>
           </div>
           <div>
             <p className="l1a-mini-l">P/E</p>
-            <p className="l1a-mini-v">
-              {leader.valuation?.pe_ratio_trailing ? `${leader.valuation.pe_ratio_trailing.toFixed(1)}x` : '—'}
+            <p className="l1a-mini-v">{leader.pe_ratio ? `${leader.pe_ratio.toFixed(1)}x` : '—'}</p>
+          </div>
+        </div>
+      )}
+
+      {(median_revenue_yoy != null || median_pe_ratio != null) && (
+        <div className="l1a-mini">
+          <div>
+            <p className="l1a-mini-l">Median Rev YoY</p>
+            <p className="l1a-mini-v">{median_revenue_yoy != null ? fmtPct(median_revenue_yoy) : '—'}</p>
+          </div>
+          <div>
+            <p className="l1a-mini-l">Median P/E</p>
+            <p className="l1a-mini-v">{median_pe_ratio != null ? `${median_pe_ratio.toFixed(1)}x` : '—'}</p>
+          </div>
+        </div>
+      )}
+
+      {(opportunity_count != null || risk_flag_count != null) && (
+        <div className="l1a-mini">
+          <div>
+            <p className="l1a-mini-l">🎯 Peluang Asimetris</p>
+            <p className="l1a-mini-v" style={{ color: opportunity_count > 0 ? 'var(--good)' : undefined }}>
+              {opportunity_count ?? 0} ticker
             </p>
           </div>
-          {insiderActive > 0 && (
-            <div>
-              <p className="l1a-mini-l">Insider Aktif</p>
-              <p className="l1a-mini-v">{insiderActive}</p>
-            </div>
-          )}
+          <div>
+            <p className="l1a-mini-l">⚠️ Risk Flag Tinggi</p>
+            <p className="l1a-mini-v" style={{ color: risk_flag_count > 0 ? 'var(--bad)' : undefined }}>
+              {risk_flag_count ?? 0} ticker
+            </p>
+          </div>
+        </div>
+      )}
+
+      {(avg_institutional_pct != null || insider_total_filings_30d != null) && (
+        <div className="l1a-mini">
+          <div>
+            <p className="l1a-mini-l">🏦 Institutional Own.</p>
+            <p className="l1a-mini-v">
+              {avg_institutional_pct != null ? `${(avg_institutional_pct * 100).toFixed(1)}%` : '—'}
+            </p>
+          </div>
+          <div>
+            <p className="l1a-mini-l">📋 Insider Activity (30d)</p>
+            <p className="l1a-mini-v">
+              {insider_total_filings_30d || 0} filing{(insider_total_filings_30d || 0) !== 1 ? 's' : ''}
+              {insider_active_tickers ? ` · ${insider_active_tickers} ticker` : ''}
+            </p>
+          </div>
         </div>
       )}
 
@@ -214,7 +252,7 @@ function SectorCard({ sector, profiles, idx, onClick }) {
       </div>
 
       <p className="l1a-foot">
-        Rata-rata return 1Y: {avgReturn1y != null ? fmtPct(avgReturn1y) : '—'} · klik untuk lihat semua {count} ticker
+        Median return 1Y (tipikal sektor): {median_return_1y != null ? fmtPct(median_return_1y) : '—'} · klik untuk lihat semua {count} ticker
       </p>
     </div>
   )

@@ -199,6 +199,110 @@ def refresh_status():
         return jsonify(dict(_refresh_state))
 
 
+def _avg(vals: list[float]) -> float | None:
+    vals = [v for v in vals if v is not None]
+    return sum(vals) / len(vals) if vals else None
+
+
+def _median(vals: list[float]) -> float | None:
+    """Median, bukan mean — return_1y/pe_ratio/revenue_yoy semuanya fat-tailed
+    (satu ticker naik ribuan persen menyeret rata-rata jauh dari kondisi
+    ticker tipikal di sektor itu). Contoh nyata Technology di data live:
+    mean return_1y +46.9% tapi median -3.1% — mean bikin kesan sektor sedang
+    naik padahal saham tipikal di situ justru turun. institutional_pct tetap
+    pakai mean (_avg) karena dibatasi 0-100%, jauh lebih tidak rawan skew."""
+    vals = sorted(v for v in vals if v is not None)
+    n = len(vals)
+    if n == 0:
+        return None
+    mid = n // 2
+    return vals[mid] if n % 2 else (vals[mid - 1] + vals[mid]) / 2
+
+
+@app.get("/api/knowledge/sector-summary")
+def get_knowledge_sector_summary():
+    """Agregat per-sektor untuk Knowledge sector cards — dihitung di backend
+    (bukan di browser) karena butuh join knowledge.json (profil) dengan
+    reasoning_outputs.json (~40MB) dan risk_assessments.json (~15MB) per
+    ticker; jauh lebih murah dilakukan sekali di sini daripada mengirim
+    kedua file itu utuh ke browser untuk di-join di JS.
+
+    "opportunity_count" = jumlah ticker dengan stance Speculative
+    'asimetri_berkatalis' (termasuk yang dipicu insider Form 4 activity —
+    lihat reasoning.py run_speculative_lens). "risk_flag_count" = jumlah
+    ticker dengan >=1 flag severity tinggi/ekstrem ATAU halted (RiskAssessment
+    high_severity_count/halted), bukan re-parsing daftar flags satu-satu.
+    """
+    profiles = _get_stage("knowledge").get("profiles", [])
+    reasoning_by_ticker = _index_by_ticker(_get_stage("reasoning").get("reasoning_outputs", []))
+    risk_by_ticker = _index_by_ticker(_get_stage("risk").get("assessments", []))
+
+    by_sector: dict[str, list[dict]] = {}
+    for p in profiles:
+        by_sector.setdefault(p.get("sector") or "Lainnya", []).append(p)
+
+    sectors = []
+    for sector, tickers in by_sector.items():
+        completions = [
+            (t["metadata"]["fields_completed"] / t["metadata"]["fields_expected"]) * 100
+            for t in tickers
+            if t.get("metadata", {}).get("fields_expected")
+        ]
+
+        with_return = [t for t in tickers if t.get("historical_trend", {}).get("return_1y") is not None]
+        leader = None
+        if with_return:
+            lp = max(with_return, key=lambda t: t["historical_trend"]["return_1y"])
+            leader = {
+                "ticker": lp["ticker"],
+                "return_1y": lp["historical_trend"]["return_1y"],
+                "pe_ratio": lp.get("valuation", {}).get("pe_ratio_trailing"),
+            }
+
+        opportunity_count = 0
+        risk_flag_count = 0
+        insider_active = 0
+        insider_total = 0
+        for t in tickers:
+            r = reasoning_by_ticker.get(t["ticker"])
+            if r and r.get("speculative", {}).get("stance") == "asimetri_berkatalis":
+                opportunity_count += 1
+            rk = risk_by_ticker.get(t["ticker"])
+            if rk and (rk.get("high_severity_count", 0) > 0 or rk.get("halted")):
+                risk_flag_count += 1
+            n = t.get("ownership", {}).get("insider_filing_activity_30d") or 0
+            insider_total += n
+            if n > 0:
+                insider_active += 1
+
+        sectors.append({
+            "sector": sector,
+            "count": len(tickers),
+            "avg_completion": _avg(completions),
+            "median_return_1y": _median([t["historical_trend"]["return_1y"] for t in with_return]),
+            "median_revenue_yoy": _median([
+                t["financial_health"]["revenue_trend"]["yoy_q4"] for t in tickers
+                if t.get("financial_health", {}).get("revenue_trend", {}).get("yoy_q4") is not None
+            ]),
+            "median_pe_ratio": _median([
+                t["valuation"]["pe_ratio_trailing"] for t in tickers
+                if t.get("valuation", {}).get("pe_ratio_trailing") is not None
+            ]),
+            "avg_institutional_pct": _avg([
+                t["ownership"]["institutional_pct"] for t in tickers
+                if t.get("ownership", {}).get("institutional_pct") is not None
+            ]),
+            "insider_active_tickers": insider_active,
+            "insider_total_filings_30d": insider_total,
+            "opportunity_count": opportunity_count,
+            "risk_flag_count": risk_flag_count,
+            "leader": leader,
+        })
+
+    sectors.sort(key=lambda s: s["count"], reverse=True)
+    return jsonify({"sectors": sectors})
+
+
 @app.get("/api/sectors")
 def get_sectors():
     """Daftar sektor GICS yang bisa dipilih di dashboard + status sector_map

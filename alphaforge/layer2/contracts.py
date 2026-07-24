@@ -190,10 +190,20 @@ class SecFilings:
 
 @dataclass
 class InstitutionalTrade:
-    """Satu transaksi insider/institusional dari SEC Form 4."""
+    """Satu transaksi insider/institusional dari SEC Form 4.
+
+    CATATAN MVP (lihat sources/sec_form4.py): fetcher saat ini TIDAK parse
+    XML Form 4 (SEC archive path per-filing tidak predictable, sering 404).
+    Jadi tiap Form 4 filing dalam window direpresentasikan sebagai satu
+    "trade" sintetis: transaction_type selalu "filing" (bukan "buy"/"sell"
+    sungguhan), shares selalu 0, price selalu None, trader_name adalah
+    placeholder "[Form 4 Filer]" — bukan nama insider asli. Field type hint
+    di bawah ("buy"/"sell"/"grant"/"exercise") menggambarkan skema masa
+    depan (_parse_form4_xml, sudah ada tapi belum dipanggil), bukan behavior
+    saat ini."""
     trader_name: str
     relationship: str  # "Director", "Officer", "10% Owner", "Other"
-    transaction_type: str  # "buy", "sell", "grant", "exercise"
+    transaction_type: str  # "buy", "sell", "grant", "exercise" (skema masa depan) — MVP: selalu "filing"
     shares: int
     price: float | None  # transaction price, or None if tidak tersedia
     transaction_date: str  # ISO date
@@ -203,14 +213,23 @@ class InstitutionalTrade:
 
 @dataclass
 class InstitutionalActivity:
-    """Ringkasan trading activity dari insider/institusional (Form 4)."""
+    """Ringkasan trading activity dari insider/institusional (Form 4).
+
+    CATATAN MVP: buy_count_30d saat ini adalah JUMLAH FORM 4 FILING dalam
+    window (proxy "insider terlibat"), BUKAN jumlah transaksi beli
+    sungguhan — arah (beli/jual) tidak diketahui tanpa parse XML detail
+    (lihat sources/sec_form4.py). sell_count_30d/net_shares_30d selalu 0
+    dan top_buyer selalu placeholder generik ("[Form 4 Filers]") kalau ada
+    filing — jangan diperlakukan sebagai nama insider asli atau sinyal
+    net-buy/sell yang valid sampai parsing detail transaksi diimplementasi.
+    """
     metadata: SourceMetadata
     recent_trades: list[InstitutionalTrade] = field(default_factory=list)  # Last 30 days
-    buy_count_30d: int = 0
-    sell_count_30d: int = 0
-    net_shares_30d: int = 0  # positive = net buys
-    top_buyer: str | None = None  # who bought most
-    top_seller: str | None = None  # who sold most
+    buy_count_30d: int = 0  # MVP: jumlah Form 4 filing, bukan literal "buy" — lihat catatan di atas
+    sell_count_30d: int = 0  # MVP: belum dilacak, selalu 0
+    net_shares_30d: int = 0  # positive = net buys; MVP: belum dilacak, selalu 0
+    top_buyer: str | None = None  # who bought most; MVP: placeholder generik, bukan nama asli
+    top_seller: str | None = None  # who sold most; MVP: belum dilacak, selalu None
 
 
 @dataclass

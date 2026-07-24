@@ -32,6 +32,38 @@ _HEADERS = {"User-Agent": SEC_USER_AGENT}
 _RELEVANT_FORMS = {"10-K", "10-K/A", "10-Q", "10-Q/A", "8-K", "8-K/A", "DEF 14A"}
 
 
+def fetch_raw_submissions(cik: str) -> dict | None:
+    """Fetch (atau baca dari cache 24 jam) submissions JSON mentah untuk satu CIK.
+
+    Dipakai bersama oleh fetch_sec_filings() di bawah dan
+    sec_form4.fetch_institutional_activity() — dua-duanya butuh persis payload
+    yang sama (`data.sec.gov/submissions/CIK{cik}.json`, daftar filing terkini),
+    jadi di-cache & dipakai ulang lewat satu fungsi supaya tidak fetch network
+    2x per ticker per run Evidence (sebelumnya masing-masing modul fetch +
+    cache sendiri-sendiri di namespace cache berbeda, dobel hit ke data.sec.gov
+    untuk data yang identik)."""
+    cache_key = f"submissions_{cik}"
+    data = cache.get("sec_edgar", cache_key, _SUBMISSIONS_TTL)
+    if data is not None:
+        return data
+
+    apply_sec_rate_limit()
+
+    def _do_fetch():
+        r = requests.get(SUBMISSIONS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
+        r.raise_for_status()
+        return r.json()
+
+    try:
+        data = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
+                    label=f"sec_submissions:{cik}")
+        cache.set("sec_edgar", cache_key, data)
+        return data
+    except Exception as exc:
+        print(f"[sec_submissions:{cik}] gagal (final): {exc}", file=sys.stderr)
+        return None
+
+
 def fetch_sec_filings(ticker: str, max_filings: int = 10) -> SecFilings:
     """Ambil daftar filing terkini (10-K/10-Q/8-K/proxy) untuk satu ticker."""
     cik = get_cik_from_ticker(ticker)
@@ -43,23 +75,7 @@ def fetch_sec_filings(ticker: str, max_filings: int = 10) -> SecFilings:
         )
         return SecFilings(filings=[], metadata=metadata)
 
-    cache_key = f"submissions_{cik}"
-    data = cache.get("sec_edgar", cache_key, _SUBMISSIONS_TTL)
-    if data is None:
-        apply_sec_rate_limit()
-
-        def _do_fetch():
-            r = requests.get(SUBMISSIONS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
-            r.raise_for_status()
-            return r.json()
-
-        try:
-            data = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
-                        label=f"sec_submissions:{cik}")
-            cache.set("sec_edgar", cache_key, data)
-        except Exception as exc:
-            print(f"[sec_submissions:{cik}] gagal (final): {exc}", file=sys.stderr)
-            data = None
+    data = fetch_raw_submissions(cik)
 
     if not data:
         metadata = SourceMetadata(

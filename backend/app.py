@@ -230,8 +230,21 @@ def get_knowledge_sector_summary():
     "opportunity_count" = jumlah ticker dengan stance Speculative
     'asimetri_berkatalis' (termasuk yang dipicu insider Form 4 activity —
     lihat reasoning.py run_speculative_lens). "risk_flag_count" = jumlah
-    ticker dengan >=1 flag severity tinggi/ekstrem ATAU halted (RiskAssessment
-    high_severity_count/halted), bukan re-parsing daftar flags satu-satu.
+    ticker dengan >=1 RedFlag severity "high" (RiskAssessment.high_severity_count
+    — leverage/liquidity/FCF/drawdown/valuation checks, lihat risk.py) ATAU
+    >=1 spec Flag (04_RISK_REDFLAG_CHECK.md) berstatus triggered/halted.
+
+    NOTE (dua sistem flag terpisah, lihat docstring Flag di risk_contracts.py):
+    RiskAssessment.high_severity_count itu istilah Inggris "high" dari RedFlag
+    lama (financial/valuation/momentum checks) — BUKAN Flag baru yang severity-
+    nya "tinggi"/"ekstrem" (dilusi/auditor/restatement/litigasi/insider/fraud).
+    Nama yang mirip ("high" vs Indonesia "tinggi") gampang ketuker; keduanya
+    sengaja dihitung terpisah lalu di-OR di sini, bukan salah satu representasi
+    "risiko tinggi" yang lebih otoritatif dari yang lain. Di data live saat ini
+    Flag baru SELALU undetermined (Governance §7 fields belum diisi Evidence),
+    jadi risk_flag_count secara praktis == high_severity_count>0 count; kolom
+    ini tetap dijaga sinkron untuk sisi triggered/halted begitu Evidence
+    diperluas.
     """
     profiles = _get_stage("knowledge").get("profiles", [])
     reasoning_by_ticker = _index_by_ticker(_get_stage("reasoning").get("reasoning_outputs", []))
@@ -268,7 +281,10 @@ def get_knowledge_sector_summary():
             if r and r.get("speculative", {}).get("stance") == "asimetri_berkatalis":
                 opportunity_count += 1
             rk = risk_by_ticker.get(t["ticker"])
-            if rk and (rk.get("high_severity_count", 0) > 0 or rk.get("halted")):
+            spec_flag_triggered = any(
+                f.get("status") == "triggered" for f in (rk.get("flags") or [])
+            ) if rk else False
+            if rk and (rk.get("high_severity_count", 0) > 0 or rk.get("halted") or spec_flag_triggered):
                 risk_flag_count += 1
             n = t.get("ownership", {}).get("insider_filing_activity_30d") or 0
             insider_total += n

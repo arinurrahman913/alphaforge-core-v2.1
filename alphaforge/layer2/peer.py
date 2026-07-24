@@ -131,22 +131,27 @@ def build_peer_comparison(
         peer_failures=peer_failures
     )
 
-    # Extract metric values dari peers
-    pe_values = [p.valuation.pe_ratio_trailing for p in peers if p.valuation.pe_ratio_trailing]
-    ps_values = [p.valuation.ps_ratio for p in peers if p.valuation.ps_ratio]
-    pb_values = [p.valuation.pb_ratio for p in peers if p.valuation.pb_ratio and p.valuation.pb_ratio > 0]
-    fcf_yield_values = [p.valuation.fcf_yield for p in peers if p.valuation.fcf_yield]
+    # Extract metric values dari peers.
+    # Filter pakai "is not None", BUKAN truthy check (`if p.x...`) -- metrik
+    # seperti debt_to_equity=0.0 (perusahaan bebas utang), institutional_pct=0.0
+    # (belum ada kepemilikan institusional), atau margin=0.0% (breakeven) adalah
+    # nilai VALID, bukan data hilang. Truthy check dulu membuang nilai 0.0 yang
+    # sah sebagai kalau null, mengecilkan peer sample diam-diam.
+    pe_values = [p.valuation.pe_ratio_trailing for p in peers if p.valuation.pe_ratio_trailing is not None]
+    ps_values = [p.valuation.ps_ratio for p in peers if p.valuation.ps_ratio is not None]
+    pb_values = [p.valuation.pb_ratio for p in peers if p.valuation.pb_ratio is not None and p.valuation.pb_ratio > 0]
+    fcf_yield_values = [p.valuation.fcf_yield for p in peers if p.valuation.fcf_yield is not None]
 
     gm_values = [p.financial_health.gross_margin_trend.q4 for p in peers
-                  if p.financial_health.gross_margin_trend.q4]
+                  if p.financial_health.gross_margin_trend.q4 is not None]
     om_values = [p.financial_health.operating_margin_trend.q4 for p in peers
-                  if p.financial_health.operating_margin_trend.q4]
+                  if p.financial_health.operating_margin_trend.q4 is not None]
     nm_values = [p.financial_health.net_margin_trend.q4 for p in peers
-                  if p.financial_health.net_margin_trend.q4]
+                  if p.financial_health.net_margin_trend.q4 is not None]
 
-    roe_values = [p.ownership.institutional_pct for p in peers if p.ownership.institutional_pct]  # TODO: proper ROE
+    roe_values = [p.ownership.institutional_pct for p in peers if p.ownership.institutional_pct is not None]  # TODO: proper ROE
     dte_values = [p.financial_health.balance_sheet.debt_to_equity for p in peers
-                   if p.financial_health.balance_sheet.debt_to_equity]
+                   if p.financial_health.balance_sheet.debt_to_equity is not None]
 
     # Calculate comparisons
     pe_comp = calculate_metric_comparison("pe_ratio", target_profile.valuation.pe_ratio_trailing, pe_values, peer_tickers, peer_failures)

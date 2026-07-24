@@ -261,6 +261,8 @@ def _extract_sources(evidence: EvidencePackage) -> list[str]:
         sources.add(evidence.fundamental.metadata.source)
     if evidence.institutional_ownership.metadata.status != "missing":
         sources.add(evidence.institutional_ownership.metadata.source)
+    if evidence.institutional_activity.metadata.status != "missing":
+        sources.add(evidence.institutional_activity.metadata.source)
     if evidence.news.metadata and evidence.news.metadata.status != "missing":
         sources.add(evidence.news.metadata.source)
     if evidence.sec_filings.metadata and evidence.sec_filings.metadata.status != "missing":

@@ -15,22 +15,13 @@ from __future__ import annotations
 import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
-from typing import Literal
-
-import requests
 
 from ... import cache
 from ..contracts import InstitutionalActivity, InstitutionalTrade, SourceMetadata
-from ._retry import retry
-from .sec_parser import (
-    SEC_USER_AGENT, SEC_RETRIES, SEC_RETRY_BACKOFF_SECONDS, apply_sec_rate_limit,
-    get_cik_from_ticker
-)
-from .sec_edgar import SUBMISSIONS_URL
+from .sec_parser import get_cik_from_ticker
+from .sec_edgar import fetch_raw_submissions
 
-_HEADERS = {"User-Agent": SEC_USER_AGENT}
 _FORM4_TTL = 24 * 3600  # 24 jam
-_MIN_SHARES_FOR_SIGNAL = 10_000  # skip trades < 10k shares (noise filtering)
 
 
 def fetch_institutional_activity(ticker: str, days_lookback: int = 30) -> InstitutionalActivity:
@@ -65,28 +56,12 @@ def fetch_institutional_activity(ticker: str, days_lookback: int = 30) -> Instit
             **cached
         )
 
-    cik_num = int(cik)
-
-    # Fetch daftar Form 4 filings
-    try:
-        apply_sec_rate_limit()
-
-        def _do_fetch():
-            r = requests.get(SUBMISSIONS_URL.format(cik=cik), headers=_HEADERS, timeout=15)
-            r.raise_for_status()
-            return r.json()
-
-        data = retry(_do_fetch, retries=SEC_RETRIES, backoff_seconds=SEC_RETRY_BACKOFF_SECONDS,
-                    label=f"sec_form4_filings:{cik}")
-    except Exception as exc:
-        print(f"[sec_form4:{cik}] gagal fetch filing list (final): {exc}", file=sys.stderr)
-        return InstitutionalActivity(
-            metadata=SourceMetadata(
-                source="sec_form4",
-                fetched_at=datetime.now(timezone.utc).isoformat(),
-                status="missing",
-            )
-        )
+    # Fetch daftar filing (submissions JSON) — shared dengan sec_edgar.fetch_sec_filings()
+    # lewat fetch_raw_submissions(), yang cache-nya sudah ditandai per-CIK, jadi kalau
+    # sec_edgar.py sudah/akan fetch CIK yang sama di run Evidence yang sama, tidak ada
+    # panggilan network dobel ke data.sec.gov (juga tetap lewat apply_sec_rate_limit()
+    # yang sama kalau memang cache-miss).
+    data = fetch_raw_submissions(cik)
 
     if not data:
         return InstitutionalActivity(
@@ -104,8 +79,7 @@ def fetch_institutional_activity(ticker: str, days_lookback: int = 30) -> Instit
 
     cutoff_date = (datetime.now(timezone.utc) - timedelta(days=days_lookback)).date()
     trades: list[InstitutionalTrade] = []
-    buy_count = 0
-    sell_count = 0
+    buy_count = 0  # Not literal buys — counts Form 4 filings as an activity proxy (see docstring)
 
     print(f"[sec_form4:{cik}] Scanning {len(forms)} total filings for Form 4...", file=sys.stderr)
 
